@@ -1,40 +1,12 @@
+import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import { Mail, Phone, MapPin, ArrowRight } from "lucide-react";
 import Image from "next/image";
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-white">
-
-      {/* --- Hero Section --- */}
-      <section className="relative pt-32 pb-20 flex items-center justify-center overflow-hidden">
-        {/* Background Image with dark overlay */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/contact/BG.webp"
-            alt="Business meeting"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Dark Navy Overlay to make text pop */}
-          <div className="absolute inset-0 bg-[#0B1426]/80" />
-        </div>
-
-        {/* Centered Hero Content */}
-        <div className="relative z-10 container mx-auto px-6 text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
-            Contact
-          </h1>
-          
-          {/* Breadcrumb */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white/80">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span className="text-white/40">/</span>
-            <span className="text-white">Contact</span>
-          </div>
-        </div>
-      </section>
+    <main className="min-h-screen bg-white pt-20">
+      <PageHero title="Contact" />
 
       {/* --- Main Content Section --- */}
       <section className="container mx-auto px-6 py-20">
@@ -162,7 +134,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* --- NEW: Google Map Section (Match to your screenshot) --- */}
+      {/* --- Google Map Section --- */}
       <section className="bg-white border-t border-gray-100">
         <div className="container mx-auto px-6 py-16">
           <div className="text-center max-w-2xl mx-auto mb-10">

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { FaFacebookF, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+import PageHero from "@/components/PageHero";
 
 // -----------------------------------------------------------------------------
 // Sample comments data — replace with real comments from your CMS / DB
@@ -69,7 +70,7 @@ function CommentCard({ comment }: { comment: CommentItem }) {
           src={comment.avatar} 
           alt={comment.name} 
           fill 
-          sizes="48px" // <--- FIXED: Added sizes
+          sizes="48px"
           className="object-cover" 
         />
       </div>
@@ -109,81 +110,71 @@ export default async function BlogDetailPage({
   const totalComments = countComments(comments);
 
   return (
-    <main className="min-h-screen bg-white">
-      {/* --- HERO: LARGE FULL-WIDTH IMAGE WITH DARK OVERLAY --- */}
-      <section className="relative pt-24 md:pt-28 pb-0 overflow-hidden">
-        {/* Large Hero Image */}
-        <div className="relative w-full h-[50vh] md:h-[60vh] lg:h-[70vh]">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            sizes="100vw" // <--- FIXED: Added sizes
-            className="object-cover"
-            priority
-          />
-          {/* Dark Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0B1426]/90 via-[#0B1426]/40 to-transparent" />
-        </div>
+    <main className="min-h-screen bg-white pt-20">
 
-        {/* Overlayed Title & Meta (Positioned Bottom-Left) */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 container mx-auto px-6 pb-12 md:pb-16">
-          <div className="max-w-3xl">
-            {/* Breadcrumb pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs text-white/80 mb-5">
-              <Link href="/" className="hover:text-white transition-colors">
-                Home
-              </Link>
-              <span className="text-white/40">/</span>
-              <Link href="/blog" className="hover:text-white transition-colors">
-                Blog
-              </Link>
-              <span className="text-white/40">/</span>
-              <span className="text-white line-clamp-1 max-w-[160px] md:max-w-[280px]">
-                {post.title}
-              </span>
-            </div>
+      {/* --- Shared Page Hero (consistent across all pages) --- */}
+      <PageHero title="Blog details" />
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
-              {post.title}
-            </h1>
+      {/* --- ARTICLE TITLE & META (plain, white background) --- */}
+      <section className="container mx-auto px-6 pt-16 md:pt-20">
+        <div className="max-w-3xl mx-auto">
+          {/* Title */}
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B1426] mb-6 tracking-tight">
+            {post.title}
+          </h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-white/80 text-sm">
-              <span className="flex items-center gap-2">
-                {post.authorAvatar ? (
-                  <span className="relative h-6 w-6 rounded-full overflow-hidden border border-white/20">
-                    <Image
-                      src={post.authorAvatar}
-                      alt={post.author}
-                      fill
-                      sizes="24px" // <--- FIXED: Added sizes
-                      className="object-cover"
-                    />
-                  </span>
-                ) : (
-                  <User className="h-4 w-4" />
-                )}
-                by {post.author}
-              </span>
-              <span className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" /> {post.date}
-              </span>
-              {post.comments !== undefined && (
-                <span className="flex items-center gap-2">
-                  <MessageCircle className="h-4 w-4" />
-                  {String(post.comments).padStart(2, "0")} Comments
+          {/* Meta row */}
+          <div className="flex flex-wrap items-center gap-6 text-gray-500 text-sm mb-10">
+            <span className="flex items-center gap-2">
+              {post.authorAvatar ? (
+                <span className="relative h-6 w-6 rounded-full overflow-hidden">
+                  <Image
+                    src={post.authorAvatar}
+                    alt={post.author}
+                    fill
+                    sizes="24px"
+                    className="object-cover"
+                  />
                 </span>
+              ) : (
+                <User className="h-4 w-4" />
               )}
-              <span className="text-[10px] font-bold tracking-widest uppercase text-blue-400 border border-blue-500/30 rounded-full bg-blue-500/10 px-3 py-1">
-                {post.category}
+              by {post.author}
+            </span>
+            <span className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" /> {post.date}
+            </span>
+            {post.comments !== undefined && (
+              <span className="flex items-center gap-2">
+                <MessageCircle className="h-4 w-4" />
+                {String(post.comments).padStart(2, "0")} Comments
               </span>
-            </div>
+            )}
+            <span className="text-[10px] font-bold tracking-widest uppercase text-blue-600 border border-blue-200 rounded-full bg-blue-50 px-3 py-1">
+              {post.category}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* --- FULL-WIDTH FEATURED IMAGE (below title, no overlay) --- */}
+      <section className="container mx-auto px-6 mb-16">
+        <div className="max-w-5xl mx-auto">
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-sm">
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="object-cover"
+              priority
+            />
           </div>
         </div>
       </section>
 
       {/* --- BLOG CONTENT BODY --- */}
-      <section className="container mx-auto px-6 py-16 md:py-20">
+      <section className="container mx-auto px-6 pb-16 md:pb-20">
         <div className="max-w-3xl mx-auto">
           {/* 1. Introduction Paragraph */}
           <p className="text-gray-600 leading-relaxed mb-6">
@@ -265,7 +256,7 @@ export default async function BlogDetailPage({
                 src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80"
                 alt="Inline content image"
                 fill
-                sizes="(max-width: 768px) 100vw, 800px" // <--- FIXED: Added sizes
+                sizes="(max-width: 768px) 100vw, 800px"
                 className="object-cover"
               />
             </div>

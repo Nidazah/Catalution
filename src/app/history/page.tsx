@@ -1,3 +1,4 @@
+import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Award, Globe2, Users } from "lucide-react";
@@ -27,38 +28,11 @@ const milestones = [
 
 export default function HistoryPage() {
   return (
-    // FIX: same issue as the About page — removed the forced vertical
-    // centering and gave it real top/bottom padding so the layout flows
-    // naturally instead of squeezing/drifting depending on viewport height.
-    <main className="min-h-screen bg-white">
-      <div className="w-full max-w-7xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-20">
+    <main className="min-h-screen bg-white pt-20">
+      <PageHero title="Our History" />
 
-        {/* --- HERO SECTION --- */}
-        <section className="relative overflow-hidden rounded-3xl bg-[#0B1426] text-white py-14 md:py-16 shadow-md mb-8 md:mb-10">
-          <div className="absolute inset-0 z-0">
-            <Image
-              src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2070&auto=format&fit=crop"
-              alt="Our History Hero"
-              fill
-              className="object-cover opacity-30"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0B1426]/90 via-[#0B1426]/70 to-transparent" />
-          </div>
-
-          <div className="relative z-10 container mx-auto px-6">
-            <div className="max-w-3xl">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 mb-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs md:text-sm text-blue-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" /> OUR HISTORY
-              </span>
-              <h1 className="text-4xl md:text-5xl lg:text-5xl font-bold mb-3 tracking-tight">
-                Empowering businesses of every size to thrive in a changing marketplace.
-              </h1>
-            </div>
-          </div>
-        </section>
-
-        {/* --- MAIN CONTENT GRID --- */}
+      {/* --- MAIN CONTENT GRID --- */}
+      <div className="w-full max-w-7xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
 
           {/* LEFT: LARGE IMAGE */}
@@ -122,7 +96,7 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        {/* --- MILESTONES / TIMELINE (New) --- */}
+        {/* --- MILESTONES / TIMELINE --- */}
         <section className="mt-16 md:mt-24">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-3xl md:text-4xl font-bold text-[#0B1426] mb-3">Key Milestones</h2>
@@ -142,7 +116,7 @@ export default function HistoryPage() {
           </div>
         </section>
 
-        {/* --- WHY CLIENTS TRUST US (New) --- */}
+        {/* --- WHY CLIENTS TRUST US --- */}
         <section className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex items-start gap-4 p-6 rounded-2xl border border-gray-100 shadow-sm">
             <div className="h-11 w-11 shrink-0 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">

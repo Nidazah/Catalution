@@ -1,5 +1,6 @@
 "use client";
 
+import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -66,8 +67,8 @@ export default function CareersPage() {
   // If an ID is in the URL, show the DETAIL VIEW
   if (job) {
     return (
-      <main className="min-h-screen bg-white flex items-center justify-center pt-20 pb-6 md:pb-4">
-        <div className="w-full max-w-6xl px-6 py-6 md:py-8">
+      <main className="min-h-screen bg-white pt-20 pb-6 md:pb-4">
+        <div className="w-full max-w-6xl mx-auto px-6 py-6 md:py-8">
           <button
             onClick={() => router.push("/careers")}
             className="inline-flex items-center text-sm font-medium text-[#0B1426] hover:text-blue-600 transition-colors mb-6"
@@ -155,7 +156,6 @@ export default function CareersPage() {
                 </ul>
               </div>
 
-              {/* ADDED: Missing Requirements Section */}
               <div>
                 <h2 className="text-2xl font-bold text-[#0B1426] mb-3">
                   Requirements & Qualifications
@@ -184,8 +184,10 @@ export default function CareersPage() {
   // If NO ID is in the URL, show the LIST VIEW
   // =========================================================================
   return (
-    <main className="min-h-screen bg-white flex items-center justify-center pt-20 pb-8 md:pb-4">
-      <div className="w-full max-w-7xl px-6 py-8 md:py-12">
+    <main className="min-h-screen bg-white pt-20 pb-8 md:pb-4">
+      <PageHero title="Careers" />
+
+      <div className="w-full max-w-7xl mx-auto px-6 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
           <div className="lg:col-span-4 relative overflow-hidden rounded-3xl bg-[#0B1426] text-white p-8 md:p-10 shadow-md flex flex-col justify-between h-full min-h-[450px]">
             <div className="absolute inset-0 z-0">
@@ -200,15 +202,13 @@ export default function CareersPage() {
             </div>
             <div className="relative z-10 space-y-6">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-xs text-blue-300 w-fit">
-                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" /> WE ARE
-                HIRING
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-400" /> WE ARE HIRING
               </span>
               <h1 className="text-4xl md:text-5xl font-bold leading-[1.1] tracking-tight">
                 Join our team <br /> and grow with us
               </h1>
               <p className="text-blue-100/80 text-sm md:text-base max-w-sm leading-relaxed">
-                We are looking for passionate individuals who are ready to make
-                a difference.
+                We are looking for passionate individuals who are ready to make a difference.
               </p>
             </div>
             <div className="relative z-10 mt-6">
@@ -243,8 +243,7 @@ export default function CareersPage() {
                         </h3>
                         <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm text-gray-500">
                           <span className="flex items-center gap-1.5">
-                            <Briefcase className="h-3.5 w-3.5" />{" "}
-                            {job.department}
+                            <Briefcase className="h-3.5 w-3.5" /> {job.department}
                           </span>
                           <span className="flex items-center gap-1.5">
                             <MapPin className="h-3.5 w-3.5" /> {job.location}

@@ -1,3 +1,4 @@
+import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
@@ -37,46 +38,15 @@ const portfoliosData = [
     id: "6",
     title: "Minimalist Packaging Design",
     category: "Branding",
-    image: "https://images.openai.com/static-rsc-4/4vweEO0BdUaKSPRfnFbQMbRlcwikJKXL0Wp7QCakG6ZaHH9CFmB31jyUNqWLh2EADz2iF0JqKIS5PNXotk9C5IOl3TAUmrwa4KZKdPRFskxxcbt9N0xjn8rtrJVcaevKVcvQtVJzW2SE9kDyWb0vlwQ6gad4g-qxB1HozX7NVvxuGeE05rFzRCbYi2WnVchl?purpose=fullsize", // Changed to a stable Unsplash link
+    image: "https://images.openai.com/static-rsc-4/4vweEO0BdUaKSPRfnFbQMbRlcwikJKXL0Wp7QCakG6ZaHH9CFmB31jyUNqWLh2EADz2iF0JqKIS5PNXotk9C5IOl3TAUmrwa4KZKdPRFskxxcbt9N0xjn8rtrJVcaevKVcvQtVJzW2SE9kDyWb0vlwQ6gad4g-qxB1HozX7NVvxuGeE05rFzRCbYi2WnVchl?purpose=fullsize",
   },
 ];
 
 export default function PortfoliosPage() {
   return (
-    <main className="min-h-screen bg-white">
-      
-      {/* --- EXACT HERO FROM YOUR SCREENSHOT --- */}
-      <section className="relative pt-32 pb-20 flex items-center justify-center overflow-hidden">
-        
-        {/* Background Image with dark navy overlay */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/portfolios/porofolio.webp"
-            alt="Business meeting background"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Deep Dark Navy Overlay to match your screenshot */}
-          <div className="absolute inset-0 bg-[#0B1426]/85" />
-        </div>
+    <main className="min-h-screen bg-white pt-20">
+      <PageHero title="Portfolios" />
 
-        {/* Centered Hero Content */}
-        <div className="relative z-10 container mx-auto px-6 text-center">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight">
-            Portfolios
-          </h1>
-          
-          {/* Breadcrumb Pill - Exact match to screenshot */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white/80">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span className="text-white/40">/</span>
-            <span className="text-white">Portfolios</span>
-          </div>
-        </div>
-      </section>
-
-      {/* --- Portfolio Grid Section (Unchanged, but styling fits perfectly now) --- */}
       <section className="container mx-auto px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           

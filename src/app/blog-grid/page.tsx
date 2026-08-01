@@ -1,3 +1,4 @@
+import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
 import { blogPosts } from "@/app/data/blog";
@@ -8,35 +9,8 @@ export default function BlogGridPage() {
   const categories = ["Business Strategy", "Leadership", "Design", "Strategy", "Technology"];
 
   return (
-    <main className="min-h-screen bg-white">
-      
-      {/* --- HERO SECTION (Matches main blog page) --- */}
-      <section className="relative pt-32 pb-20 flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2069&auto=format&fit=crop"
-            alt="Blog Grid Hero Background"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-[#0B1426]/85" />
-        </div>
-
-        <div className="relative z-10 container mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
-            Blog Grid
-          </h1>
-          
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white/80">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span className="text-white/40">/</span>
-            <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
-            <span className="text-white/40">/</span>
-            <span className="text-white">Grid</span>
-          </div>
-        </div>
-      </section>
+    <main className="min-h-screen bg-white pt-20">
+      <PageHero title="Blog Grid" />
 
       {/* --- MAIN GRID SECTION --- */}
       <section className="container mx-auto px-6 py-20">

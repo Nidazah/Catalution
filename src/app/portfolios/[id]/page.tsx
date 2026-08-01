@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Calendar, User, Tag, CheckCircle, ArrowUpRight, LayoutGrid, Code2, Award } from "lucide-react";
+import PageHero from "@/components/PageHero";
 
 // Data store with extra fields added for richer content
 const portfoliosData = {
@@ -135,7 +136,7 @@ const portfoliosData = {
     category: "Branding",
     client: "PureCloud Skincare",
     date: "November 2023",
-    image: "https://images.openai.com/static-rsc-4/4vweEO0BdUaKSPRfnFbQMbRlcwikJKXL0Wp7QCakG6ZaHH9CFmB31jyUNqWLh2EADz2iF0JqKIS5PNXotk9C5IOl3TAUmrwa4KZKdPRFskxxcbt9N0xjn8rtrJVcaevKVcvQtVJzW2SE9kDyWb0vlwQ6gad4g-qxB1HozX7NVvxuGeE05rFzRCbYi2WnVchl?purpose=fullsize", // Changed to a stable Unsplash link
+    image: "https://images.openai.com/static-rsc-4/4vweEO0BdUaKSPRfnFbQMbRlcwikJKXL0Wp7QCakG6ZaHH9CFmB31jyUNqWLh2EADz2iF0JqKIS5PNXotk9C5IOl3TAUmrwa4KZKdPRFskxxcbt9N0xjn8rtrJVcaevKVcvQtVJzW2SE9kDyWb0vlwQ6gad4g-qxB1HozX7NVvxuGeE05rFzRCbYi2WnVchl?purpose=fullsize",
     overview: "PureCloud Skincare required a full brand refresh, focusing heavily on packaging design that stood out on retail shelves while resonating with high-end, eco-conscious consumers.",
     challenge: "The market is flooded with generic skincare packaging. PureCloud needed something minimalist, luxury, and fully recyclable, using unique typography and premium foil stamping techniques.",
     solution: "We designed the packaging using a unique matte soft-touch paper combined with sharp, minimalist sans-serif typography. We created a specialized box structure to reduce cardboard waste by 20%.",
@@ -174,35 +175,10 @@ export default async function PortfolioDetailPage({
   const nextId = currentIndex < portfolioIds.length - 1 ? portfolioIds[currentIndex + 1] : null;
 
   return (
-    <main className="min-h-screen bg-white">
-      
-      {/* --- HERO: DARK OVERLAY & BREADCRUMB --- */}
-      <section className="relative pt-32 pb-20 flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/portfolios/porofolio.webp"
-            alt="Business meeting background"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-[#0B1426]/85" />
-        </div>
+    <main className="min-h-screen bg-white pt-20">
 
-        <div className="relative z-10 container mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight max-w-4xl mx-auto">
-            {portfolio.title}
-          </h1>
-          
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white/80">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span className="text-white/40">/</span>
-            <Link href="/portfolios" className="hover:text-white transition-colors">Portfolios</Link>
-            <span className="text-white/40">/</span>
-            <span className="text-white">{portfolio.title}</span>
-          </div>
-        </div>
-      </section>
+      {/* --- Shared Page Hero (consistent across all pages) --- */}
+      <PageHero title={portfolio.title} imageSrc="/images/portfolios/porofolio.webp" />
 
       {/* --- LAYOUT 1: IMAGE LEFT, INFO RIGHT --- */}
       <section className="container mx-auto px-6 pt-20 pb-12">

@@ -1,3 +1,4 @@
+import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
 import { blogPosts } from "@/app/data/blog"; 
@@ -12,33 +13,8 @@ export default function BlogPage() {
   const categories = ["Business Strategy", "Leadership", "Design", "Strategy", "Technology"];
 
   return (
-    <main className="min-h-screen bg-white">
-      
-      {/* --- HERO SECTION (Matches the live site) --- */}
-      <section className="relative pt-32 pb-20 flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/portfolios/porofolio.webp"
-            alt="Blog Hero Background"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-[#0B1426]/85" />
-        </div>
-
-        <div className="relative z-10 container mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
-            Blogs
-          </h1>
-          
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white/80">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <span className="text-white/40">/</span>
-            <span className="text-white">Blogs</span>
-          </div>
-        </div>
-      </section>
+    <main className="min-h-screen bg-white pt-20">
+      <PageHero title="Blog" />
 
       {/* --- MAIN CONTENT SECTION --- */}
       <section className="container mx-auto px-6 py-20">
@@ -84,7 +60,7 @@ export default function BlogPage() {
               </div>
             </Link>
 
-            {/* 3 Small Grid Posts below Featured (Optional, to match the rich feel) */}
+            {/* 3 Small Grid Posts below Featured */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
               {blogPosts.slice(1, 3).map((post) => (
                 <Link key={post.id} href={`/blog/${post.id}`} className="group block">

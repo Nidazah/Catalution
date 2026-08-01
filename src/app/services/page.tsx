@@ -1,3 +1,4 @@
+import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import { ArrowRight, Waves, Boxes, Users, Sparkles, CircleDot, Repeat } from "lucide-react";
 
@@ -12,15 +13,11 @@ const servicesList = [
 
 export default function ServicesPage() {
   return (
-    // FIX: dropped `min-h-screen flex items-center justify-center` — that
-    // forced the grid to vertically center inside (100vh - pt-20), which
-    // either crams it against the navbar with no headroom on short screens
-    // or overflows unevenly on taller content. Using normal top-down flow
-    // with real top/bottom padding lets it size to its content instead.
-    <main className="min-h-screen bg-white px-6">
-      <div className="w-full max-w-6xl mx-auto pt-32 pb-24 md:pt-40 md:pb-28">
+    <main className="min-h-screen bg-white pt-20">
+      <PageHero title="Services" />
+
+      <div className="w-full max-w-6xl mx-auto px-6 py-20">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#0B1426] mb-4">Our Services</h1>
           <p className="text-gray-600">Empowering your business with strategic expertise and cutting-edge solutions.</p>
         </div>
 

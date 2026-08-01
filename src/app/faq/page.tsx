@@ -1,5 +1,6 @@
 "use client";
 
+import PageHero from "@/components/PageHero";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
@@ -41,17 +42,11 @@ export default function FAQPage() {
   };
 
   return (
-    // FIX: same padding issue as the other inner pages — dropped the
-    // forced vertical centering and gave it real top/bottom padding.
-    <main className="min-h-screen bg-white">
-      <div className="w-full max-w-7xl mx-auto px-6 pt-28 pb-16 md:pt-36 md:pb-20">
+    <main className="min-h-screen bg-white pt-20">
+      <PageHero title="FAQ" />
 
-        {/* --- HEADER SECTION --- */}
+      <div className="w-full max-w-7xl mx-auto px-6 py-20">
         <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
-          <span className="inline-flex items-center gap-2 rounded bg-[#0B1426] px-3 py-1.5 text-xs font-semibold tracking-wide text-white">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            FAQ
-          </span>
           <h1 className="mt-4 font-display text-4xl md:text-5xl font-bold text-[#0B1426] leading-[1.1]">
             Frequently asked questions
           </h1>
@@ -60,11 +55,6 @@ export default function FAQPage() {
           </p>
         </div>
 
-        {/* --- FAQ GRID (2 Columns) --- */}
-        {/* FIX: added items-start — grid rows default to align-items:
-            stretch, so an open card's neighbor in the same row was
-            stretching to match its expanded height, leaving a big empty
-            gap. items-start makes each card size to its own content. */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto items-start">
           {faqs.map((faq, index) => (
             <FAQItem 
@@ -81,7 +71,6 @@ export default function FAQPage() {
 }
 
 // --- SINGLE FAQ ITEM COMPONENT ---
-// We pass 'isOpen' and 'onToggle' as props from the parent
 function FAQItem({ 
   faq, 
   isOpen, 

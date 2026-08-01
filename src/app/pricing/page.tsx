@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { CheckCircle, ArrowRight, Check } from "lucide-react";
+
+import PageHero from "@/components/PageHero";
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
@@ -12,224 +15,221 @@ export default function PricingPage() {
 
   const plans = [
     {
-      name: "Starter",
-      description: "Perfect for small businesses and startups.",
-      monthly: 29,
-      yearly: 290,
+      name: "Basic",
+      price: 19,
+      description: "Save 20% offer of consulting 93K clients.",
       features: [
-        "Up to 10 team members",
-        "Basic analytics dashboard",
-        "Email support",
-        "1 project included",
+        "In-Depth consultation",
+        "Standard business",
+        "Quick email support",
+        "Monthly check-in",
+        "Progress reviews",
       ],
-      buttonText: "Get Started",
+      disabledFeatures: ["Flexible support", "24/7 support"],
+      buttonText: "Chose package",
+      isPopular: false,
     },
     {
-      name: "Professional",
-      description: "Best for growing teams and mid-sized companies.",
-      monthly: 79,
-      yearly: 790,
+      name: "Business",
+      price: 49,
+      description: "Save 20% offer of consulting 93K clients.",
       features: [
-        "Up to 50 team members",
-        "Advanced analytics & reporting",
-        "Priority email & chat support",
-        "10 projects included",
-        "API access",
+        "In-Depth consultation",
+        "Standard business",
+        "Quick email support",
+        "Monthly check-in",
+        "Progress reviews",
+        "Flexible support",
+        "24/7 support",
       ],
-      buttonText: "Get Started",
-      popular: true,
+      disabledFeatures: [],
+      buttonText: "Chose package",
+      isPopular: true,
     },
     {
       name: "Enterprise",
-      description: "Custom solutions for large organizations.",
-      monthly: 199,
-      yearly: 1990,
+      price: 99,
+      description: "Save 20% offer of consulting 93K clients.",
       features: [
-        "Unlimited team members",
-        "Custom integrations & workflows",
-        "Dedicated account manager",
-        "Unlimited projects",
-        "24/7 phone support",
+        "In-Depth consultation",
+        "Standard business",
+        "Quick email support",
+        "Monthly check-in",
+        "Progress reviews",
       ],
-      buttonText: "Contact Sales",
+      disabledFeatures: ["Flexible support", "24/7 support"],
+      buttonText: "Chose package",
+      isPopular: false,
     },
   ];
 
   return (
-    <main className="min-h-screen bg-white flex items-center justify-center pt-20 pb-6 md:pb-4">
-      <div className="w-full max-w-7xl px-6 py-6 md:py-8">
-        
-        {/* --- HEADER with Staggered Animation --- */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center max-w-3xl mx-auto mb-8 md:mb-10"
-        >
-          <motion.span 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded bg-blue-50 px-3 py-1.5 text-xs font-semibold tracking-wide text-blue-600"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
-            PRICING PLAN
-          </motion.span>
+    <main className="min-h-screen bg-white pt-20">
+      
+      {/* --- TOP HERO SECTION --- */}
+      {/* 👈 PASSING THE TITLE AND IMAGE TO THE REUSABLE HERO */}
+      <PageHero 
+        title="Pricing plan" 
+        imageSrc="/images/portfolios/porofolio.webp" 
+      />
+
+      {/* --- LOWER SECTION: PRICING TIERS --- */}
+      <section className="bg-[#F5F7FA] py-16 md:py-24">
+        <div className="container mx-auto max-w-7xl px-6">
           
-          <motion.h1 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
-            className="mt-4 font-display text-4xl md:text-5xl font-bold text-[#0B1426] leading-[1.1]"
-          >
-            Choose your plan
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="mt-3 text-gray-600 text-sm md:text-base max-w-xl mx-auto"
-          >
-            Simple, transparent pricing that grows with you. Try any plan free for 30 days.
-          </motion.p>
-
-          {/* --- BILLING TOGGLE --- */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.4 }}
-            className="mt-6 inline-flex items-center gap-4 bg-gray-50 p-1.5 rounded-full border border-gray-200"
-          >
-            <button
-              onClick={() => setBillingCycle("monthly")}
-              className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
-                billingCycle === "monthly"
-                  ? "bg-white text-[#0B1426] shadow-sm"
-                  : "text-gray-500 hover:text-[#0B1426]"
-              }`}
+          {/* HEADER ROW: Left Text + Right Checkmarks */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start mb-12 md:mb-16">
+            
+            {/* Left Column */}
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+              className="space-y-4"
             >
-              Monthly
-            </button>
-            <button
-              onClick={() => setBillingCycle("yearly")}
-              className={`px-6 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
-                billingCycle === "yearly"
-                  ? "bg-white text-[#0B1426] shadow-sm"
-                  : "text-gray-500 hover:text-[#0B1426]"
-              }`}
-            >
-              Yearly <span className="text-[10px] text-green-600 font-medium">Save 20%</span>
-            </button>
-          </motion.div>
-        </motion.div>
+              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-blue-600">
+                <span className="h-1 w-1 rounded-full bg-blue-600" /> PRICING PLAN <span className="h-1 w-1 rounded-full bg-blue-600" />
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold text-[#0B1426] leading-[1.1]">
+                Our Pricing Tiers
+              </h2>
+              <p className="text-gray-600 text-sm md:text-base max-w-md">
+                Our mission is to empoiwers businesses off all size to thrive in an businesses ever changing marketplace.
+              </p>
 
-        {/* --- PRICING GRID with Staggered Children & Price Animation --- */}
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: { opacity: 0 },
-            visible: {
-              opacity: 1,
-              transition: {
-                staggerChildren: 0.15,
-                delayChildren: 0.2,
-              },
-            },
-          }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"
-        >
-          {plans.map((plan, index) => (
-            <motion.div
-              key={index}
-              variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
-              }}
-              whileHover={{ 
-                y: -8, 
-                boxShadow: "0px 20px 40px -10px rgba(0,0,0,0.1)",
-                transition: { duration: 0.2 } 
-              }}
-              className={`relative rounded-2xl p-8 border ${
-                plan.popular
-                  ? "border-blue-600 shadow-xl bg-blue-50/30"
-                  : "border-gray-200 bg-white shadow-sm"
-              } flex flex-col`}
-            >
-              {/* Popular Badge */}
-              {plan.popular && (
-                <motion.span
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.7, type: "spring", stiffness: 260, damping: 20 }}
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider"
-                >
-                  Most Popular
-                </motion.span>
-              )}
-
-              {/* Plan Header */}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-[#0B1426]">{plan.name}</h3>
-                <p className="text-sm text-gray-500 mt-1">{plan.description}</p>
-              </div>
-
-              {/* Animated Price */}
-              <div className="mb-6 relative h-[60px] flex items-end">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={billingCycle}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="absolute left-0"
-                  >
-                    <span className="text-5xl font-bold text-[#0B1426]">
-                      ${billingCycle === "monthly" ? plan.monthly : plan.yearly}
-                    </span>
-                    <span className="text-gray-500 ml-1 text-sm">
-                      / {billingCycle === "monthly" ? "mo" : "yr"}
-                    </span>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-3 mb-8 flex-grow">
-                {plan.features.map((feature, i) => (
-                  <motion.li 
-                    key={i} 
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.6 + (i * 0.05) }}
-                    className="flex items-start gap-3 text-sm text-gray-600"
-                  >
-                    <CheckCircle className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
-                    {feature}
-                  </motion.li>
-                ))}
-              </ul>
-
-              {/* Button */}
-              <motion.div whileTap={{ scale: 0.97 }}>
-                <Link
-                  href="/contact"
-                  className={`w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-colors ${
-                    plan.popular
-                      ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-[#0B1426] hover:bg-[#1a253f] text-white"
+              {/* Toggle Button - Exact Bright Blue Style */}
+              <div className="mt-6 inline-flex items-center rounded-full bg-[#0B1426] p-1.5">
+                <button
+                  onClick={() => setBillingCycle("monthly")}
+                  className={`px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    billingCycle === "monthly"
+                      ? "bg-[#2D7FF9] text-white shadow-md"
+                      : "text-white/70 hover:text-white"
                   }`}
                 >
-                  {plan.buttonText} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </motion.div>
+                  Monthly
+                </button>
+                <button
+                  onClick={() => setBillingCycle("yearly")}
+                  className={`px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
+                    billingCycle === "yearly"
+                      ? "bg-[#2D7FF9] text-white shadow-md"
+                      : "text-white/70 hover:text-white"
+                  }`}
+                >
+                  Yearly
+                </button>
+              </div>
             </motion.div>
-          ))}
-        </motion.div>
-      </div>
+
+            {/* Right Column */}
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="space-y-4"
+            >
+              <p className="text-gray-600 text-sm md:text-base">
+                Our mission is to empoiwers businesses off all size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptional in the value through our strategic inset, innovative.
+              </p>
+              <ul className="space-y-2 pt-2">
+                {[
+                  "Discover our expertise",
+                  "Journey and commitment to explained",
+                  "Meet our team and learn"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm font-medium text-[#0B1426]">
+                    <Check className="h-5 w-5 text-[#2D7FF9]" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </div>
+
+          {/* PRICING CARDS GRID */}
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+              },
+            }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+          >
+            {plans.map((plan, index) => (
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+                }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                className={`relative rounded-2xl p-8 flex flex-col ${
+                  plan.isPopular
+                    ? "bg-[#2D7FF9] text-white shadow-xl shadow-blue-500/20"
+                    : "bg-[#EBF0F7] text-[#0B1426]"
+                }`}
+              >
+                {/* Recommended Badge - Sharp angled ribbon */}
+                {plan.isPopular && (
+                  <div className="absolute -top-[1px] right-8 z-10">
+                    <div className="bg-[#0B1426] text-white text-[10px] font-bold px-4 py-1.5 rounded-t-md shadow-md">
+                      Recommended
+                    </div>
+                    {/* Small sharp angled triangle at the bottom left of the badge */}
+                    <div className="absolute -bottom-[6px] left-0 w-0 h-0 border-l-[6px] border-l-[#0B1426] border-t-[6px] border-t-transparent" />
+                  </div>
+                )}
+
+                <h3 className="text-lg font-bold mb-1">{plan.name}</h3>
+                
+                <div className="flex items-baseline gap-1 mt-2 mb-4">
+                  <span className="text-5xl font-bold">${plan.price}</span>
+                  <span className={`text-sm ${plan.isPopular ? "text-blue-100" : "text-gray-500"}`}>/month</span>
+                </div>
+
+                <p className={`text-sm mb-6 ${plan.isPopular ? "text-blue-100" : "text-gray-500"}`}>
+                  {plan.description}
+                </p>
+
+                <div className={`h-px w-full mb-6 ${plan.isPopular ? "bg-blue-400/40" : "bg-gray-300"}`} />
+
+                <ul className="space-y-3 mb-8 flex-grow">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3 text-sm">
+                      <CheckCircle className={`h-5 w-5 shrink-0 mt-0.5 ${plan.isPopular ? "text-white" : "text-[#2D7FF9]"}`} />
+                      {feature}
+                    </li>
+                  ))}
+                  {plan.disabledFeatures.map((feature, i) => (
+                    <li key={`disabled-${i}`} className="flex items-start gap-3 text-sm text-gray-400">
+                      <CheckCircle className="h-5 w-5 shrink-0 mt-0.5 text-gray-300" />
+                      <span className="line-through">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <motion.div whileTap={{ scale: 0.97 }}>
+                  <Link
+                    href="/contact"
+                    className={`w-full flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold transition-colors ${
+                      plan.isPopular
+                        ? "bg-white text-[#2D7FF9] hover:bg-gray-100"
+                        : "bg-[#0B1426] text-white hover:bg-[#1a253f]"
+                    }`}
+                  >
+                    {plan.buttonText} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
     </main>
   );
 }
