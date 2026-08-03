@@ -1,91 +1,210 @@
-"use client";
+import Image from "next/image";
 
-import { ArrowRight } from "lucide-react";
-import ScrollReveal from "./ScrollReveal";
-
-export default function About() {
+export default function AboutSection() {
   return (
-    <section 
-      id="about" 
-      className="bg-[#F5F7FA] min-h-screen flex items-center overflow-hidden" 
-    >
-      <div className="mx-auto max-w-7xl px-6 grid gap-10 md:grid-cols-2 items-center py-8 md:py-0 w-full">
-        
-        {/* Left: image with badge */}
-        <ScrollReveal className="relative flex items-center justify-center">
-          {/* 
-             Changed height from fixed pixel to 'max-h-[60vh]' (60% of viewport height).
-             This makes sure the image shrinks to fit any screen perfectly.
-          */}
-          <div className="relative w-full max-h-[60vh] min-h-[300px] overflow-hidden rounded-2xl shadow-lg bg-[#EAF1FB]">
-            <img
-              src="/images/about/about.avif"
-              alt="Team collaborating"
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute bottom-6 left-6 right-6 text-white">
-              <div className="font-display text-4xl md:text-5xl font-bold outline-text">
-                Reach <span className="text-white">20M</span>
-              </div>
-            </div>
-          </div>
-          
-          {/* Award badge - tightened slightly */}
-          <div className="absolute -top-8 -left-8 h-32 w-32 md:h-40 md:w-40 rounded-full bg-[var(--color-accent)] text-white flex items-center justify-center shadow-xl z-10">
-            <div className="text-center leading-tight scale-90 md:scale-100">
-              <div className="text-[9px] md:text-[10px] tracking-widest">SCINCE 2019</div>
-              <div className="mt-2 text-[10px] md:text-xs font-semibold">AWARD<br/>WINNING<br/>AGENCY</div>
-            </div>
-          </div>
-        </ScrollReveal>
+    <section className="relative w-full overflow-hidden bg-[#f5f6f8] py-16 md:py-20 lg:py-[68px]">
+      <style>{`
+        @keyframes floatY {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
 
-        {/* Right: copy - compressed to fit one screen */}
-        <ScrollReveal className="flex flex-col justify-center gap-3 md:gap-4">
-          <span className="font-mono-caps text-[10px] md:text-[11px] uppercase tracking-widest text-[var(--color-accent)]">
-            • ABOUT OUR COMPANY
+        .animate-float-slow {
+          animation: floatY 4s ease-in-out infinite;
+        }
+
+        @keyframes spinSlow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        .animate-spin-slow {
+          animation: spinSlow 8s linear infinite;
+        }
+      `}</style>
+
+      <div className="mx-auto grid max-w-[1020px] grid-cols-1 items-center gap-14 px-6 md:grid-cols-[390px_1fr] md:gap-[68px] lg:px-0">
+        {/* =====================================================
+            LEFT IMAGE AREA
+        ====================================================== */}
+        <div className="relative mx-auto w-full max-w-[390px]">
+          {/* Main image */}
+          <div className="relative h-[450px] w-full overflow-hidden rounded-[3px] md:h-[420px]">
+            <Image
+              src="/images/about/h5-about-1.webp"
+              alt="Team collaborating around a laptop"
+              fill
+              priority
+              sizes="390px"
+              className="object-cover"
+            />
+
+            {/* Bottom dark gradient */}
+            <div className="absolute inset-x-0 bottom-0 h-[125px] bg-gradient-to-t from-[#07162e]/95 via-[#07162e]/40 to-transparent" />
+
+            {/* Reach 20M */}
+            <div className="absolute bottom-7 left-4">
+              <p className="text-[31px] font-light leading-none tracking-tight text-white">
+                Reach <span className="font-bold text-white">20M</span>
+              </p>
+            </div>
+          </div>
+
+          {/* =================================================
+              AWARD BADGE
+          ================================================== */}
+          <div className="absolute -left-[17px] top-[112px] z-20 flex h-[91px] w-[91px] items-center justify-center rounded-full border-[5px] border-white bg-[#1674ed] shadow-md">
+            {/* Circular text — rotates continuously */}
+            <svg
+              viewBox="0 0 120 120"
+              className="absolute inset-0 h-full w-full animate-spin-slow"
+            >
+              <defs>
+                <path
+                  id="badgeCircle"
+                  d="M 60,60 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0"
+                />
+              </defs>
+
+              <text
+                fill="white"
+                fontSize="7.2"
+                fontWeight="600"
+                letterSpacing="1.5"
+              >
+                <textPath href="#badgeCircle" startOffset="1%">
+                  AWARD WINNING AGENCY • SINCE 2019 •
+                </textPath>
+              </text>
+            </svg>
+
+            {/* Center icon — stays upright, doesn't rotate */}
+            <div className="relative flex h-[35px] w-[35px] items-center justify-center rounded-full bg-white/10">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-[20px] w-[20px]"
+                fill="none"
+              >
+                <path
+                  d="M12 2L15 9L22 9.5L16.5 14L18.5 21L12 17L5.5 21L7.5 14L2 9.5L9 9L12 2Z"
+                  fill="white"
+                />
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+        {/* =====================================================
+            RIGHT CONTENT
+        ====================================================== */}
+        <div className="relative max-w-[460px]">
+          {/* Label */}
+          <span className="inline-flex items-center bg-[#e8f0ff] px-[6px] py-[3px] text-[8px] font-bold uppercase tracking-[0.7px] text-[#1472ed]">
+            • About Our Company
           </span>
-          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-heading)] leading-[1.1]">
-            Crafting success tailored solution for each & every challenges
+
+          {/* Heading */}
+          <h2 className="mt-[10px] max-w-[440px] text-[29px] font-bold leading-[1.08] tracking-[-1.2px] text-[#07162e] md:text-[27px] lg:text-[28px]">
+            Crafting success tailored
+            <br />
+            solution for each &amp; every
+            <br />
+            challenges
           </h2>
-          <p className="text-[15px] md:text-base text-[var(--color-body)] max-w-xl leading-relaxed">
-            Our mission is to empower businesses of all size to thrive in an ever-changing marketplace. In today's dynamic business environment, the key to success lies in adaptability.
+
+          {/* Description */}
+          <p className="mt-[10px] max-w-[420px] text-[8px] font-normal leading-[1.65] text-[#626b78]">
+            Our mission is to empowers businesses off our all size too thrive in
+            an businesses changing marketplaces. In toda dynamics business
+            environment, the key to the success lies Our mission is to empower.
+            Our consultancy excels in providing quick solutions tailored.
           </p>
 
-          {/* Stats Box - Compressed padding and margins to save space */}
-          <div className="grid grid-cols-2 bg-[#EAF1FB] rounded-2xl p-6 md:p-8 gap-4 relative max-w-lg mt-2">
-            <div>
-              <div className="font-display text-4xl md:text-5xl font-bold text-[var(--color-heading)]">
+          {/* =================================================
+              STATS CARD
+          ================================================== */}
+          <div className="mt-[12px] flex h-[79px] max-w-[259px] bg-[#e3e9f0]">
+            {/* First stat */}
+            <div className="flex flex-1 flex-col justify-center px-[15px]">
+              <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-[#07162e]">
                 8.5x
-              </div>
-              <div className="mt-1 text-sm text-[var(--color-body)]">
+              </p>
+
+              <p className="mt-[6px] text-[8px] font-medium text-[#263247]">
                 Faster growth
-              </div>
+              </p>
             </div>
-            <div className="border-l border-[var(--color-line)] pl-4 md:pl-6 relative flex flex-col justify-center">
-              <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 h-3 w-3 rounded-full bg-white ring-2 ring-[var(--color-accent)]" />
-              <div className="font-display text-4xl md:text-5xl font-bold text-[var(--color-heading)]">
+
+            {/* Divider */}
+            <div className="my-[10px] w-px bg-white" />
+
+            {/* Second stat */}
+            <div className="relative flex flex-1 flex-col justify-center px-[15px]">
+              {/* Small blue dot */}
+              <span className="absolute -left-[3px] top-1/2 h-[5px] w-[5px] -translate-y-1/2 rounded-full border border-[#1674ed] bg-white" />
+
+              <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-[#07162e]">
                 20M
-              </div>
-              <div className="mt-1 text-sm text-[var(--color-body)]">
+              </p>
+
+              <p className="mt-[6px] text-[8px] font-medium text-[#263247]">
                 Reach worldwide
-              </div>
+              </p>
             </div>
           </div>
 
-          {/* Button - reduced margin top */}
-          <div className="mt-2 flex items-center gap-6">
-            <a
-              href="#contact"
-              data-cursor-hover
-              className="inline-flex items-center gap-3 rounded-full bg-[var(--color-navy)] pl-2 pr-7 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.03]"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-              Know More
-            </a>
-          </div>
-        </ScrollReveal>
+          {/* =================================================
+                SMALL STATIC FLOATING IMAGE (behind button)
+            ================================================== */}
+            <div className="absolute -bottom-[61px] right-[20px] z-10 hidden h-[128px] w-[128px] overflow-hidden border-[3px] border-white shadow-lg md:block">
+              <Image
+                src="/images/about/h5-about-2.webp"
+                alt="Colleagues reviewing documents"
+                fill
+                sizes="128px"
+                className="object-cover"
+              />
+            </div>
+
+          {/* =================================================
+              CTA
+          ================================================== */}
+          <button className="group relative mt-[15px] flex h-[30px] items-center gap-[7px] overflow-hidden rounded-full bg-[#07162e] py-[3px] pl-[3px] pr-[15px] text-[8px] font-semibold text-white">
+            {/* Expanding blue background */}
+            <span
+              aria-hidden
+              className="absolute left-[3px] top-1/2 h-[24px] w-[24px] -translate-y-1/2 rounded-full bg-[#1674ed] transition-all duration-500 ease-out group-hover:left-0 group-hover:top-0 group-hover:h-full group-hover:w-full group-hover:translate-y-0"
+            />
+
+            {/* Arrow */}
+            <span className="relative z-10 flex h-[24px] w-[24px] items-center justify-center rounded-full bg-[#1674ed] transition-colors duration-300 group-hover:bg-[#07162e]">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-[12px] w-[12px]"
+                fill="none"
+              >
+                <path
+                  d="M5 12h14M13 6l6 6-6 6"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+
+            <span className="relative z-10">Know More</span>
+          </button>
+        </div>
       </div>
     </section>
   );

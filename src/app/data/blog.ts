@@ -2,6 +2,7 @@ export const blogPosts = [
   // --- PAGE 1 (Showing on "01") ---
   {
     id: 1,
+    slug: "the-future-of-business-process-optimization", // <-- ADDED
     title: "The Future of Business Process Optimization",
     excerpt:
       "Discover how AI and machine learning are transforming the way companies optimize their workflows and reduce operational costs.",
@@ -17,6 +18,7 @@ export const blogPosts = [
   },
   {
     id: 2,
+    slug: "5-leadership-traits-every-executive-needs", // <-- ADDED
     title: "5 Leadership Traits Every Executive Needs",
     excerpt:
       "We break down the essential leadership qualities that drive successful teams and foster innovation in the modern corporate landscape.",
@@ -32,6 +34,7 @@ export const blogPosts = [
   },
   {
     id: 3,
+    slug: "sustainable-design-more-than-just-a-trend", // <-- ADDED
     title: "Sustainable Design: More Than Just a Trend",
     excerpt:
       "Why sustainable design practices are becoming a core business requirement and how to implement them effectively in 2024.",
@@ -47,6 +50,7 @@ export const blogPosts = [
   },
   {
     id: 4,
+    slug: "mastering-the-art-of-strategic-planning", // <-- ADDED
     title: "Mastering the Art of Strategic Planning",
     excerpt:
       "A comprehensive guide to building actionable long-term strategies that align with your company's vision and market goals.",
@@ -62,6 +66,7 @@ export const blogPosts = [
   },
   {
     id: 5,
+    slug: "how-to-navigate-consulting-tips-for-transforming", // <-- ADDED
     title: "How to navigate consulting tips for transforming",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",
@@ -77,6 +82,7 @@ export const blogPosts = [
   },
   {
     id: 6,
+    slug: "innovation-in-action-examples-of-consulting-success", // <-- ADDED
     title: "Innovation in action examples of consulting success",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",
@@ -94,6 +100,7 @@ export const blogPosts = [
   // --- PAGE 2 (Showing on "02") ---
   {
     id: 7,
+    slug: "innovative-solutions-for-business-success-dynamic-from-today", // <-- ADDED
     title: "Innovative solutions for business success dynamic from today",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",
@@ -109,6 +116,7 @@ export const blogPosts = [
   },
   {
     id: 8,
+    slug: "mastering-change-management-key-lessons-for-businesses", // <-- ADDED
     title: "Mastering change management key lessons for businesses",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",
@@ -124,6 +132,7 @@ export const blogPosts = [
   },
   {
     id: 9,
+    slug: "harness-digital-transformation-a-roadmap-for-businesses", // <-- ADDED
     title: "Harness digital transformation a roadmap for businesses",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",
@@ -139,6 +148,7 @@ export const blogPosts = [
   },
   {
     id: 10,
+    slug: "measuring-success-key-metrics-every-business-track", // <-- ADDED
     title: "Measuring success key metrics every business track",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",
@@ -154,6 +164,7 @@ export const blogPosts = [
   },
   {
     id: 11,
+    slug: "what-consultants-should-know-about-working-with-nonprofits", // <-- ADDED (Matches your old link)
     title: "What consultants should know about working with nonprofits",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",
@@ -169,6 +180,7 @@ export const blogPosts = [
   },
   {
     id: 12,
+    slug: "why-every-entrepreneur-needs-solid-digital-marketing", // <-- ADDED (Matches your old link with "solid")
     title: "Why every entrepreneur needs solid digital marketing",
     excerpt:
       "In today's dynamic business environment, the key to success lies in strategic planning.",

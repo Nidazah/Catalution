@@ -4,10 +4,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { 
-  ArrowLeft, 
   Calendar, 
-  User, 
-  Tag, 
   Search, 
   ArrowRight, 
   Check, 
@@ -23,8 +20,18 @@ export default async function BlogDetailPage({
 }) {
   const { id } = await params;
   
-  // Find the blog post
-  const post = blogPosts.find((p) => p.id === parseInt(id));
+  // Check if the "id" is actually a number (ID) or a string (slug)
+  const isNumeric = /^\d+$/.test(id);
+  
+  let post;
+  
+  if (isNumeric) {
+    // If it's a number, find by ID
+    post = blogPosts.find((p) => p.id === parseInt(id));
+  } else {
+    // If it's a text slug, find by slug (✅ FIXED: using 'id' instead of 'slug')
+    post = blogPosts.find((p) => p.slug === id);
+  }
 
   if (!post) {
     notFound();
@@ -123,7 +130,6 @@ export default async function BlogDetailPage({
 
             {/* 5. Quote Block */}
             <div className="bg-[#EAF1FD] p-8 md:p-10 relative">
-              {/* Big Quote Icon */}
               <div className="mb-4">
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-[#1D4ED8]">
                   <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 12.1046 13.1216 13 12.017 13H10.017V21H14.017ZM7.0166 21L7.0166 18C7.0166 16.8954 7.91203 16 9.0166 16H12.0166C12.5689 16 13.0166 15.5523 13.0166 15V9C13.0166 8.44772 12.5689 8 12.0166 8H8.0166C7.46432 8 7.0166 8.44772 7.0166 9V11C7.0166 12.1046 6.12117 13 5.0166 13H3.0166V21H7.0166Z" />
@@ -219,7 +225,7 @@ export default async function BlogDetailPage({
                 </div>
               </div>
               <Link
-                href={`/blog/${parseInt(id) + 1}`}
+                href={`/blog/${post.id + 1}`}
                 className="flex items-center gap-3 text-[14px] font-bold text-[#0B1426] hover:text-[#1D4ED8] transition-colors"
               >
                 Next <div className="w-8 h-8 rounded-full bg-[#EAF1FD] flex items-center justify-center"><ArrowRight className="h-4 w-4 text-[#1D4ED8]" /></div>
@@ -315,7 +321,7 @@ export default async function BlogDetailPage({
                 {blogPosts.slice(0, 3).map((post) => {
                   const { day, month } = formatDateBadge(post.date);
                   return (
-                    <Link key={post.id} href={`/blog/${post.id}`} className="flex items-center gap-4 group">
+                    <Link key={post.id} href={`/blog/${post.slug}`} className="flex items-center gap-4 group">
                       <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-gray-200 border border-gray-100">
                         <Image src={post.image} alt={post.title} fill className="object-cover" sizes="64px" />
                       </div>

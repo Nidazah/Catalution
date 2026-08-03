@@ -9,7 +9,6 @@ import CaseStudy from "@/components/Case-Study";
 import Price from "@/components/Price";
 import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
-import LatestNews from "@/components/LatestNews";
 
 export default function Home() {
   return (
@@ -25,7 +24,6 @@ export default function Home() {
       <Price />
       <Testimonials />
       <CTA />
-      <LatestNews />
     </main>
   );
 }

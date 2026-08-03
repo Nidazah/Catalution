@@ -414,6 +414,11 @@ export default function Navbar({ transparent = false }: { transparent?: boolean 
   // If transparent is true AND we haven't scrolled, turn on Hero Mode.
   const isHeroMode = transparent && !scrolled;
 
+  // Logo selection based on mode
+  const logoSrc = isHeroMode 
+    ? "/images/Logo/primary-logo.webp" 
+    : "/images/Logo/secondary-logo.webp";
+
   return (
     <motion.header
       variants={{
@@ -434,17 +439,16 @@ export default function Navbar({ transparent = false }: { transparent?: boolean 
         {/* --- LOGO --- */}
         <Link
           href="/"
-          className={`flex items-center gap-2 font-display font-bold text-2xl transition-colors ${
-            isHeroMode ? "text-white" : "text-[var(--color-heading)]"
-          }`}
+          className="flex items-center gap-2 font-display font-bold text-2xl transition-colors"
         >
-          <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-accent)]">
-            <span className="h-3.5 w-3.5 rounded-full bg-white" />
-          </span>
-          Sol
-          <span className="italic font-serif text-[var(--color-accent)]">
-            vior
-          </span>
+          <Image
+            src={logoSrc}
+            alt="Solvior Logo"
+            width={120}
+            height={40}
+            className="h-auto w-auto"
+            priority
+          />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-9">

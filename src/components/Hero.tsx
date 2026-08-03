@@ -11,16 +11,20 @@ const container: Variants = {
 };
 
 const item: Variants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 20 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
 };
 
 export default function Hero() {
+  const avatars = [
+    "/images/about/thumb-1.png",
+    "/images/about/thumb-2.png",
+    "/images/about/thumb-3.png",
+  ];
+
   return (
     <section
       id="top"
-      // FIX: pb-24/pb-32 removed — the portrait image already extends
-      // to the bottom of the row, so this extra padding was pure gap.
       className="relative overflow-hidden pt-40 pb-0 md:pt-44 md:pb-0 bg-[#ECF1F7]"
     >
       {/* Decorative rings */}
@@ -58,10 +62,10 @@ export default function Hero() {
         />
       </svg>
 
-      {/* FIX: items-center -> items-end so both columns bottom-align.
-          Previously the shorter/taller column mismatch left a visible
-          gap under whichever column was shorter (here, the image). */}
+      {/* Main Grid */}
       <div className="relative mx-auto max-w-7xl px-6 grid md:grid-cols-2 gap-14 items-end pb-16 md:pb-20">
+        
+        {/* Left Column: Text */}
         <motion.div variants={container} initial="hidden" animate="show">
           <motion.span
             variants={item}
@@ -113,13 +117,15 @@ export default function Hero() {
           </motion.div>
         </motion.div>
 
-        {/* Right: portrait + floating cards */}
-        <div className="relative flex items-end justify-center">
+        {/* Right Column: Large Portrait + Floating Play Reel + Avatar Card */}
+        <div className="relative flex items-end justify-center w-full h-full">
+          
+          {/* Large Main Portrait Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.3, ease: easeOut }}
-            className="relative w-full max-w-sm h-auto overflow-hidden rounded-2xl"
+            className="relative w-full max-w-sm h-auto overflow-hidden rounded-2xl z-0"
           >
             <img
               src="/images/hero/h5-hero.png"
@@ -128,12 +134,12 @@ export default function Hero() {
             />
           </motion.div>
 
-          {/* Play reels bubble */}
+          {/* Play reels bubble (Top Right) */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="absolute top-14 -right-4"
+            className="absolute top-14 -right-4 z-20"
           >
             <a
               href="https://www.youtube.com/watch?v=MLpWrANjFbI"
@@ -150,41 +156,40 @@ export default function Hero() {
             </a>
           </motion.div>
 
-          {/* Happy clients card */}
+          {/* Avatar + 39K+ Card (Bottom Left of the portrait) */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20, y: 20 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: 0.6, delay: 0.9 }}
-            className="absolute bottom-16 -left-6"
+            className="absolute bottom-12 -left-6 z-20 bg-white rounded-2xl p-4 shadow-2xl w-[260px] animate-float-drift"
           >
-            <div className="animate-float rounded-2xl bg-white p-5 shadow-2xl w-[260px]">
-              <div className="flex items-center">
-                {[
-                  "https://i.pravatar.cc/64?img=12",
-                  "https://i.pravatar.cc/64?img=32",
-                  "https://i.pravatar.cc/64?img=47",
-                ].map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt=""
-                    className="h-10 w-10 rounded-full ring-2 ring-white object-cover -ml-2 first:ml-0"
-                  />
-                ))}
-                <span className="ml-2 flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-white text-lg font-semibold">
-                  +
-                </span>
-              </div>
-              <div className="mt-4">
-                <span className="font-display text-2xl font-bold text-[var(--color-heading)]">
-                  39K+
-                </span>
-                <p className="whitespace-nowrap text-sm text-[var(--color-body)]">
-                  Happy clients all over world.
-                </p>
+            {/* Overlapping Avatars Row */}
+            <div className="relative flex items-center justify-start">
+              {avatars.map((src, i) => (
+                <div
+                  key={i}
+                  className="relative -ml-3 first:ml-0 h-10 w-10 rounded-full overflow-hidden border-2 border-white bg-gray-200 shadow-sm grayscale opacity-90"
+                >
+                  <img src={src} alt="Client" className="h-full w-full object-cover" />
+                </div>
+              ))}
+              {/* Blue Plus Circle */}
+              <div className="relative -ml-3 h-10 w-10 rounded-full bg-[#1D65FF] flex items-center justify-center border-2 border-white shadow-sm">
+                <span className="text-white text-xl font-light">+</span>
               </div>
             </div>
+
+            {/* 39K+ Text */}
+            <div className="mt-3">
+              <span className="font-display text-2xl font-bold text-[var(--color-heading)]">
+                39K+
+              </span>
+              <p className="whitespace-nowrap text-xs text-[var(--color-body)]">
+                Happy clients all over world.
+              </p>
+            </div>
           </motion.div>
+
         </div>
       </div>
     </section>
