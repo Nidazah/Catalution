@@ -518,38 +518,25 @@ export default function AboutPage() {
             </motion.div>
           </div>
 
-          {/* Logo Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-            {logos.map((logo, index) => (
-              <motion.div
-                key={index}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-                }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                /* 
-                   🔥 COLOR FIX APPLIED HERE:
-                   Changed from 'bg-gray-50' to 'bg-[#F4F7FA]' for a clear light blueish-gray background.
-                   Added 'shadow-sm' so they don't look totally flat.
-                */
-                className="bg-[#0a2540] rounded-lg p-6 flex items-center justify-center h-20 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300"
-              >
-                {/* 
-                   🔥 OPACITY FIX:
-                   Removed the 'hover:grayscale-0' and set consistent base styling.
-                   The images will now be fully visible by default, just like your screenshot.
-                */}
-                <div className="relative w-full h-8 flex items-center justify-center">
-                  <Image
-                    src={logo.img}
-                    alt={logo.name}
-                    fill
-                    className="object-contain"
-                  />
+          {/* Logo Marquee */}
+          <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+            <div className="flex w-max animate-marquee gap-6">
+              {[...logos, ...logos, ...logos].map((logo, index) => (
+                <div
+                  key={index}
+                  className="w-[240px] shrink-0 bg-[#F4F7FA] rounded-lg p-6 flex items-center justify-center h-20 border border-[#E4E9F0]"
+                >
+                  <div className="relative w-full h-8 flex items-center justify-center invert opacity-60 hover:opacity-100 transition-opacity duration-300">
+                    <Image
+                      src={logo.img}
+                      alt={logo.name}
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </motion.section>

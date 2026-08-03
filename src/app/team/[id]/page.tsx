@@ -16,8 +16,7 @@ const teamData = {
   "1": {
     name: "Savanah Nguyen",
     role: "Manager",
-    image:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop",
+    image: "/images/team/Savanah-Nguyen.webp",
     bio: "Our mission is to empower businesses also thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insight and innovative approaches. Our consulting team brings years of experience to help you navigate complex business environments.",
     email: "support@solvior.com",
     phone: "+1 (009) 544-7826",
@@ -61,10 +60,10 @@ export default async function TeamDetailPage({
   return (
     <main className="min-h-screen bg-white pt-20">
       
-      {/* --- 1. THE HERO (Sits at the top) --- */}
+      {/* --- 1. THE HERO --- */}
       <PageHero title="Team details" />
 
-      {/* --- 2. THE PROFILE CONTENT (Starts BELOW the hero) --- */}
+      {/* --- 2. THE PROFILE CONTENT --- */}
       <section className="container mx-auto px-6 py-20 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           
@@ -197,62 +196,67 @@ export default async function TeamDetailPage({
         </div>
       </section>
 
-      {/* --- 3. BOTTOM CTA SECTION --- */}
-      <section className="bg-[#ECF1F7] py-16 md:py-20">
+      {/* --- 3. BOTTOM CONTACT SECTION (EXACT MATCH) --- */}
+      <section className="bg-[#EAF0F6] py-20 md:py-24">
         <div className="container mx-auto px-6 max-w-6xl">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div>
-              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-[#3B82F6]">
-                <span className="h-1 w-1 rounded-full bg-[#3B82F6]" /> Contact
-                Us
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+            
+            {/* Left Text Column */}
+            <div className="space-y-6">
+              <span className="inline-flex items-center gap-2 text-[13px] font-bold tracking-widest uppercase text-[#1D4ED8]">
+                <span className="h-px w-3 bg-[#1D4ED8]" /> Contact Us
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#0B1426] leading-[1.1] mt-4 mb-6">
+              <h2 className="text-[44px] md:text-[52px] font-bold text-[#0B1426] leading-[1.05] tracking-tight">
                 Let's discuss further to get better results
               </h2>
-              <p className="text-gray-600 text-[15px] max-w-md leading-relaxed">
-                Our mission is to empower businesses of all sizes to thrive in
-                an ever-changing marketplace. Let's start a conversation today.
+              <p className="text-[#4B5563] text-[15px] leading-[1.7] max-w-md">
+                Our mission is to empower businesses of all size to thrive in an businesses ever changing marketplace. In today's dynamiics business environment, the key to success lies.
               </p>
-              <div className="mt-6 flex items-center gap-3 text-sm font-medium text-[#0B1426]">
-                <Mail className="h-5 w-5 text-[#3B82F6]" />
-                <span>lwchat@solvior.com</span>
+              <div className="flex items-center gap-2 text-[15px] font-medium text-[#0B1426] pt-1">
+                <Mail className="h-5 w-5 text-[#1D4ED8]" />
+                <span>livechat@solvior.com</span>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-              <form className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Right Form Column */}
+            <div className="flex flex-col gap-4">
+              <form className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                 <input
                   type="text"
                   placeholder="Full name*"
-                  className="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-[#3B82F6] outline-none text-sm"
+                  className="w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-[#9CA3AF] text-[#0B1426]"
                 />
                 <input
                   type="email"
                   placeholder="Email address*"
-                  className="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-[#3B82F6] outline-none text-sm"
+                  className="w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-[#9CA3AF] text-[#0B1426]"
                 />
                 <input
                   type="tel"
                   placeholder="Phone number*"
-                  className="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-[#3B82F6] outline-none text-sm"
+                  className="w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-[#9CA3AF] text-[#0B1426]"
                 />
-                <select className="w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-[#3B82F6] outline-none text-sm text-gray-500">
-                  <option>Choose a option</option>
+                <select className="w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] text-[#9CA3AF]">
+                  <option value="" disabled selected>Choose a option</option>
+                  <option value="1">Option 1</option>
+                  <option value="2">Option 2</option>
                 </select>
                 <textarea
                   placeholder="Type message*"
-                  className="sm:col-span-2 w-full px-4 py-3 bg-gray-50 rounded-lg border border-gray-200 focus:border-[#3B82F6] outline-none text-sm resize-none h-24"
+                  className="sm:col-span-2 w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-[#9CA3AF] text-[#0B1426] resize-none h-28"
                 />
-                <button
-                  type="button"
-                  className="sm:col-span-2 flex items-center justify-center gap-3 rounded-full bg-[#0B1426] hover:bg-[#1a253f] text-white pl-2 pr-6 py-2 text-sm font-semibold transition-all w-fit mx-auto mt-2"
-                >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#3B82F6]">
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
-                  Send message
-                </button>
               </form>
+
+              {/* Submit Button (Inside the column, below the form) */}
+              <button
+                type="button"
+                className="flex items-center gap-3 rounded-full bg-[#0B1426] hover:bg-[#1a253f] text-white pl-2 pr-7 py-2.5 text-[15px] font-semibold transition-all w-fit mt-2"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1D4ED8]">
+                  <ArrowRight className="h-4 w-4" />
+                </span>
+                Send message
+              </button>
             </div>
           </div>
         </div>

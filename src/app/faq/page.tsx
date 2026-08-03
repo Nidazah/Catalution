@@ -3,33 +3,29 @@
 import PageHero from "@/components/PageHero";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Minus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
 const faqs = [
   {
-    question: "What services does Solvior offer?",
-    answer: "Solvior offers a wide range of services including Business Process Optimization, Strategic Planning & Execution, Leadership Executive Coaching, Legacy Leadership Institute, Executive Growth Solutions, and Empowered Leadership Journey. We tailor our solutions to meet the unique needs of your business."
+    question: "How do consultants add value to a business?",
+    answer: "Consultants bring deep expertise, fresh perspectives, and data-driven strategies to identify inefficiencies and implement tailored solutions that drive sustainable growth.",
   },
   {
-    question: "How do I get started with your services?",
-    answer: "Getting started is simple! Just click the 'Get a Quote' button in the top right corner, fill out our contact form, and one of our expert consultants will reach out to you within 24 hours to schedule a free consultation."
+    question: "How do I know if my business needs a consultant?",
+    answer: "If your business is facing growth plateaus, operational bottlenecks, or needs a new strategic direction, a consultant can provide the objective insights and specialized skills necessary to overcome these challenges.",
   },
   {
-    question: "What industries do you specialize in?",
-    answer: "We have extensive experience working across multiple industries including Technology, Finance, Healthcare, Retail, Manufacturing, and Non-Profit sectors. Our team adapts our proven methodologies to fit the specific challenges of your industry."
+    question: "How do business consultants charge for their services?",
+    answer: "Consultants typically charge based on project scope, hourly rates, or long-term retainers. We offer flexible pricing models designed to align with your specific project goals and budget.",
   },
   {
-    question: "How long does a typical consulting engagement last?",
-    answer: "Engagement duration varies based on your specific needs. Short-term projects can be completed in 4-6 weeks, while comprehensive strategic transformations can span 6-12 months. We work with you to create a timeline that fits your goals."
+    question: "Can a business consultant guarantee results?",
+    answer: "While we cannot guarantee specific outcomes, we commit to delivering our best expertise, data-driven strategies, and a structured roadmap. We work closely with you to ensure our strategies are actionable.",
   },
   {
-    question: "Do you offer remote consulting services?",
-    answer: "Absolutely. We offer fully remote, hybrid, and on-site consulting options to accommodate your team's preferences. Our digital collaboration tools ensure seamless communication regardless of your location."
+    question: "How can I measure the success of a consulting engagement?",
+    answer: "Success is measured through pre-defined KPIs, ROI analysis, and post-engagement performance reviews. We establish clear metrics at the start of every project to track our progress.",
   },
-  {
-    question: "What is your pricing model?",
-    answer: "Our pricing is flexible and project-based, tailored to the scope and complexity of your engagement. We offer fixed-rate projects, hourly consulting, and long-term retainer options. We also provide a free initial consultation to discuss your budget and goals."
-  }
 ];
 
 export default function FAQPage() {
@@ -37,33 +33,62 @@ export default function FAQPage() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const toggleFAQ = (index: number) => {
-    // If clicking the already open one, close it. Otherwise, open the new one.
     setActiveIndex(activeIndex === index ? null : index);
   };
 
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <main className="min-h-screen bg-[#FAFBFC] pt-20">
       <PageHero title="FAQ" />
 
-      <div className="w-full max-w-7xl mx-auto px-6 py-20">
-        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12">
-          <h1 className="mt-4 font-display text-4xl md:text-5xl font-bold text-[#0B1426] leading-[1.1]">
-            Frequently asked questions
+      <div className="w-full max-w-6xl mx-auto px-6 pt-12 pb-24">
+
+        {/* --- TOP SECTION: HEADER & SEARCH --- */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-[#0B1426] mb-8">
+            Hi, how we <span className="text-[#1D4ED8]">support</span> you?
           </h1>
-          <p className="mt-3 text-gray-600 text-sm md:text-base max-w-xl mx-auto">
-            Find answers to the most common questions about our services, process, and how we can help your business thrive.
-          </p>
+          
+          <div className="flex max-w-3xl mx-auto bg-white border border-gray-300">
+            <div className="flex-1 flex items-center px-4">
+              <Search className="h-5 w-5 text-gray-400 mr-3" />
+              <input 
+                type="text" 
+                placeholder="Ask a question" 
+                className="w-full py-3 text-[15px] outline-none bg-transparent text-[#0B1426] placeholder:text-gray-400"
+              />
+            </div>
+            <button className="bg-[#1D4ED8] text-white font-medium px-8 py-3 hover:bg-blue-700 transition-colors text-[15px]">
+              Search
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-6xl mx-auto items-start">
-          {faqs.map((faq, index) => (
-            <FAQItem 
-              key={index} 
-              faq={faq} 
-              isOpen={activeIndex === index} // Check if this specific item is active
-              onToggle={() => toggleFAQ(index)} // Pass the toggle function
-            />
-          ))}
+        {/* --- DIVIDER LINE --- */}
+        <div className="w-full h-px bg-gray-200 mb-16"></div>
+
+        {/* --- BOTTOM SECTION: 2 COLUMN LAYOUT --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+          
+          {/* LEFT COLUMN: HEADLINE */}
+          <div className="lg:col-span-5 pt-2">
+            <h2 className="text-[38px] md:text-[44px] font-bold text-[#0B1426] leading-[1.15] tracking-tight">
+              No matter the strategy,<br />
+              we've got it handled.
+            </h2>
+          </div>
+
+          {/* RIGHT COLUMN: FAQ LIST */}
+          <div className="lg:col-span-7 flex flex-col gap-3">
+            {faqs.map((faq, index) => (
+              <FAQItem 
+                key={index} 
+                faq={faq} 
+                isOpen={activeIndex === index}
+                onToggle={() => toggleFAQ(index)}
+              />
+            ))}
+          </div>
+
         </div>
       </div>
     </main>
@@ -81,25 +106,16 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="border border-gray-200 rounded-2xl bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
-    >
+    <div className="border border-gray-300 bg-white">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-5 md:p-6 text-left"
+        className="w-full flex items-center justify-between p-4 md:py-4 md:px-5 text-left group"
       >
-        <span className="font-semibold text-[15px] md:text-base text-[#0B1426] pr-4">
+        <span className="font-semibold text-[15px] text-[#0B1426] pr-4">
           {faq.question}
         </span>
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 transition-colors duration-300">
-          {isOpen ? (
-            <Minus className="h-4 w-4 text-[#0B1426]" />
-          ) : (
-            <Plus className="h-4 w-4 text-[#0B1426]" />
-          )}
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center">
+          <Plus className={`h-5 w-5 text-[#0B1426] transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`} />
         </span>
       </button>
 
@@ -109,16 +125,16 @@ function FAQItem({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.25, ease: "easeInOut" }}
           >
-            <div className="px-5 pb-5 md:px-6 md:pb-6 pt-0">
-              <p className="text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-4">
+            <div className="px-4 pb-4 md:px-5 md:pb-5 pt-0">
+              <p className="text-[15px] text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
                 {faq.answer}
               </p>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }

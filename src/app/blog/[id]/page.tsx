@@ -1,94 +1,20 @@
+import PageHero from "@/components/PageHero";
+import { blogPosts } from "@/app/data/blog";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { blogPosts } from "@/app/data/blog";
-import {
-  Calendar,
-  User,
-  ArrowLeft,
-  ArrowRight,
-  Tag,
-  CheckCircle,
-  MessageCircle,
-  LayoutGrid,
-  Reply,
+import { 
+  ArrowLeft, 
+  Calendar, 
+  User, 
+  Tag, 
+  Search, 
+  ArrowRight, 
+  Check, 
+  Reply
 } from "lucide-react";
 
-import { FaFacebookF, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
-import PageHero from "@/components/PageHero";
-
-// -----------------------------------------------------------------------------
-// Sample comments data — replace with real comments from your CMS / DB
-// -----------------------------------------------------------------------------
-interface CommentItem {
-  id: number;
-  name: string;
-  date: string;
-  avatar: string;
-  text: string;
-  replies?: CommentItem[];
-}
-
-const comments: CommentItem[] = [
-  {
-    id: 1,
-    name: "Jami Simth",
-    date: "February 03, 2024",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&q=80",
-    text: "Our mission is to empower businesses to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insight. Our mission is to empower businesses of every size.",
-    replies: [
-      {
-        id: 2,
-        name: "Marden Smith",
-        date: "March 12, 2024",
-        avatar:
-          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&q=80",
-        text: "Our mission is to empower businesses to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insight. Our mission is to empower businesses of every size.",
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "Mahin Deen",
-    date: "June 22, 2024",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&q=80",
-    text: "Our mission is to empower businesses to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insight. Our mission is to empower businesses of every size.",
-  },
-];
-
-function countComments(items: CommentItem[]): number {
-  return items.reduce((total, item) => total + 1 + (item.replies?.length ?? 0), 0);
-}
-
-function CommentCard({ comment }: { comment: CommentItem }) {
-  return (
-    <div className="bg-gray-50 rounded-2xl border border-gray-100 p-6 flex gap-4">
-      <div className="relative h-12 w-12 rounded-full overflow-hidden shrink-0">
-        <Image 
-          src={comment.avatar} 
-          alt={comment.name} 
-          fill 
-          sizes="48px"
-          className="object-cover" 
-        />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h5 className="font-bold text-[#0B1426] text-sm">{comment.name}</h5>
-            <p className="text-xs text-gray-400 mt-0.5">{comment.date}</p>
-          </div>
-          <button className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 transition-colors shrink-0">
-            <Reply className="h-3.5 w-3.5" /> Reply
-          </button>
-        </div>
-        <p className="text-sm text-gray-600 leading-relaxed mt-3">{comment.text}</p>
-      </div>
-    </div>
-  );
-}
+import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa6";
 
 export default async function BlogDetailPage({
   params,
@@ -96,340 +22,384 @@ export default async function BlogDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  
+  // Find the blog post
   const post = blogPosts.find((p) => p.id === parseInt(id));
 
   if (!post) {
     notFound();
   }
 
-  const currentIndex = blogPosts.findIndex((p) => p.id === post.id);
-  const prevPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null;
-  const nextPost =
-    currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null;
-
-  const totalComments = countComments(comments);
+  // Helper for sidebar formatting
+  const formatDateBadge = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = date.toLocaleString("default", { month: "short" }).toUpperCase();
+    return { day, month };
+  };
 
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <main className="min-h-screen bg-white pt-20 pb-24">
+      <PageHero title="Blog Details" />
 
-      {/* --- Shared Page Hero (consistent across all pages) --- */}
-      <PageHero title="Blog details" />
-
-      {/* --- ARTICLE TITLE & META (plain, white background) --- */}
-      <section className="container mx-auto px-6 pt-16 md:pt-20">
-        <div className="max-w-3xl mx-auto">
-          {/* Title */}
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B1426] mb-6 tracking-tight">
-            {post.title}
-          </h1>
-
-          {/* Meta row */}
-          <div className="flex flex-wrap items-center gap-6 text-gray-500 text-sm mb-10">
-            <span className="flex items-center gap-2">
-              {post.authorAvatar ? (
-                <span className="relative h-6 w-6 rounded-full overflow-hidden">
-                  <Image
-                    src={post.authorAvatar}
-                    alt={post.author}
-                    fill
-                    sizes="24px"
-                    className="object-cover"
-                  />
-                </span>
-              ) : (
-                <User className="h-4 w-4" />
-              )}
-              by {post.author}
-            </span>
-            <span className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" /> {post.date}
-            </span>
-            {post.comments !== undefined && (
-              <span className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" />
-                {String(post.comments).padStart(2, "0")} Comments
-              </span>
-            )}
-            <span className="text-[10px] font-bold tracking-widest uppercase text-blue-600 border border-blue-200 rounded-full bg-blue-50 px-3 py-1">
-              {post.category}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* --- FULL-WIDTH FEATURED IMAGE (below title, no overlay) --- */}
-      <section className="container mx-auto px-6 mb-16">
-        <div className="max-w-5xl mx-auto">
-          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-sm">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              sizes="(max-width: 1024px) 100vw, 1024px"
-              className="object-cover"
-              priority
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* --- BLOG CONTENT BODY --- */}
-      <section className="container mx-auto px-6 pb-16 md:pb-20">
-        <div className="max-w-3xl mx-auto">
-          {/* 1. Introduction Paragraph */}
-          <p className="text-gray-600 leading-relaxed mb-6">
-            In today&apos;s rapidly evolving business landscape, staying ahead
-            of the curve isn&apos;t just a competitive advantage—it&apos;s a
-            necessity. At Solvior, we&apos;ve spent the last decade helping
-            enterprises navigate complex challenges, and we&apos;ve noticed a
-            recurring theme among the most successful organizations. They
-            don&apos;t just react to change; they anticipate it. In this
-            comprehensive guide, we break down the proven strategies that
-            drive sustainable growth and foster a culture of continuous
-            innovation.
-          </p>
-
-          {/* 2. Large Intro Blockquote with attribution */}
-          <blockquote className="mb-10 border-l-4 border-blue-600 pl-6">
-            <p className="text-lg md:text-xl text-gray-700 leading-relaxed italic font-medium">
-              &ldquo;{post.excerpt}&rdquo;
-            </p>
-            <cite className="mt-3 block text-sm font-semibold not-italic text-gray-400">
-              — {post.author}
-            </cite>
-          </blockquote>
-
-          {/* 3. Key Lessons / Key Takeaways List */}
-          <div className="bg-gray-50 rounded-2xl p-6 md:p-8 mb-10 border border-gray-100">
-            <h4 className="font-bold text-[#0B1426] mb-4 flex items-center gap-2 text-sm uppercase tracking-wider">
-              <CheckCircle className="h-5 w-5 text-blue-600" /> Key Lessons of
-              Business
-            </h4>
-            <ul className="space-y-3 text-gray-600 text-sm md:text-base">
-              <li className="flex items-start gap-3">
-                <span className="text-blue-600 mt-1">•</span>
-                Embracing digital transformation requires a fundamental shift
-                in organizational mindset, not just adopting new software.
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-blue-600 mt-1">•</span>
-                Data-driven decision-making drastically reduces risk and
-                uncovers hidden opportunities for revenue growth.
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-blue-600 mt-1">•</span>
-                Leadership alignment is the single most critical factor in
-                the successful execution of long-term strategic planning.
-              </li>
-              <li className="flex items-start gap-3">
-                <span className="text-blue-600 mt-1">•</span>
-                Meet our team and learn how a client-first process turns
-                strategy into measurable outcomes.
-              </li>
-            </ul>
-          </div>
-
-          {/* 4. Rich Text Paragraphs */}
-          <div className="space-y-6 text-gray-600 leading-relaxed">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-              in reprehenderit in voluptate velit esse cillum dolore eu
-              fugiat nulla pariatur.
-            </p>
-            <p>
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa
-              qui officia deserunt mollit anim id est laborum. Sed ut
-              perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium, totam rem aperiam, eaque
-              ipsa quae ab illo inventore veritatis et quasi architecto
-              beatae vitae dicta sunt explicabo.
-            </p>
-          </div>
-
-          {/* 5. Inline Image Section */}
-          <div className="my-12">
-            <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden shadow-sm">
+      {/* --- MAIN LAYOUT: LEFT CONTENT + RIGHT SIDEBAR --- */}
+      <section className="container mx-auto px-6 py-16 max-w-[1280px]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          
+          {/* ============================================================
+              LEFT COLUMN: BLOG CONTENT (8 Columns)
+              ============================================================ */}
+          <div className="lg:col-span-8 space-y-10">
+            
+            {/* 1. Large Hero Image */}
+            <div className="relative aspect-[16/10] w-full bg-gray-100 overflow-hidden border border-gray-200">
               <Image
-                src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80"
-                alt="Inline content image"
+                src={post.image}
+                alt={post.title}
                 fill
-                sizes="(max-width: 768px) 100vw, 800px"
                 className="object-cover"
+                priority
               />
             </div>
-            <p className="text-sm text-gray-500 mt-3 text-center">
-              Behind the scenes of our strategic planning workshop.
-            </p>
-          </div>
 
-          {/* 6. More Paragraphs */}
-          <div className="space-y-6 text-gray-600 leading-relaxed mb-8">
-            <p>
-              Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut
-              odit aut fugit, sed quia consequuntur magni dolores eos qui
-              ratione voluptatem sequi nesciunt. Neque porro quisquam est,
-              qui dolorem ipsum quia dolor sit amet, consectetur, adipisci
-              velit.
-            </p>
-            <p>
-              Sed quia non numquam eius modi tempora incidunt ut labore et
-              dolore magnam aliquam quaerat voluptatem. Ut enim ad minima
-              veniam, quis nostrum exercitationem ullam corporis suscipit
-              laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis
-              autem vel eum iure reprehenderit qui in ea voluptate velit
-              esse quam nihil molestiae consequatur.
-            </p>
-          </div>
+            {/* 2. Title */}
+            <h1 className="text-3xl md:text-4xl font-bold text-[#0B1426] leading-tight">
+              {post.title}
+            </h1>
 
-          {/* 8. Tags & Share Row */}
-          <div className="pt-8 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full flex items-center gap-1"
-                >
-                  <Tag className="h-3 w-3" /> {tag}
-                </span>
-              ))}
-            </div>
-
-            {/* Share icons */}
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider mr-1">
-                Share:
-              </span>
-              <Link
-                href="https://www.facebook.com/"
-                target="_blank"
-                className="h-9 w-9 rounded-full bg-gray-50 hover:bg-blue-50 hover:text-blue-600 text-gray-500 flex items-center justify-center transition-colors"
-              >
-                <FaFacebookF className="h-4 w-4" />
-              </Link>
-              <Link
-                href="https://x.com/"
-                target="_blank"
-                className="h-9 w-9 rounded-full bg-gray-50 hover:bg-blue-50 hover:text-blue-600 text-gray-500 flex items-center justify-center transition-colors"
-              >
-                <FaXTwitter className="h-4 w-4" />
-              </Link>
-              <Link
-                href="https://www.linkedin.com/"
-                target="_blank"
-                className="h-9 w-9 rounded-full bg-gray-50 hover:bg-blue-50 hover:text-blue-600 text-gray-500 flex items-center justify-center transition-colors"
-              >
-                <FaLinkedinIn className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-
-          {/* 9. Post Navigation Bar (grid / next) */}
-          <div className="mt-8 flex items-center justify-between border border-gray-100 rounded-2xl px-6 py-5">
-            {prevPost ? (
-              <Link
-                href={`/blog/${prevPost.id}`}
-                className="group flex items-center gap-3 text-sm font-semibold text-[#0B1426] hover:text-blue-600 transition-colors"
-              >
-                <span className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
-                  <ArrowLeft className="h-4 w-4 text-blue-600" />
-                </span>
-                <span className="hidden sm:inline">Previous</span>
-              </Link>
-            ) : (
-              <span className="h-10 w-10" />
-            )}
-
-            <Link
-              href="/blog"
-              className="h-10 w-10 rounded-lg flex items-center justify-center text-blue-600 hover:bg-blue-50 transition-colors shrink-0"
-              aria-label="All posts"
-            >
-              <LayoutGrid className="h-5 w-5" />
-            </Link>
-
-            {nextPost ? (
-              <Link
-                href={`/blog/${nextPost.id}`}
-                className="group flex items-center gap-3 text-sm font-semibold text-[#0B1426] hover:text-blue-600 transition-colors"
-              >
-                <span className="hidden sm:inline">Next</span>
-                <span className="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
-                  <ArrowRight className="h-4 w-4 text-blue-600" />
-                </span>
-              </Link>
-            ) : (
-              <span className="h-10 w-10" />
-            )}
-          </div>
-
-          {/* 10. Comments List */}
-          <div className="mt-16 pt-12 border-t border-gray-100">
-            <h3 className="text-2xl font-bold text-[#0B1426] mb-6">
-              Comments ({totalComments})
-            </h3>
-            <div className="space-y-4">
-              {comments.map((comment) => (
-                <div key={comment.id} className="space-y-4">
-                  <CommentCard comment={comment} />
-                  {comment.replies?.map((reply) => (
-                    <div
-                      key={reply.id}
-                      className="ml-10 md:ml-16 border-l-2 border-gray-100 pl-4 md:pl-6"
-                    >
-                      <CommentCard comment={reply} />
-                    </div>
-                  ))}
+            {/* 3. Meta Info Box */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 border border-gray-300 divide-y sm:divide-y-0 sm:divide-x divide-gray-300 bg-white">
+              
+              {/* Author */}
+              <div className="flex items-center gap-3 p-5">
+                <div className="relative h-12 w-12 rounded-full overflow-hidden shrink-0 bg-gray-200 border border-gray-100">
+                  <Image 
+                    src={post.authorAvatar || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&q=80"} 
+                    alt={post.author} 
+                    fill 
+                    className="object-cover" 
+                  />
                 </div>
-              ))}
+                <div>
+                  <p className="text-[12px] font-medium text-gray-400 uppercase tracking-wider">Authored by</p>
+                  <p className="text-[15px] font-bold text-[#0B1426]">{post.author}</p>
+                </div>
+              </div>
+
+              {/* Date */}
+              <div className="flex items-center gap-3 p-5">
+                <div className="h-12 w-12 bg-[#EAF1FD] rounded-lg flex items-center justify-center text-[#1D4ED8] shrink-0">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-[12px] font-medium text-gray-400 uppercase tracking-wider">Date Issued</p>
+                  <p className="text-[15px] font-bold text-[#0B1426]">{post.date}</p>
+                </div>
+              </div>
+
+              {/* Comments */}
+              <div className="flex items-center gap-3 p-5">
+                <div className="h-12 w-12 bg-[#EAF1FD] rounded-lg flex items-center justify-center text-[#1D4ED8] shrink-0">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[12px] font-medium text-gray-400 uppercase tracking-wider">Comments</p>
+                  <p className="text-[15px] font-bold text-[#0B1426]">{post.comments} Comments</p>
+                </div>
+              </div>
             </div>
+
+            {/* 4. Body Paragraphs */}
+            <div className="space-y-5 text-gray-600 leading-relaxed text-[15px]">
+              <p>
+                Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to thrive. Committed to the delivering exceptional in the values through our strategic inset, approaches empower.
+              </p>
+              <p>
+                Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to thrive.
+              </p>
+            </div>
+
+            {/* 5. Quote Block */}
+            <div className="bg-[#EAF1FD] p-8 md:p-10 relative">
+              {/* Big Quote Icon */}
+              <div className="mb-4">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-[#1D4ED8]">
+                  <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 12.1046 13.1216 13 12.017 13H10.017V21H14.017ZM7.0166 21L7.0166 18C7.0166 16.8954 7.91203 16 9.0166 16H12.0166C12.5689 16 13.0166 15.5523 13.0166 15V9C13.0166 8.44772 12.5689 8 12.0166 8H8.0166C7.46432 8 7.0166 8.44772 7.0166 9V11C7.0166 12.1046 6.12117 13 5.0166 13H3.0166V21H7.0166Z" />
+                </svg>
+              </div>
+              <p className="text-[18px] md:text-[20px] font-semibold text-[#0B1426] leading-relaxed mb-3">
+                The greatest asset of a consultant is the ability to ask the right questions and guide clients to discover their own consulting answers.
+              </p>
+              <p className="text-[14px] text-gray-500 font-medium flex items-center gap-2">
+                — <span className="text-[#0B1426]">Aryan Gronic</span>
+              </p>
+            </div>
+
+            {/* 6. More Body Text */}
+            <div className="space-y-4 text-gray-600 leading-relaxed text-[15px]">
+              <p>
+                Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to thrive. Committed to the delivering exceptional.
+              </p>
+            </div>
+
+            {/* 7. Key Lessons Section */}
+            <div>
+              <h2 className="text-[22px] font-bold text-[#0B1426] mb-4">Key lessons of business</h2>
+              <p className="text-gray-600 leading-relaxed text-[15px] mb-4">
+                Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals.
+              </p>
+              <ul className="space-y-2.5">
+                {[
+                  "Discover our expertise",
+                  "Journey and commitment to explained",
+                  "Meet our team and learn",
+                  "Meet our team"
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-[15px] text-[#0B1426] font-medium">
+                    <Check className="h-5 w-5 text-[#1D4ED8] shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 8. Conclusion */}
+            <div>
+              <h2 className="text-[22px] font-bold text-[#0B1426] mb-3">Conclusions</h2>
+              <div className="space-y-4 text-gray-600 leading-relaxed text-[15px]">
+                <p>
+                  Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to thrive. Committed to the delivering exceptional.
+                </p>
+                <p>
+                  Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals the value through strategic inset, innovative approaches.
+                </p>
+              </div>
+            </div>
+
+            {/* 9. Tags & Share */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-6 border-t border-gray-200">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[15px] font-bold text-[#0B1426] mr-2">Tags:</span>
+                {post.tags.map((tag, idx) => (
+                  <span key={idx} className="px-4 py-1.5 border border-gray-300 rounded-full text-[13px] font-medium text-[#0B1426] bg-white">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[15px] font-bold text-[#0B1426] mr-2">Share:</span>
+                <div className="flex gap-2">
+                  <button className="w-9 h-9 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#1877F2] hover:text-white transition-colors">
+                    <FaFacebookF className="h-4 w-4" />
+                  </button>
+                  <button className="w-9 h-9 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#000000] hover:text-white transition-colors">
+                    <FaTwitter className="h-4 w-4" />
+                  </button>
+                  <button className="w-9 h-9 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#0A66C2] hover:text-white transition-colors">
+                    <FaLinkedinIn className="h-4 w-4" />
+                  </button>
+                  <button className="w-9 h-9 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#E4405F] hover:text-white transition-colors">
+                    <FaInstagram className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* 10. Next Post Navigation */}
+            <div className="border border-gray-300 p-6 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-1">
+                  <div className="grid grid-cols-4 gap-0.5">
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="w-3 h-3 bg-[#1D4ED8]" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <Link
+                href={`/blog/${parseInt(id) + 1}`}
+                className="flex items-center gap-3 text-[14px] font-bold text-[#0B1426] hover:text-[#1D4ED8] transition-colors"
+              >
+                Next <div className="w-8 h-8 rounded-full bg-[#EAF1FD] flex items-center justify-center"><ArrowRight className="h-4 w-4 text-[#1D4ED8]" /></div>
+              </Link>
+            </div>
+
+            {/* 11. Comments Section */}
+            <div className="pt-4">
+              <h3 className="text-[22px] font-bold text-[#0B1426] mb-6">Comments ({post.comments})</h3>
+              
+              <div className="space-y-6">
+                {[
+                  { name: "Jami Smith", date: "February 02, 2024", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=128&q=80" },
+                  { name: "Marden Smith", date: "March 03, 2024", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&q=80" },
+                  { name: "Muhin Deon", date: "June 03, 2024", avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&q=80" }
+                ].map((comment, idx) => (
+                  <div key={idx} className="border border-gray-300 p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-4">
+                        <div className="relative h-12 w-12 rounded-full overflow-hidden shrink-0">
+                          <Image src={comment.avatar} alt={comment.name} fill className="object-cover" />
+                        </div>
+                        <div>
+                          <h4 className="text-[16px] font-bold text-[#0B1426]">{comment.name}</h4>
+                          <p className="text-[13px] text-gray-500">{comment.date}</p>
+                        </div>
+                      </div>
+                      <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#0B1426] hover:text-[#1D4ED8] transition-colors">
+                        <Reply className="h-4 w-4" /> Reply
+                      </button>
+                    </div>
+                    <p className="text-[15px] text-gray-600 leading-relaxed">
+                      Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals the value through strategic inset.
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 12. Leave a Reply Form */}
+            <div className="pt-4">
+              <h3 className="text-[22px] font-bold text-[#0B1426] mb-6">Leave a reply</h3>
+              <form className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <input type="text" placeholder="Enter name" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426]" />
+                  <input type="email" placeholder="Enter email" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426]" />
+                </div>
+                <input type="text" placeholder="Your website" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426]" />
+                <textarea placeholder="Enter your comments" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426] resize-none h-32" />
+                
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-3 rounded-full bg-[#0B1426] hover:bg-[#1a253f] text-white pl-1.5 pr-6 py-1.5 text-[14px] font-semibold transition-all"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1D4ED8]">
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                  Leave comment
+                </button>
+              </form>
+            </div>
+
           </div>
 
-          {/* 11. Leave a Reply Form */}
-          <div className="mt-16 pt-12 border-t border-gray-100">
-            <h3 className="text-2xl font-bold text-[#0B1426] mb-6">
-              Leave a reply
-            </h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* ============================================================
+              RIGHT COLUMN: SIDEBAR (4 Columns)
+              ============================================================ */}
+          <div className="lg:col-span-4 space-y-8">
+            
+            {/* 1. Search Widget */}
+            <div className="border border-gray-300 p-6 bg-white">
+              <h3 className="text-[18px] font-bold text-[#0B1426] mb-4 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+                Search here
+              </h3>
+              <div className="relative mt-4">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                  <Search className="h-4 w-4" />
+                </div>
                 <input
                   type="text"
-                  name="name"
-                  placeholder="Enter name"
-                  className="w-full px-5 py-3.5 rounded-lg bg-gray-50 border border-transparent focus:border-blue-500 focus:bg-white outline-none text-sm text-gray-700 placeholder:text-gray-400 transition-colors"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Enter email"
-                  className="w-full px-5 py-3.5 rounded-lg bg-gray-50 border border-transparent focus:border-blue-500 focus:bg-white outline-none text-sm text-gray-700 placeholder:text-gray-400 transition-colors"
+                  placeholder="Search..."
+                  className="w-full pl-10 pr-4 py-3 bg-[#F3F6F9] border border-transparent focus:border-[#1D4ED8] outline-none text-[14px] text-[#0B1426] placeholder:text-gray-400 transition-colors"
                 />
               </div>
-              <input
-                type="url"
-                name="website"
-                placeholder="Your website"
-                className="w-full px-5 py-3.5 rounded-lg bg-gray-50 border border-transparent focus:border-blue-500 focus:bg-white outline-none text-sm text-gray-700 placeholder:text-gray-400 transition-colors"
-              />
-              <textarea
-                name="comment"
-                placeholder="Enter your comments"
-                rows={6}
-                className="w-full px-5 py-3.5 rounded-lg bg-gray-50 border border-transparent focus:border-blue-500 focus:bg-white outline-none text-sm text-gray-700 placeholder:text-gray-400 transition-colors resize-none"
-              />
-              <button
-                type="submit"
-                className="group inline-flex items-center gap-3 bg-[#0B1426] hover:bg-black text-white font-semibold pl-2 pr-6 py-2 rounded-full transition-colors text-sm"
-              >
-                <span className="h-9 w-9 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
-                  <ArrowRight className="h-4 w-4 text-white" />
-                </span>
-                Leave comment
-              </button>
-            </form>
+            </div>
+
+            {/* 2. Recent Posts Widget */}
+            <div className="border border-gray-300 p-6 bg-white">
+              <h3 className="text-[18px] font-bold text-[#0B1426] mb-5 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+                Recent Post
+              </h3>
+              <div className="space-y-5">
+                {blogPosts.slice(0, 3).map((post) => {
+                  const { day, month } = formatDateBadge(post.date);
+                  return (
+                    <Link key={post.id} href={`/blog/${post.id}`} className="flex items-center gap-4 group">
+                      <div className="relative h-16 w-16 shrink-0 overflow-hidden bg-gray-200 border border-gray-100">
+                        <Image src={post.image} alt={post.title} fill className="object-cover" sizes="64px" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-[14px] font-semibold text-[#0B1426] group-hover:text-[#1D4ED8] transition-colors line-clamp-2 leading-snug">
+                          {post.title.length > 30 ? post.title.substring(0, 30) + "..." : post.title}
+                        </h4>
+                        <p className="text-[12px] text-gray-500 mt-1">
+                          {month} {day}, 2025
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 3. Categories Widget */}
+            <div className="border border-gray-300 p-6 bg-white">
+              <h3 className="text-[18px] font-bold text-[#0B1426] mb-5 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+                Categories
+              </h3>
+              <ul className="space-y-2.5 text-[14px] font-medium">
+                {["Branding", "Business", "Consulting", "Innovations", "Managements", "Marketing"].map((cat, idx) => (
+                  <li key={cat}>
+                    <Link href="#" className="flex justify-between items-center text-[#0B1426] hover:text-[#1D4ED8] transition-colors bg-[#F3F6F9] px-4 py-3">
+                      <span>{cat}</span>
+                      <span className="text-gray-500 font-normal">({idx + 1})</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* 4. Tags Widget */}
+            <div className="border border-gray-300 p-6 bg-white">
+              <h3 className="text-[18px] font-bold text-[#0B1426] mb-5 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+                Tags
+              </h3>
+              <div className="flex flex-wrap gap-2.5 mt-2">
+                {["Branding", "Business", "Design", "Marketing", "Strategy"].map((tag) => (
+                  <Link key={tag} href="#" className="px-4 py-1.5 border border-gray-300 rounded-full text-[13px] font-medium text-[#0B1426] hover:bg-[#0B1426] hover:text-white transition-colors">
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* 5. Need Help? CTA Box */}
+            <div className="relative border border-gray-300 bg-white overflow-hidden h-[380px] flex flex-col justify-between p-6">
+              <div className="absolute inset-0 z-0">
+                <Image
+                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80"
+                  alt="Need help background"
+                  fill
+                  className="object-cover opacity-20 grayscale"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1426]/80 via-[#0B1426]/60 to-[#0B1426]/90" />
+              </div>
+
+              <div className="relative z-10 pt-2">
+                <div className="w-12 h-12 bg-[#1D4ED8] rounded-lg flex items-center justify-center text-white mb-6">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-white leading-tight mb-3">
+                  Need help?<br />Feel free contact us
+                </h3>
+                <p className="text-sm text-blue-100/80 leading-relaxed max-w-[200px]">
+                  Our mission is to empowers businesses off all size in an businesses.
+                </p>
+              </div>
+
+              <div className="relative z-10">
+                <Link href="/contact" className="inline-flex items-center gap-3 rounded-full bg-white hover:bg-gray-100 pl-1.5 pr-6 py-1.5 text-[14px] font-semibold text-[#0B1426] transition-all shadow-lg w-fit">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1D4ED8] text-white">
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                  Get in touch
+                </Link>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

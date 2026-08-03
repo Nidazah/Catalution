@@ -1,4 +1,5 @@
 export const blogPosts = [
+  // --- PAGE 1 (Showing on "01") ---
   {
     id: 1,
     title: "The Future of Business Process Optimization",
@@ -58,5 +59,127 @@ export const blogPosts = [
     comments: 7,
     category: "Strategy",
     tags: ["Planning", "Execution", "Growth"],
+  },
+  {
+    id: 5,
+    title: "How to navigate consulting tips for transforming",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&q=80",
+    author: "Rachel Green",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=128&q=80",
+    date: "August 28, 2024",
+    comments: 3,
+    category: "Branding",
+    tags: ["Consulting", "Transformation", "Strategy"],
+  },
+  {
+    id: 6,
+    title: "Innovation in action examples of consulting success",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&q=80",
+    author: "James Wilson",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=128&q=80",
+    date: "August 28, 2024",
+    comments: 3,
+    category: "Business",
+    tags: ["Innovation", "Success", "Growth"],
+  },
+
+  // --- PAGE 2 (Showing on "02") ---
+  {
+    id: 7,
+    title: "Innovative solutions for business success dynamic from today",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80",
+    author: "Alice Walker",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=128&q=80",
+    date: "August 28, 2024",
+    comments: 3,
+    category: "Consulting",
+    tags: ["Solutions", "Dynamic", "Success"],
+  },
+  {
+    id: 8,
+    title: "Mastering change management key lessons for businesses",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80",
+    author: "Laura Bennett",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=128&q=80",
+    date: "August 28, 2024",
+    comments: 3,
+    category: "Innovations",
+    tags: ["Change", "Management", "Lessons"],
+  },
+  {
+    id: 9,
+    title: "Harness digital transformation a roadmap for businesses",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80",
+    author: "Michael Ross",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=128&q=80",
+    date: "August 28, 2024",
+    comments: 3,
+    category: "Managements",
+    tags: ["Digital", "Transformation", "Roadmap"],
+  },
+  {
+    id: 10,
+    title: "Measuring success key metrics every business track",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
+    author: "Emily Davis",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=128&q=80",
+    date: "August 28, 2024",
+    comments: 3,
+    category: "Marketing",
+    tags: ["Metrics", "Success", "Tracking"],
+  },
+  {
+    id: 11,
+    title: "What consultants should know about working with nonprofits",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&q=80",
+    author: "Daniel Carter",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=128&q=80",
+    date: "October 6, 2024",
+    comments: 3,
+    category: "Business",
+    tags: ["Consulting", "Nonprofits", "Strategy"],
+  },
+  {
+    id: 12,
+    title: "Why every entrepreneur needs solid digital marketing",
+    excerpt:
+      "In today's dynamic business environment, the key to success lies in strategic planning.",
+    image:
+      "https://images.unsplash.com/photo-1552664688-cf412ec27db2?w=800&q=80",
+    author: "Sophia Taylor",
+    authorAvatar:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=128&q=80",
+    date: "August 24, 2024",
+    comments: 3,
+    category: "Consulting",
+    tags: ["Marketing", "Entrepreneur", "Digital"],
   },
 ];
