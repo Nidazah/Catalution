@@ -19,18 +19,18 @@ export default function ServiceFAQ() {
         <div key={index} className="border border-gray-300 bg-white">
           <button
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            className="w-full flex items-center justify-between p-4 text-left"
+            className="w-full flex items-center justify-between gap-3 p-3.5 sm:p-4 md:p-5 text-left"
           >
-            <span className="font-semibold text-[15px] text-[#0B1426] pr-4">{faq.q}</span>
-            <span className={`text-[#0B1426] transition-transform duration-300 ${openIndex === index ? "rotate-45" : "rotate-0"}`}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <span className="font-semibold text-sm sm:text-[15px] leading-snug text-[#0B1426]">{faq.q}</span>
+            <span className={`shrink-0 text-[#0B1426] transition-transform duration-300 ${openIndex === index ? "rotate-45" : "rotate-0"}`}>
+              <svg width="18" height="18" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
               </svg>
             </span>
           </button>
           {openIndex === index && (
-            <div className="px-4 pb-4 pt-0">
-              <p className="text-[15px] text-gray-600 leading-relaxed border-t border-gray-100 pt-3">{faq.a}</p>
+            <div className="px-3.5 sm:px-4 md:px-5 pb-4 pt-0">
+              <p className="text-sm sm:text-[15px] text-gray-600 leading-relaxed border-t border-gray-100 pt-3">{faq.a}</p>
             </div>
           )}
         </div>

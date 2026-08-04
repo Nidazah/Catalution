@@ -94,7 +94,7 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
         }
       `}</style>
       {/* Header */}
-      <div className="p-5 border-b border-gray-100 bg-gradient-to-r from-[#F8FAFD] to-white">
+      <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-[#F8FAFD] to-white">
         <h3 className="text-[15px] font-bold text-[#0B1426] flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-[#1A73E8] animate-pulse" />
           Our Services
@@ -111,8 +111,8 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
             <Link
               key={service.id}
               href={service.href}
-              className={`group relative block p-5 transition-all duration-300 hover:bg-[#F8FAFD] hover:pl-6 cursor-pointer ${
-                isActive ? "bg-[#F8FAFD] pl-6" : ""
+              className={`group relative block p-4 sm:p-5 transition-all duration-300 hover:bg-[#F8FAFD] sm:hover:pl-6 cursor-pointer ${
+                isActive ? "bg-[#F8FAFD] sm:pl-6" : ""
               }`}
             >
               {/* Hover & Active gradient accent line */}
@@ -128,7 +128,7 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
               <div className="flex items-start gap-4 relative z-10">
                 {/* Circular Icon Background */}
                 <div
-                  className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+                  className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
                     isActive
                       ? "bg-[#1A73E8] text-white shadow-lg shadow-[#1A73E8]/25 scale-105"
                       : "bg-[#EAF3FF] text-[#1A73E8] group-hover:bg-[#1A73E8] group-hover:text-white group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-[#1A73E8]/25"
@@ -160,10 +160,8 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
 
               {/* Hover "View Details" Action */}
               <div
-                className={`mt-3 flex items-center gap-1 text-sm font-medium text-[#1A73E8] transition-all duration-300 pl-16 ${
-                  isActive
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0"
+                className={`mt-3 flex items-center gap-1 text-sm font-medium text-[#1A73E8] transition-all duration-300 pl-14 sm:pl-16 opacity-100 translate-y-0 sm:opacity-0 sm:translate-y-1 ${
+                  isActive ? "sm:opacity-100 sm:translate-y-0" : "sm:group-hover:opacity-100 sm:group-hover:translate-y-0"
                 }`}
               >
                 <span className="relative">
@@ -191,24 +189,22 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
           );
         })}
       </div>
-      ```tsx
       {/* Footer - CTA with Button component */}
       <motion.div
         variants={item}
         initial="hidden"
         animate="show"
-        className="p-5 border-t border-gray-100"
+        className="p-4 sm:p-5 border-t border-gray-100"
       >
         <Button
           href="/services"
           variant="primary"
           size="lg"
-          className="bg-[#07162E] !pl-2 pr-6"
+          className="bg-[#07162E] !pl-2 pr-6 w-full sm:w-auto justify-center sm:justify-start"
         >
           More services
         </Button>
       </motion.div>
-      ```
     </div>
   );
 }
