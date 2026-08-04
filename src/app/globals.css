@@ -142,7 +142,7 @@ body {
 }
 
 /* home-05 additions */
-.font-serif { font-family: "Playfair Display", Georgia, serif; }
+.font-serif { font-family: var(--font-playfair), Georgia, serif; }
 .outline-text {
   -webkit-text-stroke: 1px rgba(255,255,255,0.85);
   color: transparent;

@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import { Play } from "lucide-react"; // ✅ Removed ArrowRight (Button handles it)
+import Image from "next/image";
 
 import Button from "./Button";  
 
@@ -125,12 +126,15 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.9, delay: 0.3, ease: easeOut }}
-            className="relative w-full max-w-sm h-auto overflow-hidden rounded-2xl z-0"
+            className="relative w-full max-w-sm aspect-[4/5] overflow-hidden rounded-2xl z-0"
           >
-            <img
+            <Image
               src="/images/hero/h5-hero.png"
               alt="Consultant"
-              className="h-full w-full object-contain object-bottom"
+              fill
+              priority
+              className="object-contain object-bottom"
+              sizes="(max-width: 768px) 90vw, 400px"
             />
           </motion.div>
 
@@ -173,7 +177,7 @@ export default function Hero() {
                   key={i}
                   className="relative -ml-3 first:ml-0 h-10 w-10 rounded-full overflow-hidden border-2 border-white bg-gray-200 shadow-sm grayscale opacity-90"
                 >
-                  <img src={src} alt="Client" className="h-full w-full object-cover" />
+                  <Image src={src} alt="Client" fill className="object-cover" sizes="40px" />
                 </div>
               ))}
               {/* Blue Plus Circle */}

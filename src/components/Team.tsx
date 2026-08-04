@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight, Globe, Camera, AtSign, Share2 } from "lucide-react";
+import Image from "next/image";
 import ScrollReveal from "./ScrollReveal";
 import Button from "./Button"; // ✅ Import the Button component
 
@@ -73,10 +74,12 @@ export default function Team() {
             <ScrollReveal key={member.name} delay={i * 0.08}>
               <div className="group flex flex-col items-center rounded-xl border border-[var(--color-line)] bg-white px-6 pt-8 pb-6 text-center transition-shadow duration-300 hover:shadow-md">
                 <div className="relative h-32 w-32 overflow-hidden rounded-full">
-                  <img
+                  <Image
                     src={member.image}
                     alt={member.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="128px"
                   />
                 </div>
 
