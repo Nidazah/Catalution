@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -24,6 +24,7 @@ import {
   Repeat,
   Hexagon,
 } from "lucide-react";
+import Button from "@/components/Button";
 
 // --- SERVICES DROPDOWN ---
 const servicesLinks = [
@@ -80,25 +81,25 @@ const pagesLinks = {
 // --- MAIN NAV DATA ---
 const links = [
   { label: "Home", href: "/" },
-  { label: "Pages", href: "#", isMegaMenu: true, width: "w-[760px]" },
+  { label: "Pages", href: "#", isMegaMenu: true, width: "w-[900px]" },
   {
     label: "Services",
     href: "/services",
     dropdown: servicesLinks,
-    width: "w-72",
+    width: "w-96",
   },
   {
     label: "Portfolios",
     href: "/portfolios",
     dropdown: portfolioLinks,
-    width: "w-44",
+    width: "w-56",
     hasSimpleDropdown: true,
   },
   {
     label: "Blog",
     href: "/blog",
     dropdown: blogLinks,
-    width: "w-48",
+    width: "w-60",
     hasSimpleDropdown: true,
   },
   { label: "Contact", href: "/contact" },
@@ -110,7 +111,7 @@ interface NavLink {
   active?: boolean;
   isMegaMenu?: boolean;
   dropdown?: Array<{
-    icon?: React.ComponentType<{ className?: string }>;
+    icon?: ComponentType<{ className?: string }>;
     label: string;
     href: string;
   }>;
@@ -119,7 +120,15 @@ interface NavLink {
 }
 
 // --- MEGA MENU COMPONENT ---
-function PagesMegaMenu({ open }: { open: boolean }) {
+function PagesMegaMenu({
+  open,
+  pathname,
+  onNavigate,
+}: {
+  open: boolean;
+  pathname: string;
+  onNavigate: () => void;
+}) {
   return (
     <AnimatePresence>
       {open && (
@@ -128,19 +137,24 @@ function PagesMegaMenu({ open }: { open: boolean }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="absolute left-0 top-full z-50 mt-3 w-[760px] rounded-xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden"
+          className="absolute left-0 top-full z-50 mt-3 w-[900px] rounded-xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden"
         >
           <div className="grid grid-cols-12 gap-0">
-            <div className="col-span-4 p-8 border-r border-gray-100">
-              <h4 className="text-[17px] font-bold text-[#0B1426] mb-5 border-b-2 border-blue-600 pb-2 inline-block">
+            <div className="col-span-3 p-6 border-r border-gray-100">
+              <h4 className="text-[17px] font-bold text-[#0B1426] mb-4 border-b-2 border-blue-600 pb-2 inline-block">
                 Main pages
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-0.5">
                 {pagesLinks.main.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="flex items-center justify-between py-2 text-[15px] font-medium text-gray-600 hover:text-[var(--color-accent)] transition-colors"
+                      onClick={onNavigate}
+                      className={`flex items-center justify-between py-1.5 text-[15px] font-medium transition-colors hover:text-[var(--color-accent)] ${
+                        pathname === link.href
+                          ? "text-[var(--color-accent)] font-semibold"
+                          : "text-gray-600"
+                      }`}
                     >
                       {link.label}
                       {link.badge && (
@@ -155,16 +169,21 @@ function PagesMegaMenu({ open }: { open: boolean }) {
                 ))}
               </ul>
             </div>
-            <div className="col-span-4 p-8 border-r border-gray-100">
-              <h4 className="text-[17px] font-bold text-[#0B1426] mb-5 border-b-2 border-blue-600 pb-2 inline-block">
+            <div className="col-span-3 p-6 border-r border-gray-100">
+              <h4 className="text-[17px] font-bold text-[#0B1426] mb-4 border-b-2 border-blue-600 pb-2 inline-block">
                 Other pages
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-0.5">
                 {pagesLinks.other.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="flex items-center justify-between py-2 text-[15px] font-medium text-gray-600 hover:text-[var(--color-accent)] transition-colors"
+                      onClick={onNavigate}
+                      className={`flex items-center justify-between py-1.5 text-[15px] font-medium transition-colors hover:text-[var(--color-accent)] ${
+                        pathname === link.href
+                          ? "text-[var(--color-accent)] font-semibold"
+                          : "text-gray-600"
+                      }`}
                     >
                       {link.label}
                       {link.badge && (
@@ -179,33 +198,32 @@ function PagesMegaMenu({ open }: { open: boolean }) {
                 ))}
               </ul>
             </div>
-            <div className="col-span-4 p-8 bg-gray-50/30 relative flex flex-col justify-center">
-              <div className="relative rounded-xl overflow-hidden bg-[#0B1426] p-6 group hover:shadow-lg transition-shadow">
+            <div className="col-span-6 p-7 bg-gray-50/30 relative flex flex-col">
+              <div className="relative rounded-xl overflow-hidden bg-[#0B1426] p-6 group hover:shadow-lg transition-shadow flex-1 flex flex-col justify-end max-h-[360px]">
                 <Image
                   src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&q=80"
                   alt="Contact Us"
                   fill
-                  className="object-cover opacity-40 group-hover:scale-105 transition-transform duration-500"
+                  className="object-cover object-top opacity-30 group-hover:scale-105 transition-transform duration-500"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1426] via-[#0B1426]/40 to-transparent" />
                 <div className="relative z-10">
                   <div className="text-blue-500 mb-3">
                     <Hexagon className="h-8 w-8 text-blue-500" />
                   </div>
-                  <h5 className="text-[22px] font-bold text-white mb-1 leading-tight">
+                  <h5 className="text-[20px] font-bold text-white mb-1 leading-tight">
                     Need help?
                   </h5>
                   <p className="text-sm text-white/80 mb-4 max-w-[160px]">
                     Feel free contact us
                   </p>
-                  <Link
+                  <Button
                     href="/contact"
-                    className="inline-flex items-center gap-2 bg-white text-[#0B1426] font-semibold text-xs px-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                    onClick={onNavigate}
+                    className="inline-flex items-center gap-2 bg-white !text-[#0B1426] [&_svg]:text-white font-semibold text-xs px-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
                   >
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--color-accent)] text-white">
-                      <ArrowUpRight className="h-3.5 w-3.5" />
-                    </span>
                     Get in touch
-                  </Link>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -217,13 +235,13 @@ function PagesMegaMenu({ open }: { open: boolean }) {
 }
 
 // --- REGULAR DROPDOWN COMPONENT ---
-function NavItem({ 
-  link, 
-  pathname, 
-  isHero 
-}: { 
-  link: NavLink; 
-  pathname: string; 
+function NavItem({
+  link,
+  pathname,
+  isHero,
+}: {
+  link: NavLink;
+  pathname: string;
   isHero: boolean;
 }) {
   const [open, setOpen] = useState(false);
@@ -234,10 +252,10 @@ function NavItem({
   // Conditional Colors based on Hero Mode
   const textColorClass = isHero
     ? isActive
-      ? "text-[#3B82F6]" 
+      ? "text-[#3B82F6]"
       : "text-white hover:text-[#3B82F6]"
     : isActive
-      ? "text-[var(--color-accent)]" 
+      ? "text-[var(--color-accent)]"
       : "text-[var(--color-heading)] hover:text-[var(--color-accent)]";
 
   if (link.isMegaMenu) {
@@ -258,7 +276,11 @@ function NavItem({
             className={`absolute -bottom-1 left-0 h-[2px] w-full bg-[#3B82F6] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0"}`}
           />
         </button>
-        <PagesMegaMenu open={open} />
+        <PagesMegaMenu
+          open={open}
+          pathname={pathname}
+          onNavigate={() => setOpen(false)}
+        />
       </div>
     );
   }
@@ -301,21 +323,27 @@ function NavItem({
             transition={{ duration: 0.18, ease: "easeOut" }}
             className={`absolute left-0 top-full z-50 mt-3 ${link.width} rounded-lg bg-white py-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100`}
           >
-            {link.dropdown.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                data-cursor-hover
-                className="flex items-center gap-3 px-5 py-2.5 text-[15px] font-semibold text-[#0B1426] transition-colors hover:text-[#3B82F6]"
-              >
-                {item.icon && (
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAF1FD] text-[var(--color-accent)]">
-                    <item.icon className="h-4.5 w-4.5" />
-                  </span>
-                )}
-                {item.label}
-              </Link>
-            ))}
+            {link.dropdown.map((item) => {
+              const itemActive = item.href === pathname;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  data-cursor-hover
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center gap-3 px-5 py-2.5 text-[15px] font-semibold transition-colors hover:text-[#3B82F6] ${
+                    itemActive ? "text-[#3B82F6] bg-[#EAF1FD]/60" : "text-[#0B1426]"
+                  }`}
+                >
+                  {item.icon && (
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAF1FD] text-[var(--color-accent)]">
+                      <item.icon className="h-[18px] w-[18px]" />
+                    </span>
+                  )}
+                  {item.label}
+                </Link>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
@@ -343,7 +371,9 @@ function MobileSection({
       <Link
         href={link.href}
         onClick={onNavigate}
-        className={`text-sm font-semibold ${isActive ? "text-[#3B82F6]" : "text-white hover:text-[#3B82F6]"}`}
+        className={`text-sm font-semibold ${
+          isActive ? "text-[#3B82F6]" : "text-gray-700 hover:text-[#3B82F6]"
+        }`}
       >
         {link.label}
       </Link>
@@ -354,7 +384,9 @@ function MobileSection({
     <div>
       <button
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center justify-between text-sm font-semibold ${isActive ? "text-[#3B82F6]" : "text-white hover:text-[#3B82F6]"}`}
+        className={`flex w-full items-center justify-between text-sm font-semibold ${
+          isActive ? "text-[#3B82F6]" : "text-gray-700 hover:text-[#3B82F6]"
+        }`}
       >
         {link.label}
         <ChevronDown
@@ -362,13 +394,17 @@ function MobileSection({
         />
       </button>
       {open && link.dropdown && (
-        <div className="mt-3 ml-3 flex flex-col gap-3 border-l border-[var(--color-line)] pl-3">
+        <div className="mt-3 ml-3 flex flex-col gap-3 border-l border-gray-200 pl-3">
           {link.dropdown.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              className="text-sm text-white/80 hover:text-[#3B82F6]"
+              className={`text-sm hover:text-[#3B82F6] ${
+                item.href === pathname
+                  ? "text-[#3B82F6] font-semibold"
+                  : "text-gray-600"
+              }`}
             >
               {item.label}
             </Link>
@@ -380,7 +416,11 @@ function MobileSection({
 }
 
 // --- MAIN NAVBAR COMPONENT ---
-export default function Navbar({ transparent = false }: { transparent?: boolean }) {
+export default function Navbar({
+  transparent = false,
+}: {
+  transparent?: boolean;
+}) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -410,13 +450,14 @@ export default function Navbar({ transparent = false }: { transparent?: boolean 
     }
   });
 
-  // ✅ UNIVERSAL LOGIC: Trust the 'transparent' prop from layout.tsx
-  // If transparent is true AND we haven't scrolled, turn on Hero Mode.
-  const isHeroMode = transparent && !scrolled;
+  // Force transparent mode on Careers and Blog pages.
+  const isCareersPage = pathname.startsWith("/careers");
+  const isBlogPage = pathname.startsWith("/blog");
+  const isHeroMode = isCareersPage || isBlogPage || (transparent && !scrolled);
 
   // Logo selection based on mode
-  const logoSrc = isHeroMode 
-    ? "/images/Logo/primary-logo.webp" 
+  const logoSrc = isHeroMode
+    ? "/images/Logo/primary-logo.webp"
     : "/images/Logo/secondary-logo.webp";
 
   return (
@@ -453,11 +494,11 @@ export default function Navbar({ transparent = false }: { transparent?: boolean 
 
         <nav className="hidden lg:flex items-center gap-9">
           {links.map((l) => (
-            <NavItem 
-              key={l.label} 
-              link={l} 
-              pathname={pathname} 
-              isHero={isHeroMode} 
+            <NavItem
+              key={l.label}
+              link={l}
+              pathname={pathname}
+              isHero={isHeroMode}
             />
           ))}
         </nav>
@@ -472,25 +513,20 @@ export default function Navbar({ transparent = false }: { transparent?: boolean 
           >
             Explore <Search className="h-4 w-4" />
           </button>
-          
-          <motion.a
+
+          {/* --- FIXED BUTTON WITH #0a2540 BACKGROUND --- */}
+          <Button
             href="/contact"
-            data-cursor-hover
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            className={`group inline-flex items-center gap-2 rounded-full pl-2 pr-6 py-2 text-sm font-semibold transition-colors shadow-md hover:shadow-lg ${
+            variant="primary" // Keeps solid background
+            size="md"
+            className={`shadow-md hover:shadow-lg ${
               isHeroMode
-                ? "bg-white text-[#0B1426]"
+                ? "bg-[#0a2540] text-white border-0" // Your custom navy background
                 : "bg-[var(--color-navy)] text-white"
             }`}
           >
-            <span className="relative flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)]">
-              <span className="absolute inset-0 rounded-full bg-[var(--color-accent)] animate-quote-pulse" />
-              <ArrowUpRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </span>
             Get a quote
-          </motion.a>
+          </Button>
         </div>
 
         <button
@@ -517,13 +553,16 @@ export default function Navbar({ transparent = false }: { transparent?: boolean 
               pathname={pathname}
             />
           ))}
-          <Link
+
+          <Button
             href="/contact"
             onClick={() => setMobileOpen(false)}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[var(--color-navy)] px-5 py-2.5 text-sm font-semibold text-white"
+            variant="primary"
+            size="md"
+            className="w-full justify-center bg-[var(--color-navy)]"
           >
             Get a quote
-          </Link>
+          </Button>
         </div>
       )}
     </motion.header>

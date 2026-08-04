@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import ScrollReveal from "./ScrollReveal";
+import Button from "./Button"; 
 
 export default function CTA() {
   return (
@@ -28,16 +29,20 @@ export default function CTA() {
                 day with concrete next steps.
               </p>
             </div>
-            <a
-              href="mailto:support@solvior.com"
-              data-cursor-hover
-              className="inline-flex items-center gap-3 rounded-full bg-white pl-2 pr-7 py-2 text-sm font-semibold text-[var(--color-navy)] transition-transform hover:scale-[1.03] whitespace-nowrap"
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]">
-                <ArrowRight className="h-4 w-4 text-white" />
-              </span>
-              Free consultation
-            </a>
+              <Button
+                href="mailto:support@solvior.com"
+                size="md"
+                className="bg-white !text-black [&_svg]:!text-white transition-transform hover:scale-[1.03] shadow-md"
+              >
+                Free consultation
+              </Button>
+            </motion.div>
           </div>
         </div>
       </ScrollReveal>

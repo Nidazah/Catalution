@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import ServiceFAQ from "@/components/ServiceFAQ";
+import ServicesSidebar, { services } from "@/components/ServicesSidebar"; // Import sidebar & data
 
 // --- DATA FOR ALL YOUR SERVICE PAGES (ALL 6 INCLUDED) ---
 const servicesData = {
@@ -91,7 +92,6 @@ const servicesData = {
     heroImage2:
       "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&q=85",
   },
-  // ========== ADDED THE MISSING 4 SERVICES ==========
   "3": {
     id: "3",
     title: "Leadership Executive Coaching",
@@ -241,16 +241,6 @@ const servicesData = {
       "https://images.unsplash.com/photo-1515169067868-5387ec356754?w=1200&q=85",
   },
 };
-
-// --- RELATED SIDEBAR DATA ---
-const allServiceTitles = [
-  { label: "Business process optimization", id: "1" },
-  { label: "Strategic planning & execution", id: "2" },
-  { label: "Leadership executive coaching", id: "3" },
-  { label: "Legacy leadership institute", id: "4" },
-  { label: "Executive growth solutions", id: "5" },
-  { label: "Empowered leadership journey", id: "6" },
-];
 
 // --- KEY FEATURES ICON HELPER ---
 const FeatureIcon = ({ type }: { type: string }) => {
@@ -432,31 +422,8 @@ export default async function ServicePage({
 
           {/* ================= RIGHT COLUMN (4/12) ================= */}
           <div className="lg:col-span-4 space-y-10">
-            {/* 1. Related Service Sidebar */}
-            <div className="border border-gray-300 p-6 bg-white">
-              <h3 className="text-lg font-bold text-[#0B1426] mb-5 border-b-2 border-[#2563EB] pb-2.5 inline-block">
-                Related service
-              </h3>
-              <div className="flex flex-col gap-3">
-                {allServiceTitles.map((item) => {
-                  const isActive = item.id === id;
-                  return (
-                    <Link
-                      key={item.id}
-                      href={`/services/${item.id}`}
-                      className={`flex items-center justify-between px-4 py-3.5 text-[14px] font-medium transition-colors ${
-                        isActive
-                          ? "bg-[#1D4ED8] text-white"
-                          : "bg-[#EAF1FD] text-[#0B1426] hover:bg-[#dbe8fa]"
-                      }`}
-                    >
-                      {item.label}
-                      <ArrowRight className="h-4 w-4" />
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
+            {/* 1. Related Service Sidebar - CONNECTED */}
+            <ServicesSidebar activeId={id} />
 
             {/* 2. Need Help? CTA Box */}
             <div className="relative border border-gray-300 p-6 bg-white overflow-hidden h-[420px] flex flex-col justify-between">

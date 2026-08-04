@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, MapPin, Check } from "lucide-react";
+import { MapPin, Check } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa6";
+import Button from "@/components/Button";
 
 // --- DATA CENTRALIZED HERE ---
 const jobDetails: Record<string, any> = {
@@ -102,7 +103,6 @@ const jobDetails: Record<string, any> = {
   },
 };
 
-// Ensure we have a list of all available IDs for rotation
 const allIds = Object.keys(jobDetails);
 
 // --- CLIENT-SIDE LOGIC ---
@@ -111,9 +111,6 @@ export default function CareerDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  // Since we are in a "use client" file, we must use React.use() or handle the promise differently.
-  // The best approach is to use a standard hook to get the params.
-  // However, to keep it safe without breaking rules, we can unwrap it inside a useEffect.
   const [id, setId] = useState<string | null>(null);
   
   useEffect(() => {
@@ -121,7 +118,7 @@ export default function CareerDetailPage({
   }, [params]);
 
   if (!id) {
-    return <main className="min-h-screen bg-white pt-20 pb-24"><PageHero title="Loading..." /></main>;
+    return null;
   }
 
   const job = jobDetails[id as keyof typeof jobDetails];
@@ -130,9 +127,12 @@ export default function CareerDetailPage({
     notFound();
   }
 
-  return (
-    <main className="min-h-screen bg-white pt-20 pb-24">
-      <PageHero title="Career Details" />
+  // ✅ FIXED: Added -mt-20 to pull the PageHero behind the transparent Navbar
+    return (
+    <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
+      {/* ✅ DYNAMIC PAGE HERO: uses the actual job title */}
+      <PageHero title={job.title} />
+      
       <CareerContent job={job} currentId={id} allIds={allIds} />
     </main>
   );
@@ -142,22 +142,18 @@ export default function CareerDetailPage({
 function CareerContent({ job, currentId, allIds }: { job: any, currentId: string, allIds: string[] }) {
   const router = useRouter();
 
-  // Find current index to determine Next ID
   const currentIndex = allIds.indexOf(currentId);
-  const nextId = currentIndex < allIds.length - 1 ? allIds[currentIndex + 1] : allIds[0]; // Loop back to first job
+  const nextId = currentIndex < allIds.length - 1 ? allIds[currentIndex + 1] : allIds[0];
+  const prevId = currentIndex > 0 ? allIds[currentIndex - 1] : allIds[allIds.length - 1];
 
-  // AUTO-ROTATE TIMER (5 seconds)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.push(`/careers/${nextId}`);
-    }, 5000);
-
-    // Cleanup timer if user navigates away manually
-    return () => clearTimeout(timer);
-  }, [currentId, nextId, router]);
+  // ❌ AUTO-ROTATE REMOVED
 
   const handleNext = () => {
     router.push(`/careers/${nextId}`);
+  };
+
+  const handlePrev = () => {
+    router.push(`/careers/${prevId}`);
   };
 
   return (
@@ -276,18 +272,27 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
             </div>
           </div>
 
-          {/* 6. Next / Previous Footer */}
+          {/* 6. Previous / Next Pagination Footer */}
           <div className="pt-8 border-t border-gray-200 flex items-center justify-between">
-            <div></div> 
-            <button
+            <Button
+              onClick={handlePrev}
+              size="md"
+              className="bg-gray-50 hover:bg-gray-100 !text-[#0B1426] px-4 py-2.5"
+            >
+              <span>Previous</span>
+            </Button>
+
+            <span className="text-sm font-medium text-gray-500">
+              {currentIndex + 1} / {allIds.length}
+            </span>
+
+            <Button
               onClick={handleNext}
-              className="flex items-center gap-4 text-[15px] font-semibold text-[#0B1426] group bg-gray-50 px-4 py-2.5 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+              size="md"
+              className="bg-gray-50 hover:bg-gray-100 !text-[#0B1426] px-4 py-2.5"
             >
               <span>Next</span>
-              <div className="w-10 h-10 rounded-full bg-gray-200/60 flex items-center justify-center group-hover:bg-[#2563EB] group-hover:text-white transition-colors">
-                <ArrowRight className="h-4 w-4" />
-              </div>
-            </button>
+            </Button>
           </div>
 
         </div>
@@ -375,15 +380,13 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
                 </div>
               </div>
 
-              <button
+              <Button
                 type="button"
-                className="flex items-center gap-3 rounded-full bg-[#0B1426] hover:bg-[#1a253f] text-white pl-2 pr-6 py-2 text-[14px] font-semibold transition-all mt-2"
+                size="md"
+                className="mt-2 bg-[#0B1426] hover:bg-[#1a253f] text-white"
               >
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2563EB]">
-                  <ArrowRight className="h-4 w-4" />
-                </span>
                 Submit now
-              </button>
+              </Button>
             </form>
           </div>
 

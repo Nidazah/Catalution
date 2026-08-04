@@ -7,6 +7,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 
 import ScrollReveal from "./ScrollReveal";
+import Button from "./Button"; // ✅ Import the Button component
 import { portfolios } from "../app/data/portfolios";
 
 import "swiper/css";

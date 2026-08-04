@@ -236,8 +236,8 @@ export default async function TeamDetailPage({
                   placeholder="Phone number*"
                   className="w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-[#9CA3AF] text-[#0B1426]"
                 />
-                <select className="w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] text-[#9CA3AF]">
-                  <option value="" disabled selected>Choose a option</option>
+                <select defaultValue="" className="w-full px-4 py-3.5 bg-white border border-[#D1D5DB] rounded-lg text-[14px] outline-none focus:border-[#1D4ED8] text-[#9CA3AF]">
+                  <option value="" disabled>Choose a option</option>
                   <option value="1">Option 1</option>
                   <option value="2">Option 2</option>
                 </select>

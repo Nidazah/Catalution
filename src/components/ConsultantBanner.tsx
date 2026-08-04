@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import Button from "./Button"; // ✅ Import your Button component
 
 export default function ConsultantBanner() {
   return (
@@ -16,21 +15,14 @@ export default function ConsultantBanner() {
             GET CONSULTANT NOW!
           </h2>
 
-          {/* Right: Button */}
-          <Link
+          {/* Right: Button - ✅ Replaced <Link> with Button */}
+          <Button
             href="/contact"
-            className="group inline-flex items-center gap-3 rounded-full bg-white pl-1.5 pr-6 py-1.5 transition-transform hover:scale-105"
+            size="md"
+            className="bg-white !text-[#0B1426] [&_svg]:!text-white transition-transform hover:scale-105"
           >
-            {/* Circular Blue Arrow Icon */}
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1A73E8] transition-colors group-hover:bg-[#1557b0]">
-              <ArrowUpRight className="h-5 w-5 text-white transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </span>
-            
-            {/* Button Text */}
-            <span className="text-[15px] font-semibold text-[#0B1426]">
-              Lets talk now
-            </span>
-          </Link>
+            Lets talk now
+          </Button>
 
         </div>
       </div>

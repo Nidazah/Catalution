@@ -2,35 +2,35 @@
 
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight, Play } from "lucide-react";
+import { Play } from "lucide-react";
 import { motion } from "framer-motion";
+import Button from "@/components/Button"; // ✅ Import your Button component
 
 // --- Team Data ---
 const teamMembers = [
   {
-    name: "Darlene Robert",
+    name: "Guy Hawkins",
     role: "Sr. Designer",
     image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop",
+      "/images/team/Guy-Hawkins.webp",
   },
   {
     name: "Savanah Nguyen",
     role: "Manager",
     image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=800&auto=format&fit=crop",
+      "/images/team/Savanah-Nguyen.webp",
   },
   {
     name: "Esther Howard",
     role: "Co. Founder",
     image:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop",
+      "/images/team/Esther-Howard.webp",
   },
   {
     name: "Kristin Watson",
     role: "Sr. Manager",
     image:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=800&auto=format&fit=crop",
+      "/images/team/Kristin-Watson.webp",
   },
 ];
 
@@ -60,15 +60,15 @@ export default function AboutPage() {
             <h1 className="mt-4 text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-[#0B1426] leading-[1.1]">
               Crafting success tailored solution for each & every challenges
             </h1>
-            <Link
+            
+            {/* ✅ Replaced <Link> with Button */}
+            <Button
               href="/contact"
-              className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#0B1426] pl-2 pr-6 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.03]"
+              size="md"
+              className="mt-8 bg-[#0B1426] text-white transition-transform hover:scale-[1.03]"
             >
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600">
-                <ArrowRight className="h-4 w-4" />
-              </span>
               Learn more
-            </Link>
+            </Button>
           </div>
 
           {/* Right Column */}
@@ -333,7 +333,7 @@ export default function AboutPage() {
       <section className="relative w-full py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/about/Screenshot 2026-07-31 164926-Photoroom.webp"
+            src="/images/about/experience-bg.webp"
             alt="Skill background"
             fill
             className="object-cover object-center"
@@ -473,9 +473,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ============================================================== */}
-      {/* 👇 FIXED: ANIMATED CLIENT LOGOS (1000+ COMPANIES) SECTION 👇 */}
-      {/* ============================================================== */}
+      {/* --- 7. ANIMATED CLIENT LOGOS (1000+ COMPANIES) SECTION --- */}
       <motion.section
         initial="hidden"
         whileInView="visible"

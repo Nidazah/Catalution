@@ -2,6 +2,7 @@
 
 import { ArrowRight, Globe, Camera, AtSign, Share2 } from "lucide-react";
 import ScrollReveal from "./ScrollReveal";
+import Button from "./Button"; // ✅ Import the Button component
 
 const team = [
   {
@@ -56,16 +57,14 @@ export default function Team() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <a
+            {/* ✅ Replaced <a> with Button, removed manual icon */}
+            <Button
               href="#team"
-              data-cursor-hover
-              className="inline-flex items-center gap-3 rounded-full bg-[var(--color-navy)] pl-2 pr-7 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.03] whitespace-nowrap"
+              className="bg-[var(--color-navy)] text-white transition-transform hover:scale-[1.03] whitespace-nowrap shadow-md"
+              size="md"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]">
-                <ArrowRight className="h-4 w-4" />
-              </span>
               More members
-            </a>
+            </Button>
           </ScrollReveal>
         </div>
 

@@ -16,6 +16,9 @@ interface ButtonProps {
   icon?: boolean;
   className?: string;
   type?: "button" | "submit" | "reset";
+  target?: string;
+  rel?: string;
+  disabled?: boolean;
 }
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -39,6 +42,9 @@ export default function Button({
   icon = true,
   className = "",
   type = "button",
+  target,
+  rel,
+  disabled = false,
 }: ButtonProps) {
   const base =
     "group relative inline-flex items-center overflow-hidden rounded-full font-semibold transition-colors duration-300";
@@ -73,7 +79,7 @@ export default function Button({
       )}
 
       <span
-        className={`relative z-10 ${
+        className={`relative z-10 flex items-center ${
           icon && showFill ? "ml-3" : ""
         } ${!showFill ? "transition-colors duration-300" : ""}`}
       >
@@ -84,18 +90,24 @@ export default function Button({
 
   const classes = `${base} ${variantStyles[variant]} ${sizeStyles[size]} ${
     !showFill ? "hover:opacity-90" : ""
-  } ${className}`;
+  } ${disabled ? "opacity-60 pointer-events-none" : ""} ${className}`;
 
   if (href) {
     return (
-      <Link href={href} data-cursor-hover className={classes}>
+      <Link href={href} target={target} rel={rel} data-cursor-hover className={classes}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} data-cursor-hover className={classes}>
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      data-cursor-hover
+      className={classes}
+    >
       {content}
     </button>
   );

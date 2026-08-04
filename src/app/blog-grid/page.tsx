@@ -4,8 +4,9 @@ import { useState } from "react";
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { blogPosts } from "@/app/data/blog"; // Using your actual data source!
+import Button from "@/components/Button"; // ✅ Import your Button component
+import { ArrowRight } from "lucide-react";
 
 export default function BlogGridPage() {
   const itemsPerPage = 6; // 3 columns x 2 rows
@@ -92,9 +93,15 @@ export default function BlogGridPage() {
                     {post.excerpt}
                   </p>
                   
-                  {/* Read More Link */}
-                  <div className="mt-auto pt-2 flex items-center text-[14px] font-bold text-[#0B1426] group-hover:text-blue-600 group-hover:translate-x-1.5 transition-all">
-                    Read more <ArrowRight className="h-4 w-4 ml-1.5" />
+                  {/* ✅ "Read more" as a span — card is already a Link, so no nested interactive element */}
+                  <div className="mt-auto pt-2">
+                    <span
+                      data-cursor-hover
+                      className="group/btn inline-flex items-center gap-1.5 text-[13px] font-bold text-[#0B1426] transition-colors group-hover:text-blue-600"
+                    >
+                      Read more
+                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -106,53 +113,57 @@ export default function BlogGridPage() {
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-3 mt-16">
             {/* Previous (+) Button */}
-            <button
+            <Button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
+              size="sm"
+              className={`w-10 h-10 rounded-full border bg-white ${
                 currentPage === 1
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
                   : "border-gray-300 text-gray-600 hover:border-gray-500"
               }`}
-              aria-label="Previous page"
+              icon={false}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-            </button>
+            </Button>
 
             {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-              <button
+              <Button
                 key={number}
                 onClick={() => paginate(number)}
-                className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-colors ${
+                size="sm"
+                className={`w-10 h-10 rounded-full text-sm font-bold transition-colors ${
                   currentPage === number
                     ? "bg-[#1D4ED8] text-white"
                     : "border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"
                 }`}
+                icon={false}
               >
                 {number.toString().padStart(2, "0")}
-              </button>
+              </Button>
             ))}
 
             {/* Next (+) Button */}
-            <button
+            <Button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
+              size="sm"
+              className={`w-10 h-10 rounded-full border bg-white ${
                 currentPage === totalPages
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
                   : "border-gray-300 text-gray-600 hover:border-gray-500"
               }`}
-              aria-label="Next page"
+              icon={false}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-            </button>
+            </Button>
           </div>
         )}
       </section>

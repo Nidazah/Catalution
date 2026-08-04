@@ -3,7 +3,8 @@
 import { useState } from "react";
 import PageHero from "@/components/PageHero";
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { MapPin, ArrowRight } from "lucide-react";
+import Button from "@/components/Button"; // ✅ Import Button
 
 // --- DATA ---
 const allJobs = [
@@ -172,9 +173,14 @@ export default function CareersPage() {
                   <MapPin className="h-4 w-4" />
                   <span>{job.location}</span>
                 </div>
-                <span className="text-[13px] font-bold text-[#0B1426] flex items-center gap-1 group-hover:text-blue-600 transition-colors">
+                
+                {/* ✅ "Apply now" as a span — card is already a Link, so no nested interactive element */}
+                <span
+                  data-cursor-hover
+                  className="group/btn inline-flex items-center gap-1.5 text-[13px] font-bold text-[#0B1426] transition-colors group-hover:text-blue-600"
+                >
                   Apply now
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
                 </span>
               </div>
             </Link>
@@ -184,51 +190,58 @@ export default function CareersPage() {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center items-center gap-3 mt-16">
-            <button
+            {/* Previous Button */}
+            <Button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
+              size="sm"
+              className={`w-10 h-10 rounded-full border bg-white ${
                 currentPage === 1
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
                   : "border-gray-300 text-gray-600 hover:border-gray-500"
               }`}
-              aria-label="Previous page"
+              icon={false}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-            </button>
+            </Button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-              <button
+              <Button
                 key={number}
                 onClick={() => paginate(number)}
-                className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-colors ${
+                size="sm"
+                className={`w-10 h-10 rounded-full text-sm font-bold transition-colors ${
                   currentPage === number
                     ? "bg-[#1D4ED8] text-white"
                     : "border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"
                 }`}
+                icon={false}
               >
                 {number.toString().padStart(2, "0")}
-              </button>
+              </Button>
             ))}
 
-            <button
+            {/* Next Button */}
+            <Button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
+              size="sm"
+              className={`w-10 h-10 rounded-full border bg-white ${
                 currentPage === totalPages
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
                   : "border-gray-300 text-gray-600 hover:border-gray-500"
               }`}
-              aria-label="Next page"
+              icon={false}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-            </button>
+            </Button>
           </div>
         )}
       </div>

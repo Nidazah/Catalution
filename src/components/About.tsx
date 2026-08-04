@@ -1,41 +1,99 @@
+"use client";
+
+import { motion, type Variants } from "framer-motion";
 import Image from "next/image";
+import Button from "./Button";
+
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
+const container: Variants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+};
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
+};
 
 export default function AboutSection() {
   return (
     <section className="relative w-full overflow-hidden bg-[#f5f6f8] py-16 md:py-20 lg:py-[68px]">
+      {/* =====================================================
+          INLINE STYLES FOR ANIMATIONS & CSS VARIABLES
+      ====================================================== */}
       <style>{`
         @keyframes floatY {
-          0%, 100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
         }
-
         .animate-float-slow {
           animation: floatY 4s ease-in-out infinite;
         }
 
         @keyframes spinSlow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
-
         .animate-spin-slow {
           animation: spinSlow 8s linear infinite;
         }
+
+        @keyframes floatDrift {
+          0%, 100% { transform: translateY(0px) translateX(0px); }
+          50% { transform: translateY(-8px) translateX(4px); }
+        }
+        .animate-float-drift {
+          animation: floatDrift 4s ease-in-out infinite;
+        }
       `}</style>
 
-      <div className="mx-auto grid max-w-[1020px] grid-cols-1 items-center gap-14 px-6 md:grid-cols-[390px_1fr] md:gap-[68px] lg:px-0">
+      {/* Decorative rings */}
+      <svg
+        className="pointer-events-none absolute -left-40 top-10 opacity-10"
+        width="520"
+        height="520"
+        viewBox="0 0 520 520"
+        fill="none"
+        aria-hidden
+      >
+        <circle cx="260" cy="260" r="259" stroke="#BFD3F0" />
+        <circle cx="260" cy="260" r="200" stroke="#BFD3F0" />
+        <circle cx="260" cy="260" r="140" stroke="#BFD3F0" />
+      </svg>
+      <svg
+        className="pointer-events-none absolute right-0 top-40 opacity-10"
+        width="640"
+        height="640"
+        viewBox="0 0 640 640"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          d="M320 20 C520 20 620 180 620 320 C620 500 460 620 320 620"
+          stroke="#BFD3F0"
+          strokeWidth="1"
+          fill="none"
+        />
+        <path
+          d="M320 80 C480 80 560 200 560 320 C560 460 440 560 320 560"
+          stroke="#BFD3F0"
+          strokeWidth="1"
+          fill="none"
+        />
+      </svg>
+
+      <div className="relative mx-auto max-w-[1020px] grid grid-cols-1 items-center gap-14 px-6 md:grid-cols-[390px_1fr] md:gap-[68px] lg:px-0">
+        
         {/* =====================================================
-            LEFT IMAGE AREA
+            LEFT IMAGE AREA - Animated
         ====================================================== */}
-        <div className="relative mx-auto w-full max-w-[390px]">
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: easeOut }}
+          className="relative mx-auto w-full max-w-[390px]"
+        >
           {/* Main image */}
           <div className="relative h-[450px] w-full overflow-hidden rounded-[3px] md:h-[420px]">
             <Image
@@ -59,9 +117,14 @@ export default function AboutSection() {
           </div>
 
           {/* =================================================
-              AWARD BADGE
+              AWARD BADGE - Animated
           ================================================== */}
-          <div className="absolute -left-[17px] top-[112px] z-20 flex h-[91px] w-[91px] items-center justify-center rounded-full border-[5px] border-white bg-[#1674ed] shadow-md">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.6, delay: 0.3, ease: easeOut }}
+            className="absolute -left-[17px] top-[112px] z-20 flex h-[91px] w-[91px] items-center justify-center rounded-full border-[5px] border-white bg-[#1674ed] shadow-md"
+          >
             {/* Circular text — rotates continuously */}
             <svg
               viewBox="0 0 120 120"
@@ -99,47 +162,64 @@ export default function AboutSection() {
                 />
               </svg>
             </div>
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
         {/* =====================================================
-            RIGHT CONTENT
+            RIGHT CONTENT - Animated with stagger
         ====================================================== */}
-        <div className="relative max-w-[460px]">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="relative max-w-[460px]"
+        >
           {/* Label */}
-          <span className="inline-flex items-center bg-[#e8f0ff] px-[6px] py-[3px] text-[8px] font-bold uppercase tracking-[0.7px] text-[#1472ed]">
-            • About Our Company
-          </span>
+          <motion.span
+            variants={item}
+            className="inline-flex items-center gap-2 rounded bg-[#e8f0ff] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.7px] text-[#1472ed]"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[#1472ed]" />
+            About Our Company
+          </motion.span>
 
-          {/* Heading */}
-          <h2 className="mt-[10px] max-w-[440px] text-[29px] font-bold leading-[1.08] tracking-[-1.2px] text-[#07162e] md:text-[27px] lg:text-[28px]">
+          {/* Heading - Improved sizing */}
+          <motion.h2
+            variants={item}
+            className="mt-4 font-display text-[28px] md:text-[32px] lg:text-[36px] font-bold leading-[1.08] tracking-[-1.2px] text-[#07162e]"
+          >
             Crafting success tailored
             <br />
             solution for each &amp; every
             <br />
             challenges
-          </h2>
+          </motion.h2>
 
-          {/* Description */}
-          <p className="mt-[10px] max-w-[420px] text-[8px] font-normal leading-[1.65] text-[#626b78]">
-            Our mission is to empowers businesses off our all size too thrive in
-            an businesses changing marketplaces. In toda dynamics business
-            environment, the key to the success lies Our mission is to empower.
-            Our consultancy excels in providing quick solutions tailored.
-          </p>
+          {/* Description - Improved readability */}
+          <motion.p
+            variants={item}
+            className="mt-4 max-w-[420px] text-[15px] md:text-[16px] font-normal leading-[1.65] text-[#626b78]"
+          >
+            Our mission is to empower businesses of all sizes to thrive in an
+            ever-changing marketplace. In today's dynamic business environment,
+            the key to success lies in adaptability. Our consultancy excels in
+            providing quick solutions tailored to your unique challenges.
+          </motion.p>
 
           {/* =================================================
-              STATS CARD
+              STATS CARD - Animated with hover
           ================================================== */}
-          <div className="mt-[12px] flex h-[79px] max-w-[259px] bg-[#e3e9f0]">
+          <motion.div
+            variants={item}
+            className="mt-4 flex h-[79px] w-full max-w-[259px] bg-[#e3e9f0] transition-colors hover:bg-[#d5dce6]"
+          >
             {/* First stat */}
             <div className="flex flex-1 flex-col justify-center px-[15px]">
               <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-[#07162e]">
                 8.5x
               </p>
-
-              <p className="mt-[6px] text-[8px] font-medium text-[#263247]">
+              <p className="mt-[6px] text-[10px] font-medium text-[#263247]">
                 Faster growth
               </p>
             </div>
@@ -155,56 +235,43 @@ export default function AboutSection() {
               <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-[#07162e]">
                 20M
               </p>
-
-              <p className="mt-[6px] text-[8px] font-medium text-[#263247]">
+              <p className="mt-[6px] text-[10px] font-medium text-[#263247]">
                 Reach worldwide
               </p>
             </div>
-          </div>
+          </motion.div>
 
           {/* =================================================
                 SMALL STATIC FLOATING IMAGE (behind button)
             ================================================== */}
-            <div className="absolute -bottom-[61px] right-[20px] z-10 hidden h-[128px] w-[128px] overflow-hidden border-[3px] border-white shadow-lg md:block">
-              <Image
-                src="/images/about/h5-about-2.webp"
-                alt="Colleagues reviewing documents"
-                fill
-                sizes="128px"
-                className="object-cover"
-              />
-            </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="absolute -bottom-[61px] right-[20px] z-10 hidden h-[128px] w-[128px] overflow-hidden border-[3px] border-white shadow-lg md:block animate-float-drift"
+          >
+            <Image
+              src="/images/about/h5-about-2.webp"
+              alt="Colleagues reviewing documents"
+              fill
+              sizes="128px"
+              className="object-cover"
+            />
+          </motion.div>
 
           {/* =================================================
-              CTA
+              CTA - Animated Button (improved size)
           ================================================== */}
-          <button className="group relative mt-[15px] flex h-[30px] items-center gap-[7px] overflow-hidden rounded-full bg-[#07162e] py-[3px] pl-[3px] pr-[15px] text-[8px] font-semibold text-white">
-            {/* Expanding blue background */}
-            <span
-              aria-hidden
-              className="absolute left-[3px] top-1/2 h-[24px] w-[24px] -translate-y-1/2 rounded-full bg-[#1674ed] transition-all duration-500 ease-out group-hover:left-0 group-hover:top-0 group-hover:h-full group-hover:w-full group-hover:translate-y-0"
-            />
-
-            {/* Arrow */}
-            <span className="relative z-10 flex h-[24px] w-[24px] items-center justify-center rounded-full bg-[#1674ed] transition-colors duration-300 group-hover:bg-[#07162e]">
-              <svg
-                viewBox="0 0 24 24"
-                className="h-[12px] w-[12px]"
-                fill="none"
-              >
-                <path
-                  d="M5 12h14M13 6l6 6-6 6"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-
-            <span className="relative z-10">Know More</span>
-          </button>
-        </div>
+          <motion.div variants={item} className="mt-4">
+            <Button
+              href="/about"
+              size="md"
+              className="bg-[#07162e] text-white transition-transform hover:scale-[1.03]"
+            >
+              Know More
+            </Button>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

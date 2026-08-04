@@ -1,7 +1,9 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
+import { Play } from "lucide-react"; // ✅ Removed ArrowRight (Button handles it)
+
+import Button from "./Button";  
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -100,20 +102,18 @@ export default function Hero() {
             of seasoned consultants unparalleled.
           </motion.p>
 
+          {/* ✅ FIXED: Added bg-[var(--color-navy)] and text-white to match the Navbar */}
           <motion.div
             variants={item}
             className="mt-9 flex flex-wrap items-center gap-4"
           >
-            <a
+            <Button
               href="#contact"
-              data-cursor-hover
-              className="inline-flex items-center gap-3 rounded-full bg-[var(--color-navy)] pl-2 pr-7 py-2 text-sm font-semibold text-white shadow-[0_10px_30px_-10px_rgba(10,37,64,0.5)] transition-transform hover:scale-[1.03]"
+              size="lg"
+              className="bg-[var(--color-navy)] text-white shadow-[0_10px_30px_-10px_rgba(10,37,64,0.5)] transition-transform hover:scale-[1.03]"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]">
-                <ArrowRight className="h-4 w-4" />
-              </span>
               Free consultation
-            </a>
+            </Button>
           </motion.div>
         </motion.div>
 
@@ -141,19 +141,22 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="absolute top-14 -right-4 z-20"
           >
-            <a
+            {/* ✅ Replaced <a> with Button component */}
+            <Button
               href="https://www.youtube.com/watch?v=MLpWrANjFbI"
               target="_blank"
               rel="noopener noreferrer"
-              className="animate-float-drift inline-flex items-center gap-3 rounded-full bg-white pl-2 pr-6 py-2 shadow-xl border border-gray-100"
+              variant="outline"
+              className="animate-float-drift bg-white shadow-xl border-gray-100"
+              icon={false} // Disable built-in icon since we're using custom Play icon
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--color-accent)]">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--color-accent)] mr-2">
                 <Play className="h-4 w-4 fill-white" />
               </span>
               <span className="text-sm font-semibold text-[var(--color-heading)] underline underline-offset-2">
                 Play our reels
               </span>
-            </a>
+            </Button>
           </motion.div>
 
           {/* Avatar + 39K+ Card (Bottom Left of the portrait) */}

@@ -1,7 +1,7 @@
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import Button from "@/components/Button"; // ✅ Import your Button component
 
 export default function Custom404() {
   return (
@@ -38,16 +38,14 @@ export default function Custom404() {
           Page does not exist or some other error occurred. Go to our Home Page
         </p>
 
-        {/* Button */}
-        <Link
+        {/* ✅ Replaced <Link> with Button */}
+        <Button
           href="/"
-          className="mt-8 inline-flex items-center gap-3 rounded-full bg-[var(--color-navy)] pl-2 pr-6 py-2 text-sm font-semibold text-white hover:scale-[1.03] transition-transform shadow-md"
+          size="md"
+          className="mt-8 bg-[var(--color-navy)] text-white shadow-md transition-transform hover:scale-[1.03]"
         >
-          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-accent)]">
-            <ArrowRight className="h-4 w-4" />
-          </span>
           Go back to home page
-        </Link>
+        </Button>
       </section>
     </main>
   );

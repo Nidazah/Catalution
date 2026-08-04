@@ -6,12 +6,13 @@ import Link from "next/link";
 import { 
   Calendar, 
   Search, 
-  ArrowRight, 
   Check, 
-  Reply
+  Reply,
+  ArrowRight
 } from "lucide-react";
 
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa6";
+import Button from "@/components/Button"; // ✅ Import Button
 
 export default async function BlogDetailPage({
   params,
@@ -276,15 +277,14 @@ export default async function BlogDetailPage({
                 <input type="text" placeholder="Your website" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426]" />
                 <textarea placeholder="Enter your comments" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426] resize-none h-32" />
                 
-                <button
+                {/* ✅ Replaced manual button with Button component */}
+                <Button
                   type="button"
-                  className="inline-flex items-center gap-3 rounded-full bg-[#0B1426] hover:bg-[#1a253f] text-white pl-1.5 pr-6 py-1.5 text-[14px] font-semibold transition-all"
+                  size="md"
+                  className="bg-[#0B1426] hover:bg-[#1a253f] text-white"
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1D4ED8]">
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
                   Leave comment
-                </button>
+                </Button>
               </form>
             </div>
 
@@ -397,12 +397,14 @@ export default async function BlogDetailPage({
               </div>
 
               <div className="relative z-10">
-                <Link href="/contact" className="inline-flex items-center gap-3 rounded-full bg-white hover:bg-gray-100 pl-1.5 pr-6 py-1.5 text-[14px] font-semibold text-[#0B1426] transition-all shadow-lg w-fit">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1D4ED8] text-white">
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
+                {/* ✅ Replaced <Link> with Button */}
+                <Button
+                  href="/contact"
+                  size="md"
+                  className="bg-white hover:bg-gray-100 text-[#0B1426] shadow-lg"
+                >
                   Get in touch
-                </Link>
+                </Button>
               </div>
             </div>
 

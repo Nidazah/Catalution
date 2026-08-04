@@ -5,7 +5,8 @@ import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
 import { blogPosts } from "@/app/data/blog";
-import { ArrowRight, Search, Calendar, User } from "lucide-react";
+import { Search, Calendar, User } from "lucide-react"; // ✅ Removed ArrowRight
+import Button from "@/components/Button"; // ✅ Import Button
 
 export default function BlogStandardPage() {
   const itemsPerPage = 4; // Shows 2 rows of posts
@@ -32,6 +33,7 @@ export default function BlogStandardPage() {
 
   return (
     <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
+      {/* ✅ PageHero renders right below the transparent navbar */}
       <PageHero title="Blog Standard" />
 
       {/* --- MAIN LAYOUT: LEFT CONTENT + RIGHT SIDEBAR --- */}
@@ -72,9 +74,17 @@ export default function BlogStandardPage() {
                     
                     <p className="text-[15px] text-[#4B5563] leading-relaxed mb-5 line-clamp-3">{post.excerpt}</p>
                     
-                    <Link href={`/blog/${post.id}`} className="inline-flex items-center gap-2 text-[14px] font-semibold text-[#0B1426] hover:text-blue-600 transition-colors w-fit group">
-                      Read more <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Link>
+                    {/* ✅ Replaced manual Link with Button */}
+                    <div className="mt-auto pt-1">
+                      <Button
+                        href={`/blog/${post.id}`}
+                        size="sm"
+                        className="bg-transparent !text-[#0B1426] hover:text-blue-600 p-0 h-auto font-semibold"
+                        icon={true}
+                      >
+                        Read more
+                      </Button>
+                    </div>
                   </div>
                 </div>
               );
@@ -83,19 +93,58 @@ export default function BlogStandardPage() {
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex justify-center items-center gap-3 mt-10">
-                <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${currentPage === 1 ? "border-gray-200 text-gray-300 cursor-not-allowed" : "border-gray-300 text-gray-600 hover:border-gray-500"}`}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                </button>
+                {/* Previous Button */}
+                <Button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  size="sm"
+                  className={`w-10 h-10 rounded-full border bg-white ${
+                    currentPage === 1
+                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                      : "border-gray-300 text-gray-600 hover:border-gray-500"
+                  }`}
+                  icon={false}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </Button>
 
+                {/* Page Numbers */}
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                  <button key={number} onClick={() => paginate(number)} className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-colors ${currentPage === number ? "bg-[#1D4ED8] text-white" : "border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"}`}>
+                  <Button
+                    key={number}
+                    onClick={() => paginate(number)}
+                    size="sm"
+                    className={`w-10 h-10 rounded-full text-sm font-bold transition-colors ${
+                      currentPage === number
+                        ? "bg-[#1D4ED8] text-white"
+                        : "border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"
+                    }`}
+                    icon={false}
+                  >
                     {number.toString().padStart(2, "0")}
-                  </button>
+                  </Button>
                 ))}
 
-                <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages} className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${currentPage === totalPages ? "border-gray-200 text-gray-300 cursor-not-allowed" : "border-gray-300 text-gray-600 hover:border-gray-500"}`}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                </button>
+                {/* Next Button */}
+                <Button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  size="sm"
+                  className={`w-10 h-10 rounded-full border bg-white ${
+                    currentPage === totalPages
+                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                      : "border-gray-300 text-gray-600 hover:border-gray-500"
+                  }`}
+                  icon={false}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </Button>
               </div>
             )}
           </div>
@@ -161,9 +210,14 @@ export default function BlogStandardPage() {
                 <p className="text-sm text-blue-100/80 leading-relaxed max-w-[200px]">Our mission is to empowers businesses off all size in an businesses.</p>
               </div>
               <div className="relative z-10">
-                <Link href="/contact" className="inline-flex items-center gap-3 rounded-full bg-white hover:bg-gray-100 pl-1.5 pr-6 py-1.5 text-[14px] font-semibold text-[#0B1426] transition-all shadow-lg w-fit">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1D4ED8] text-white"><ArrowRight className="h-4 w-4" /></span> Get in touch
-                </Link>
+                {/* ✅ Replaced manual Link with Button */}
+                <Button
+                  href="/contact"
+                  size="md"
+                  className="bg-white hover:bg-gray-100 !text-[#0B1426] shadow-lg"
+                >
+                  Get in touch
+                </Button>
               </div>
             </div>
           </div>
