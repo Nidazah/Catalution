@@ -471,7 +471,7 @@ export default function Navbar({
       className="fixed top-0 inset-x-0 z-50 transition-colors duration-300"
     >
       <div
-        className={`h-20 flex items-center justify-between px-6 mx-auto max-w-7xl transition-colors duration-300 ${
+        className={`h-20 flex items-center justify-between px-6 mx-auto w-full transition-colors duration-300 ${
           isHeroMode
             ? "bg-transparent"
             : "bg-white/90 backdrop-blur-md border-b border-[var(--color-line)]"

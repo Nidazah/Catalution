@@ -3,7 +3,7 @@
 import { ArrowRight, Globe, Camera, AtSign, Share2 } from "lucide-react";
 import Image from "next/image";
 import ScrollReveal from "./ScrollReveal";
-import Button from "./Button"; // ✅ Import the Button component
+import Button from "./Button";
 
 const team = [
   {
@@ -41,7 +41,7 @@ export default function Team() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-8 md:grid-cols-[1fr_auto_auto] md:items-end">
           <ScrollReveal>
-            <span className="inline-flex items-center gap-2 rounded bg-[#EAF1FD] px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--color-accent)]">
+            <span className="inline-flex items-center gap-2 rounded bg-[#EAF1FD] px-3 py-1.5 text-sm font-semibold tracking-wide text-[var(--color-accent)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
               MEET OUR TEAMS
             </span>
@@ -58,7 +58,6 @@ export default function Team() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            {/* ✅ Replaced <a> with Button, removed manual icon */}
             <Button
               href="#team"
               className="bg-[var(--color-navy)] text-white transition-transform hover:scale-[1.03] whitespace-nowrap shadow-md"
@@ -69,10 +68,11 @@ export default function Team() {
           </ScrollReveal>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 2 columns on mobile (sm), 4 columns on desktop (lg) */}
+        <div className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {team.map((member, i) => (
             <ScrollReveal key={member.name} delay={i * 0.08}>
-              <div className="group flex flex-col items-center rounded-xl border border-[var(--color-line)] bg-white px-6 pt-8 pb-6 text-center transition-shadow duration-300 hover:shadow-md">
+              <div className="group flex h-full flex-col items-center rounded-xl border border-[var(--color-line)] bg-white px-6 pt-8 pb-6 text-center transition-shadow duration-300 hover:shadow-md">
                 <div className="relative h-32 w-32 overflow-hidden rounded-full">
                   <Image
                     src={member.image}
@@ -90,7 +90,7 @@ export default function Team() {
                   {member.role}
                 </p>
 
-                <div className="mt-6 flex w-full items-center justify-center gap-3 border-t border-[var(--color-line)] pt-5">
+                <div className="mt-auto flex w-full items-center justify-center gap-3 border-t border-[var(--color-line)] pt-5">
                   {socials.map((s) => (
                     <a
                       key={s.label}

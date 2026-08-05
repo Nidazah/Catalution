@@ -52,14 +52,13 @@ const steps = [
 ];
 
 export default function Process() {
-  // Start with index 1 (second item) active
   const [activeIndex, setActiveIndex] = useState(1);
 
   return (
     <section id="process" className="bg-white py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-        
-        {/* Header Row - Subtly reduced text sizes */}
+
+        {/* Header Row */}
         <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_auto] items-end mb-10 md:mb-14">
           <ScrollReveal>
             <span className="inline-flex items-center gap-2 rounded bg-[#F5F7FA] px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--color-accent)]">
@@ -90,9 +89,40 @@ export default function Process() {
           </ScrollReveal>
         </div>
 
-        {/* Steps Row - Shrunk heights and text sizes */}
-        <div className="relative rounded-3xl bg-[#F5F7FA] overflow-hidden min-h-[450px] md:min-h-[550px]">
-          <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-[var(--color-line)] h-full">
+        {/* ===================== MOBILE: static 2-column grid ===================== */}
+        <div className="grid grid-cols-2 gap-3 md:hidden">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <ScrollReveal key={s.label} delay={i * 0.06}>
+                <div className="flex flex-col items-center text-center rounded-2xl bg-[#F5F7FA] px-4 py-6 h-full">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]">
+                    <Icon className="h-5 w-5 text-white" />
+                  </div>
+                  <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[var(--color-accent)]/40">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+                  </span>
+                  <h3 className="mt-3 font-display text-[15px] font-semibold text-[var(--color-heading)] leading-snug">
+                    {s.title}
+                  </h3>
+                  <p className="mt-2 text-[12px] leading-relaxed text-[var(--color-body)]">
+                    {s.text}
+                  </p>
+                  <button
+                    aria-label={`Learn more about ${s.title}`}
+                    className="mt-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-navy)] text-white"
+                  >
+                    <ArrowRight className="h-3 w-3 -rotate-45" />
+                  </button>
+                </div>
+              </ScrollReveal>
+            );
+          })}
+        </div>
+
+        {/* ===================== DESKTOP: original hover accordion, unchanged ===================== */}
+        <div className="relative rounded-3xl bg-[#F5F7FA] overflow-hidden min-h-[550px] hidden md:block">
+          <div className="flex flex-row divide-x divide-[var(--color-line)] h-full">
             {steps.map((s, i) => {
               const isActive = i === activeIndex;
               const Icon = s.icon;
@@ -101,7 +131,7 @@ export default function Process() {
                   key={s.label}
                   onMouseEnter={() => setActiveIndex(i)}
                   className={`
-                    relative flex flex-col items-center justify-center text-center px-3 py-6 md:py-10 cursor-pointer
+                    relative flex flex-col items-center justify-center text-center px-3 py-10 cursor-pointer
                     transition-all duration-500 ease-in-out h-full
                     ${isActive ? "bg-white flex-[3]" : "bg-transparent flex-[1] hover:bg-white/50"}
                   `}
@@ -109,7 +139,6 @@ export default function Process() {
                     minWidth: isActive ? "240px" : "50px",
                   }}
                 >
-                  {/* Absolute Positioned Vertical Text (Shrunk) */}
                   <div
                     className={`
                       absolute inset-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none
@@ -117,46 +146,33 @@ export default function Process() {
                     `}
                   >
                     <span
-                      className="font-display text-xs md:text-sm font-medium text-[var(--color-heading)] whitespace-nowrap tracking-wider"
+                      className="font-display text-sm font-medium text-[var(--color-heading)] whitespace-nowrap tracking-wider"
                       style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                     >
                       {s.label}
                     </span>
                   </div>
 
-                  {/* Content that shows ONLY when active (Shrunk) */}
                   <div
                     className={`
                       relative z-10 flex flex-col items-center transition-all duration-500 delay-100
                       ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}
                     `}
                   >
-                    {/* Icon (Shrunk) */}
-                    <div
-                      className={`
-                        flex h-14 w-14 shrink-0 items-center justify-center rounded-full transition-colors duration-500
-                        bg-[var(--color-accent)]
-                      `}
-                    >
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]">
                       <Icon className="h-5 w-5 text-white" />
                     </div>
-
-                    {/* Dot Indicator (Shrunk) */}
                     <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[var(--color-accent)]/40">
                       <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
                     </span>
-
-                    {/* Title & Text (Shrunk) */}
                     <div className="mt-4 px-4">
-                      <h3 className="font-display text-lg md:text-xl font-semibold text-[var(--color-heading)]">
+                      <h3 className="font-display text-xl font-semibold text-[var(--color-heading)]">
                         {s.title}
                       </h3>
                       <p className="mt-2 text-[13px] leading-relaxed text-[var(--color-body)] max-w-[200px] mx-auto">
                         {s.text}
                       </p>
                     </div>
-
-                    {/* Arrow Button (Shrunk) */}
                     <button
                       aria-label={`Learn more about ${s.title}`}
                       className="mt-5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-navy)] text-white transition-transform duration-300 hover:scale-105"

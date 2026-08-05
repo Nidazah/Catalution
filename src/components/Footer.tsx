@@ -13,7 +13,13 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      {...props}
+    >
       <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
@@ -36,41 +42,61 @@ function LinkedinIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 const socials = [
-  { icon: FacebookIcon, label: "Facebook", href: "#" },
-  { icon: InstagramIcon, label: "Instagram", href: "#" },
-  { icon: TwitterIcon, label: "Twitter", href: "#" },
-  { icon: LinkedinIcon, label: "LinkedIn", href: "#" },
+  {
+    icon: FacebookIcon,
+    label: "Facebook",
+    href: "https://facebook.com/solvior",
+  },
+  {
+    icon: InstagramIcon,
+    label: "Instagram",
+    href: "https://instagram.com/solvior",
+  },
+  { icon: TwitterIcon, label: "Twitter", href: "https://twitter.com/solvior" },
+  {
+    icon: LinkedinIcon,
+    label: "LinkedIn",
+    href: "https://linkedin.com/company/solvior",
+  },
 ];
 
 const resources = [
-  "Contact us",
-  "Privacy policy",
-  "Recognitions",
-  "Careers",
-  "Blog",
-  "Feedback",
-  "Error 404",
+  { name: "Contact us", href: "/contact" },
+  { name: "Privacy policy", href: "/" },
+  { name: "Recognitions", href: "/" },
+  { name: "Careers", href: "/careers" },
+  { name: "Blog", href: "/blog" },
+  { name: "Feedback", href: "/feedback" },
+  { name: "Error 404", href: "/404" },
 ];
 
 const services = [
-  "Strategic planning",
-  "Market research",
-  "Business process",
-  "Financial management",
-  "Change management",
-  "IT consulting",
-  "Leadership",
+  { name: "Strategic planning", href: "/services" },
+  { name: "Market research", href: "/services" },
+  { name: "Business process", href: "/services" },
+  { name: "Financial management", href: "/services" },
+  { name: "Change management", href: "/services" },
+  { name: "IT consulting", href: "/services" },
+  { name: "Leadership", href: "/services" },
 ];
 
 export default function FooterV2() {
   const [email, setEmail] = useState("");
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle newsletter subscription
+    console.log("Subscribing email:", email);
+    setEmail("");
+    // You can add your newsletter API call here
+  };
 
   return (
     <footer className="relative bg-[var(--color-section)]">
       <div className="mx-auto max-w-7xl px-6 py-20 grid gap-12 md:grid-cols-[1.3fr_0.8fr_0.8fr_1fr]">
         {/* Brand + social */}
         <div>
-          <a href="#top" className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-accent)]">
               <span className="h-3 w-3 rounded-full bg-white" />
             </span>
@@ -80,8 +106,8 @@ export default function FooterV2() {
           </a>
 
           <p className="mt-6 max-w-xs text-sm leading-relaxed text-[var(--color-body)]">
-            Our mission is to empower businesses of all sizes to thrive in
-            an ever changing marketplace.
+            Our mission is to empower businesses of all sizes to thrive in an
+            ever changing marketplace.
           </p>
 
           <h4 className="mt-8 font-display text-base font-bold text-[var(--color-heading)]">
@@ -92,6 +118,8 @@ export default function FooterV2() {
               <a
                 key={s.label}
                 href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={s.label}
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-[#C7CFDA] text-white transition-colors hover:bg-[var(--color-accent)]"
               >
@@ -108,14 +136,14 @@ export default function FooterV2() {
           </h4>
           <ul className="mt-6 space-y-4">
             {resources.map((r) => (
-              <li key={r}>
+              <li key={r.name}>
                 <a
-                  href="#"
+                  href={r.href}
                   className="inline-flex items-center gap-2 text-sm text-[var(--color-body)] transition-colors hover:text-[var(--color-navy)]"
                 >
-                  {r}
-                  {r === "Careers" && (
-                    <span className="rounded bg-[var(--color-accent)] px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                  {r.name}
+                  {r.name === "Careers" && (
+                    <span className="rounded bg-[var(--color-accent)] px-1.5 py-0.5 text-xs font-bold uppercase text-white">
                       New
                     </span>
                   )}
@@ -132,12 +160,12 @@ export default function FooterV2() {
           </h4>
           <ul className="mt-6 space-y-4">
             {services.map((s) => (
-              <li key={s}>
+              <li key={s.name}>
                 <a
-                  href="#"
+                  href={s.href}
                   className="text-sm text-[var(--color-body)] transition-colors hover:text-[var(--color-navy)]"
                 >
-                  {s}
+                  {s.name}
                 </a>
               </li>
             ))}
@@ -150,7 +178,7 @@ export default function FooterV2() {
             Subscribe to our newsletter
           </h4>
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubscribe}
             className="mt-6 flex items-center gap-2 rounded-xl border border-[var(--color-line)] bg-white p-1.5 pl-4 shadow-sm"
           >
             <input
@@ -174,22 +202,22 @@ export default function FooterV2() {
 
       {/* Bottom bar */}
       <div className="bg-[var(--color-navy)]">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#B7C4D6]">
+        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[#B7C4D6]">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-white" />
             <span>Trusted partner in business excellence</span>
           </div>
           <div>
             © {new Date().getFullYear()}{" "}
-            <span className="font-semibold text-white">Solvior</span> All
-            right reserved.
+            <span className="font-semibold text-white">Solvior</span> All right
+            reserved.
           </div>
           <div className="flex items-center gap-3">
-            <a href="#" className="hover:text-white transition-colors">
+            <a href="/privacy" className="hover:text-white transition-colors">
               Policy &amp; privacy
             </a>
             <span>•</span>
-            <a href="#" className="hover:text-white transition-colors">
+            <a href="/terms" className="hover:text-white transition-colors">
               Terms &amp; conditions
             </a>
           </div>
@@ -200,11 +228,11 @@ export default function FooterV2() {
       <a
         href="#top"
         aria-label="Go to top"
-        className="fixed bottom-8 right-6 z-40 flex flex-col items-center gap-1 rounded-full bg-white px-2 py-4 shadow-[0_10px_30px_-10px_rgba(10,37,64,0.35)] transition-transform hover:-translate-y-1"
+        className="group fixed bottom-8 right-6 z-40 flex flex-col items-center gap-1 rounded-full bg-white px-2 py-4 shadow-[0_10px_30px_-10px_rgba(10,37,64,0.35)] transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:bg-[var(--color-navy)] hover:shadow-[0_15px_35px_-10px_rgba(10,37,64,0.6)]"
       >
-        <ArrowUp className="h-4 w-4 text-[var(--color-navy)]" />
+        <ArrowUp className="h-4 w-4 text-[var(--color-navy)] transition-colors duration-300 group-hover:text-white" />
         <span
-          className="font-display text-[10px] font-bold tracking-widest text-[var(--color-navy)]"
+          className="font-display text-[10px] font-bold tracking-widest text-[var(--color-navy)] transition-colors duration-300 group-hover:text-white"
           style={{ writingMode: "vertical-rl" }}
         >
           GO TOP

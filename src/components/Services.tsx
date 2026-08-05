@@ -54,9 +54,6 @@ const services = [
 export default function Services() {
   return (
     <section id="services" className="bg-[#0B1426] py-20 md:py-24">
-      {/* =====================================================
-          INLINE STYLES FOR CSS VARIABLES
-      ====================================================== */}
       <style>{`
         :root {
           --color-line: #d1d5db;
@@ -68,13 +65,15 @@ export default function Services() {
       `}</style>
 
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4">
           {services.map((s, i) => (
             <ScrollReveal key={i} delay={i * 0.08}>
               <div
                 className={`
-                  group relative h-full overflow-hidden p-8 md:p-12 flex flex-col items-center text-center transition-all duration-300
-                  ${i !== services.length - 1 ? "md:border-r lg:border-r md:border-white/10" : ""}
+                  group relative h-full overflow-hidden p-5 sm:p-8 md:p-12 flex flex-col items-center text-center transition-all duration-300
+                  ${i % 2 === 0 ? "border-r border-white/10" : ""}
+                  ${i < 2 ? "border-b lg:border-b-0 border-white/10" : ""}
+                  ${i !== services.length - 1 ? "lg:border-r" : ""}
                 `}
               >
                 {/* --- BOTTOM GLOW (hover only) --- */}
@@ -83,15 +82,15 @@ export default function Services() {
                 />
 
                 {/* --- ICON --- */}
-                <div className="mb-2 drop-shadow-md relative z-10">
+                <div className="mb-2 drop-shadow-md relative z-10 scale-75 sm:scale-100">
                   {s.icon}
                 </div>
 
                 {/* --- TEXT CONTENT --- */}
-                <h3 className="mt-6 font-display text-xl font-bold text-white tracking-tight relative z-10">
+                <h3 className="mt-4 sm:mt-6 font-display text-base sm:text-xl font-bold text-white tracking-tight relative z-10">
                   {s.title}
                 </h3>
-                <p className="mt-4 text-[15px] leading-relaxed text-gray-400 max-w-[260px] mx-auto group-hover:text-gray-300 transition-colors duration-300 relative z-10">
+                <p className="mt-2 sm:mt-4 text-[13px] sm:text-[15px] leading-relaxed text-gray-400 max-w-[260px] mx-auto group-hover:text-gray-300 transition-colors duration-300 relative z-10">
                   {s.text}
                 </p>
               </div>

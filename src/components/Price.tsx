@@ -24,7 +24,7 @@ export default function PricingHeader() {
           
           {/* LEFT COLUMN: STATIC */}
           <div className="flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 rounded bg-blue-50 px-3 py-1.5 text-[10px] md:text-xs font-semibold tracking-wide text-blue-600">
+            <div className="inline-flex items-center gap-2 rounded bg-blue-50 px-3 py-1.5 text-xs font-semibold tracking-wide text-blue-600">
               <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
               PRICING PLAN
             </div>
@@ -78,45 +78,41 @@ export default function PricingHeader() {
 
           {/* RIGHT COLUMN: SCROLLS WITH THE PAGE */}
           <div className="relative w-full">
-            {/* 
-               Reduced the Y-translation motion dramatically.
-               This keeps the cards tightly packed inside the screen height.
-            */}
             <motion.div
               className="flex flex-col gap-4"
               initial={false}
-              animate={{ 
-                y: billingCycle === "monthly" ? 0 : -160 // ⬇️ COMPRESSED from -500 to -160
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              animate={{ opacity: 1 }}
             >
               {plans.map((plan, i) => (
-                <div 
-                  key={plan.name} 
-                  className="w-full rounded-2xl border border-gray-200 bg-white p-5 shadow-sm" // ⬇️ Shrunk inner padding
+                <motion.div
+                  key={plan.name}
+                  className="w-full rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
                 >
-                  {/* ⬇️ Shrunk Plan Title */}
                   <h3 className="font-display text-lg md:text-xl font-bold text-[#0B1426]">
                     {plan.name}
                   </h3>
-                  
-                  {/* ⬇️ Shrunk Price */}
+
                   <div className="mt-3">
-                    <span className="text-3xl md:text-4xl font-bold text-[#0B1426]">
+                    <motion.span
+                      key={billingCycle + plan.name}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="text-3xl md:text-4xl font-bold text-[#0B1426]"
+                    >
                       {billingCycle === "monthly" ? plan.monthly : plan.yearly}
-                    </span>
+                    </motion.span>
                     <span className="text-gray-500 ml-1 text-sm">
                       / {billingCycle === "monthly" ? "mo" : "yr"}
                     </span>
                   </div>
 
-                  {/* ⬇️ Shrunk Features list */}
                   <ul className="mt-4 space-y-2 text-sm text-gray-500">
                     {plan.features.map((f) => (
                       <li key={f}>{f}</li>
                     ))}
                   </ul>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
           </div>
