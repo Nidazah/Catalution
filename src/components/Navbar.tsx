@@ -332,7 +332,9 @@ function NavItem({
                   data-cursor-hover
                   onClick={() => setOpen(false)}
                   className={`flex items-center gap-3 px-5 py-2.5 text-[15px] font-semibold transition-colors hover:text-[#3B82F6] ${
-                    itemActive ? "text-[#3B82F6] bg-[#EAF1FD]/60" : "text-[#0B1426]"
+                    itemActive
+                      ? "text-[#3B82F6] bg-[#EAF1FD]/60"
+                      : "text-[#0B1426]"
                   }`}
                 >
                   {item.icon && (
@@ -366,13 +368,14 @@ function MobileSection({
     link.href === pathname ||
     (link.dropdown && link.dropdown.some((item) => item.href === pathname));
 
+  // 1. Standard Link
   if (!link.dropdown && !link.isMegaMenu) {
     return (
       <Link
         href={link.href}
         onClick={onNavigate}
         className={`text-sm font-semibold ${
-          isActive ? "text-[#3B82F6]" : "text-gray-700 hover:text-[#3B82F6]"
+          isActive ? "text-[#3B82F6]" : "text-[#0B1426] hover:text-[#3B82F6]"
         }`}
       >
         {link.label}
@@ -380,12 +383,41 @@ function MobileSection({
     );
   }
 
+  // 2. Mega Menu (Pages)
+  if (link.isMegaMenu) {
+    return (
+      <div>
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className={`flex w-full items-center justify-between text-sm font-semibold ${
+            isActive ? "text-[#3B82F6]" : "text-[#0B1426] hover:text-[#3B82F6]"
+          }`}
+        >
+          {link.label}
+          <ChevronDown
+            className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          />
+        </button>
+        {open && (
+          <div className="mt-3 ml-0">
+            <PagesMegaMenu
+              open={open}
+              pathname={pathname}
+              onNavigate={onNavigate}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // 3. Regular Dropdown
   return (
     <div>
       <button
         onClick={() => setOpen((v) => !v)}
         className={`flex w-full items-center justify-between text-sm font-semibold ${
-          isActive ? "text-[#3B82F6]" : "text-gray-700 hover:text-[#3B82F6]"
+          isActive ? "text-[#3B82F6]" : "text-[#0B1426] hover:text-[#3B82F6]"
         }`}
       >
         {link.label}
@@ -394,7 +426,7 @@ function MobileSection({
         />
       </button>
       {open && link.dropdown && (
-        <div className="mt-3 ml-3 flex flex-col gap-3 border-l border-gray-200 pl-3">
+        <div className="mt-3 ml-3 flex flex-col gap-3 border-l border-gray-300 pl-3">
           {link.dropdown.map((item) => (
             <Link
               key={item.href}
@@ -434,7 +466,7 @@ export default function Navbar({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Smart Hide/Show logic (kept separate for clean hide animation)
+  // Smart Hide/Show logic
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -514,14 +546,13 @@ export default function Navbar({
             Explore <Search className="h-4 w-4" />
           </button>
 
-          {/* --- FIXED BUTTON WITH #0a2540 BACKGROUND --- */}
           <Button
             href="/contact"
-            variant="primary" // Keeps solid background
+            variant="primary"
             size="md"
             className={`shadow-md hover:shadow-lg ${
               isHeroMode
-                ? "bg-[#0a2540] text-white border-0" // Your custom navy background
+                ? "bg-[#0a2540] text-white border-0"
                 : "bg-[var(--color-navy)] text-white"
             }`}
           >
@@ -529,42 +560,180 @@ export default function Navbar({
           </Button>
         </div>
 
+        {/* --- UPDATED MENU BUTTON WITH CUSTOM 4-BOX ICON --- */}
         <button
           onClick={() => setMobileOpen((v) => !v)}
-          className={`lg:hidden transition-colors ${isHeroMode ? "text-white" : "text-[var(--color-navy)]"}`}
+          className={`lg:hidden transition-colors flex items-center gap-2.5 text-[15px] font-medium ${isHeroMode ? "text-white" : "text-[var(--color-navy)]"}`}
           aria-label="Toggle menu"
         >
           {mobileOpen ? (
             <X className="h-6 w-6" />
           ) : (
-            <Menu className="h-6 w-6" />
+            <>
+              <span>Menu</span>
+              <div className="flex flex-col gap-[3px]">
+                <div className="flex gap-[3px]">
+                  <div className="w-[7px] h-[7px] rounded-[1px] border-[1.5px] currentColor"></div>
+                  <div className="w-[7px] h-[7px] rounded-[1px] border-[1.5px] currentColor"></div>
+                </div>
+                <div className="flex gap-[3px]">
+                  <div className="w-[7px] h-[7px] rounded-[1px] border-[1.5px] currentColor"></div>
+                  <div className="w-[7px] h-[7px] rounded-[1px] border-[1.5px] currentColor"></div>
+                </div>
+              </div>
+            </>
           )}
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="lg:hidden border-t border-[var(--color-line)] bg-white px-6 py-4 flex flex-col gap-4">
-          {links.map((l) => (
-            <MobileSection
-              key={l.label}
-              link={l}
-              onNavigate={() => setMobileOpen(false)}
-              pathname={pathname}
+      {/* --- MOBILE MENU --- */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileOpen(false)}
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
             />
-          ))}
 
-          <Button
-            href="/contact"
-            onClick={() => setMobileOpen(false)}
-            variant="primary"
-            size="md"
-            className="w-full justify-center bg-[var(--color-navy)]"
-          >
-            Get a quote
-          </Button>
-        </div>
-      )}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 250 }}
+              className="fixed top-0 right-0 h-full w-full max-w-[340px] bg-white z-50 lg:hidden flex flex-col overflow-y-auto overscroll-contain shadow-2xl"
+            >
+              {/* 1. Header */}
+              <div className="flex items-center justify-between px-6 py-6 shrink-0">
+                <Link
+                  href="/"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3"
+                >
+                  <div className="w-8 h-8 bg-[#3B82F6] rounded-full flex items-center justify-center">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 2L2 7L12 12L22 7L12 2Z" />
+                      <path d="M2 17L12 22L22 17" />
+                      <path d="M2 12L12 17L22 12" />
+                    </svg>
+                  </div>
+                  <span className="font-serif text-xl text-[#0B1426] italic tracking-wide">
+                    Solvior
+                  </span>
+                </Link>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="text-[#0B1426] hover:text-gray-500 transition-colors"
+                >
+                  <X className="h-7 w-7" />
+                </button>
+              </div>
+
+              {/* 2. Search Bar */}
+              <div className="px-6 pb-6 shrink-0">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    placeholder="Search here"
+                    className="w-full bg-gray-100 text-[#0B1426] text-sm py-3 pl-4 pr-10 rounded-sm outline-none placeholder-gray-500 focus:ring-1 focus:ring-blue-500"
+                  />
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
+                </div>
+              </div>
+
+              {/* 3. Navigation Links */}
+              <div className="flex-1 px-6 pb-6 flex flex-col gap-1">
+                {links.map((l) => (
+                  <div
+                    key={l.label}
+                    className="border-b border-gray-200 py-4 last:border-0"
+                  >
+                    <MobileSection
+                      link={l}
+                      onNavigate={() => setMobileOpen(false)}
+                      pathname={pathname}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* 4. CONTACT INFO & SOCIAL (Dark section at bottom) */}
+              <div className="bg-[#04122d] px-6 py-8 shrink-0 text-white">
+                <h4 className="text-lg font-bold mb-4">Contact info</h4>
+                <div className="space-y-4 mb-8">
+                  <div>
+                    <p className="text-gray-400 text-xs font-medium mb-0.5">
+                      Email
+                    </p>
+                    <Link
+                      href="mailto:support@solvior.com"
+                      className="text-sm hover:text-blue-400 transition-colors"
+                    >
+                      support@solvior.com
+                    </Link>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs font-medium mb-0.5">
+                      Phone
+                    </p>
+                    <Link
+                      href="tel:(000)123456789"
+                      className="text-sm hover:text-blue-400 transition-colors"
+                    >
+                      (000) 123 456 789
+                    </Link>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-xs font-medium mb-0.5">
+                      Location
+                    </p>
+                    <p className="text-sm">Santa, United State</p>
+                  </div>
+                </div>
+
+                <h4 className="text-lg font-bold mb-4">Follow us</h4>
+                <div className="flex gap-3">
+                  <Link
+                    href="#"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                  >
+                    <span className="font-bold text-sm">f</span>
+                  </Link>
+                  <Link
+                    href="#"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                  >
+                    <span className="font-bold text-sm">ig</span>
+                  </Link>
+                  <Link
+                    href="#"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                  >
+                    <span className="font-bold text-sm">in</span>
+                  </Link>
+                  <Link
+                    href="#"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                  >
+                    <span className="font-bold text-sm">t</span>
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 }
