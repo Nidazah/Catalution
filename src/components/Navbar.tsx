@@ -141,7 +141,7 @@ function PagesMegaMenu({
         >
           <div className="grid grid-cols-12 gap-0">
             <div className="col-span-3 p-6 border-r border-gray-100">
-              <h4 className="text-[17px] font-bold text-[#0B1426] mb-4 border-b-2 border-blue-600 pb-2 inline-block">
+              <h4 className="text-[17px] font-bold text-[var(--color-heading)] mb-4 border-b-2 border-[var(--color-accent)] pb-2 inline-block">
                 Main pages
               </h4>
               <ul className="space-y-0.5">
@@ -159,7 +159,7 @@ function PagesMegaMenu({
                       {link.label}
                       {link.badge && (
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${link.badge === "HOT" ? "bg-red-500" : "bg-blue-500"}`}
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${link.badge === "HOT" ? "bg-red-500" : "bg-[var(--color-accent)]"}`}
                         >
                           {link.badge}
                         </span>
@@ -170,7 +170,7 @@ function PagesMegaMenu({
               </ul>
             </div>
             <div className="col-span-3 p-6 border-r border-gray-100">
-              <h4 className="text-[17px] font-bold text-[#0B1426] mb-4 border-b-2 border-blue-600 pb-2 inline-block">
+              <h4 className="text-[17px] font-bold text-[var(--color-heading)] mb-4 border-b-2 border-[var(--color-accent)] pb-2 inline-block">
                 Other pages
               </h4>
               <ul className="space-y-0.5">
@@ -188,7 +188,7 @@ function PagesMegaMenu({
                       {link.label}
                       {link.badge && (
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${link.badge === "HOT" ? "bg-red-500" : "bg-blue-500"}`}
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${link.badge === "HOT" ? "bg-red-500" : "bg-[var(--color-accent)]"}`}
                         >
                           {link.badge}
                         </span>
@@ -199,17 +199,17 @@ function PagesMegaMenu({
               </ul>
             </div>
             <div className="col-span-6 p-7 bg-gray-50/30 relative flex flex-col">
-              <div className="relative rounded-xl overflow-hidden bg-[#0B1426] p-6 group hover:shadow-lg transition-shadow flex-1 flex flex-col justify-end max-h-[360px]">
+              <div className="relative rounded-xl overflow-hidden bg-[var(--color-heading)] p-6 group hover:shadow-lg transition-shadow flex-1 flex flex-col justify-end max-h-[360px]">
                 <Image
-                  src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&q=80"
+                  src="/images/blog/widget-cta.webp"
                   alt="Contact Us"
                   fill
                   className="object-cover object-top opacity-30 group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0B1426] via-[#0B1426]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-heading)] via-[var(--color-heading)]/40 to-transparent" />
                 <div className="relative z-10">
-                  <div className="text-blue-500 mb-3">
-                    <Hexagon className="h-8 w-8 text-blue-500" />
+                  <div className="text-[var(--color-accent)] mb-3">
+                    <Hexagon className="h-8 w-8 text-[var(--color-accent)]" />
                   </div>
                   <h5 className="text-[20px] font-bold text-white mb-1 leading-tight">
                     Need help?
@@ -220,7 +220,7 @@ function PagesMegaMenu({
                   <Button
                     href="/contact"
                     onClick={onNavigate}
-                    className="inline-flex items-center gap-2 bg-white !text-[#0B1426] [&_svg]:text-white font-semibold text-xs px-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                    className="inline-flex items-center gap-2 bg-white !text-[var(--color-heading)] [&_svg]:text-white font-semibold text-xs px-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
                   >
                     Get in touch
                   </Button>
@@ -252,8 +252,8 @@ function NavItem({
   // Conditional Colors based on Hero Mode
   const textColorClass = isHero
     ? isActive
-      ? "text-[#3B82F6]"
-      : "text-white hover:text-[#3B82F6]"
+      ? "text-[var(--color-accent)]"
+      : "text-white hover:text-[var(--color-accent)]"
     : isActive
       ? "text-[var(--color-accent)]"
       : "text-[var(--color-heading)] hover:text-[var(--color-accent)]";
@@ -266,14 +266,14 @@ function NavItem({
         className="relative"
       >
         <button
-          className={`relative text-[15px] font-semibold transition-colors inline-flex items-center gap-1 pb-1 ${open ? "text-[#3B82F6]" : textColorClass}`}
+          className={`relative text-[15px] font-semibold transition-colors inline-flex items-center gap-1 pb-1 ${open ? "text-[var(--color-accent)]" : textColorClass}`}
         >
           {link.label}
           <ChevronDown
             className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           />
           <span
-            className={`absolute -bottom-1 left-0 h-[2px] w-full bg-[#3B82F6] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0"}`}
+            className={`absolute -bottom-1 left-0 h-[2px] w-full bg-[var(--color-accent)] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0"}`}
           />
         </button>
         <PagesMegaMenu
@@ -304,14 +304,14 @@ function NavItem({
     >
       <Link
         href={link.href}
-        className={`relative text-[15px] font-semibold transition-colors inline-flex items-center gap-1 pb-1 ${open || isActive ? "text-[#3B82F6]" : textColorClass}`}
+        className={`relative text-[15px] font-semibold transition-colors inline-flex items-center gap-1 pb-1 ${open || isActive ? "text-[var(--color-accent)]" : textColorClass}`}
       >
         {link.label}
         <ChevronDown
           className={`h-3.5 w-3.5 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
         <span
-          className={`absolute -bottom-1 left-0 h-[2px] w-full bg-[#3B82F6] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0"}`}
+          className={`absolute -bottom-1 left-0 h-[2px] w-full bg-[var(--color-accent)] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0"}`}
         />
       </Link>
       <AnimatePresence>
@@ -331,14 +331,14 @@ function NavItem({
                   href={item.href}
                   data-cursor-hover
                   onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 px-5 py-2.5 text-[15px] font-semibold transition-colors hover:text-[#3B82F6] ${
+                  className={`flex items-center gap-3 px-5 py-2.5 text-[15px] font-semibold transition-colors hover:text-[var(--color-accent)] ${
                     itemActive
-                      ? "text-[#3B82F6] bg-[#EAF1FD]/60"
-                      : "text-[#0B1426]"
+                      ? "text-[var(--color-accent)] bg-[var(--color-orange-100)]/60"
+                      : "text-[var(--color-heading)]"
                   }`}
                 >
                   {item.icon && (
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#EAF1FD] text-[var(--color-accent)]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-orange-100)] text-[var(--color-accent)]">
                       <item.icon className="h-[18px] w-[18px]" />
                     </span>
                   )}
@@ -375,7 +375,7 @@ function MobileSection({
         href={link.href}
         onClick={onNavigate}
         className={`text-sm font-semibold ${
-          isActive ? "text-[#3B82F6]" : "text-[#0B1426] hover:text-[#3B82F6]"
+          isActive ? "text-[var(--color-accent)]" : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
         }`}
       >
         {link.label}
@@ -390,7 +390,7 @@ function MobileSection({
         <button
           onClick={() => setOpen((v) => !v)}
           className={`flex w-full items-center justify-between text-sm font-semibold ${
-            isActive ? "text-[#3B82F6]" : "text-[#0B1426] hover:text-[#3B82F6]"
+            isActive ? "text-[var(--color-accent)]" : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
           }`}
         >
           {link.label}
@@ -417,7 +417,7 @@ function MobileSection({
       <button
         onClick={() => setOpen((v) => !v)}
         className={`flex w-full items-center justify-between text-sm font-semibold ${
-          isActive ? "text-[#3B82F6]" : "text-[#0B1426] hover:text-[#3B82F6]"
+          isActive ? "text-[var(--color-accent)]" : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
         }`}
       >
         {link.label}
@@ -432,9 +432,9 @@ function MobileSection({
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              className={`text-sm hover:text-[#3B82F6] ${
+              className={`text-sm hover:text-[var(--color-accent)] ${
                 item.href === pathname
-                  ? "text-[#3B82F6] font-semibold"
+                  ? "text-[var(--color-accent)] font-semibold"
                   : "text-gray-600"
               }`}
             >
@@ -516,7 +516,7 @@ export default function Navbar({
         >
           <Image
             src={logoSrc}
-            alt="Solvior Logo"
+            alt="Catalution Logo"
             width={120}
             height={40}
             className="h-auto w-auto"
@@ -539,7 +539,7 @@ export default function Navbar({
           <button
             className={`inline-flex items-center gap-2 text-sm font-semibold transition-colors ${
               isHeroMode
-                ? "text-white hover:text-[#3B82F6]"
+                ? "text-white hover:text-[var(--color-accent)]"
                 : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
             }`}
           >
@@ -552,7 +552,7 @@ export default function Navbar({
             size="md"
             className={`shadow-md hover:shadow-lg ${
               isHeroMode
-                ? "bg-[#0a2540] text-white border-0"
+                ? "bg-[var(--color-navy)] text-white border-0"
                 : "bg-[var(--color-navy)] text-white"
             }`}
           >
@@ -612,29 +612,20 @@ export default function Navbar({
                   onClick={() => setMobileOpen(false)}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-8 h-8 bg-[#3B82F6] rounded-full flex items-center justify-center">
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M12 2L2 7L12 12L22 7L12 2Z" />
-                      <path d="M2 17L12 22L22 17" />
-                      <path d="M2 12L12 17L22 12" />
-                    </svg>
-                  </div>
-                  <span className="font-serif text-xl text-[#0B1426] italic tracking-wide">
-                    Solvior
+                  <Image
+                    src="/images/Logo/icon-mark.webp"
+                    alt="Catalution"
+                    width={32}
+                    height={34}
+                    className="h-8 w-auto"
+                  />
+                  <span className="font-display text-xl text-[var(--color-heading)] font-semibold tracking-wide">
+                    Catalution
                   </span>
                 </Link>
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="text-[#0B1426] hover:text-gray-500 transition-colors"
+                  className="text-[var(--color-heading)] hover:text-gray-500 transition-colors"
                 >
                   <X className="h-7 w-7" />
                 </button>
@@ -646,7 +637,7 @@ export default function Navbar({
                   <input
                     type="text"
                     placeholder="Search here"
-                    className="w-full bg-gray-100 text-[#0B1426] text-sm py-3 pl-4 pr-10 rounded-sm outline-none placeholder-gray-500 focus:ring-1 focus:ring-blue-500"
+                    className="w-full bg-gray-100 text-[var(--color-heading)] text-sm py-3 pl-4 pr-10 rounded-sm outline-none placeholder-gray-500 focus:ring-1 focus:ring-[var(--color-accent)]"
                   />
                   <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
                 </div>
@@ -669,7 +660,7 @@ export default function Navbar({
               </div>
 
               {/* 4. CONTACT INFO & SOCIAL (Dark section at bottom) */}
-              <div className="bg-[#04122d] px-6 py-8 shrink-0 text-white">
+              <div className="bg-[var(--color-navy-ink)] px-6 py-8 shrink-0 text-white">
                 <h4 className="text-lg font-bold mb-4">Contact info</h4>
                 <div className="space-y-4 mb-8">
                   <div>
@@ -677,10 +668,10 @@ export default function Navbar({
                       Email
                     </p>
                     <Link
-                      href="mailto:support@solvior.com"
-                      className="text-sm hover:text-blue-400 transition-colors"
+                      href="mailto:support@catalution.com"
+                      className="text-sm hover:text-[var(--color-accent-soft)] transition-colors"
                     >
-                      support@solvior.com
+                      support@catalution.com
                     </Link>
                   </div>
                   <div>
@@ -689,7 +680,7 @@ export default function Navbar({
                     </p>
                     <Link
                       href="tel:(000)123456789"
-                      className="text-sm hover:text-blue-400 transition-colors"
+                      className="text-sm hover:text-[var(--color-accent-soft)] transition-colors"
                     >
                       (000) 123 456 789
                     </Link>
@@ -706,25 +697,25 @@ export default function Navbar({
                 <div className="flex gap-3">
                   <Link
                     href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
                   >
                     <span className="font-bold text-sm">f</span>
                   </Link>
                   <Link
                     href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
                   >
                     <span className="font-bold text-sm">ig</span>
                   </Link>
                   <Link
                     href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
                   >
                     <span className="font-bold text-sm">in</span>
                   </Link>
                   <Link
                     href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-blue-600 transition-colors flex items-center justify-center"
+                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
                   >
                     <span className="font-bold text-sm">t</span>
                   </Link>

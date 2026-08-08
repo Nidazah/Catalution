@@ -53,17 +53,7 @@ const services = [
 
 export default function Services() {
   return (
-    <section id="services" className="bg-[#0B1426] py-20 md:py-24">
-      <style>{`
-        :root {
-          --color-line: #d1d5db;
-          --color-heading: #0a2540;
-          --color-body: #4b5563;
-          --color-accent: #1D65FF;
-          --color-navy: #0a2540;
-        }
-      `}</style>
-
+    <section id="services" className="bg-navy py-20 md:py-24">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-2 lg:grid-cols-4">
           {services.map((s, i) => (
@@ -78,7 +68,7 @@ export default function Services() {
               >
                 {/* --- BOTTOM GLOW (hover only) --- */}
                 <div
-                  className="pointer-events-none absolute bottom-0 left-1/2 h-32 w-[140%] -translate-x-1/2 translate-y-1/2 rounded-full bg-blue-500/50 blur-[70px] opacity-0 scale-90 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-100"
+                  className="pointer-events-none absolute bottom-0 left-1/2 h-32 w-[140%] -translate-x-1/2 translate-y-1/2 rounded-full bg-accent/50 blur-[70px] opacity-0 scale-90 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:scale-100"
                 />
 
                 {/* --- ICON --- */}

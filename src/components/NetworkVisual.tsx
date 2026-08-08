@@ -39,9 +39,8 @@ export default function NetworkVisual() {
           y1={nodes[a].y}
           x2={nodes[b].x}
           y2={nodes[b].y}
-          stroke="#60A5FA"
+          className="flow-line stroke-accent-soft"
           strokeWidth="1"
-          className="flow-line"
           style={{ animationDelay: `${i * 0.4}s` }}
         />
       ))}
@@ -51,15 +50,14 @@ export default function NetworkVisual() {
             cx={n.x}
             cy={n.y}
             r="10"
-            fill="#2563EB"
+            className="fill-accent"
             fillOpacity="0.08"
           />
           <circle
             cx={n.x}
             cy={n.y}
             r={i === 1 ? 4.5 : 3}
-            fill={i === 1 ? "#0A2540" : "#2563EB"}
-            className="node-pulse"
+            className={i === 1 ? "fill-navy" : "fill-accent"}
             style={{ animationDelay: `${i * 0.3}s` }}
           />
         </g>

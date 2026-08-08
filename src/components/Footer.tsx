@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 import { ArrowUp, Send, ShieldCheck } from "lucide-react";
 
 /* ---------- inline social icons (lucide dropped brand logos) ---------- */
@@ -45,18 +47,18 @@ const socials = [
   {
     icon: FacebookIcon,
     label: "Facebook",
-    href: "https://facebook.com/solvior",
+    href: "https://facebook.com/catalution",
   },
   {
     icon: InstagramIcon,
     label: "Instagram",
-    href: "https://instagram.com/solvior",
+    href: "https://instagram.com/catalution",
   },
-  { icon: TwitterIcon, label: "Twitter", href: "https://twitter.com/solvior" },
+  { icon: TwitterIcon, label: "Twitter", href: "https://twitter.com/catalution" },
   {
     icon: LinkedinIcon,
     label: "LinkedIn",
-    href: "https://linkedin.com/company/solvior",
+    href: "https://linkedin.com/company/catalution",
   },
 ];
 
@@ -96,14 +98,18 @@ export default function FooterV2() {
       <div className="mx-auto max-w-7xl px-6 py-20 grid gap-12 md:grid-cols-[1.3fr_0.8fr_0.8fr_1fr]">
         {/* Brand + social */}
         <div>
-          <a href="/" className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-accent)]">
-              <span className="h-3 w-3 rounded-full bg-white" />
-            </span>
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/images/Logo/icon-mark.webp"
+              alt="Catalution"
+              width={36}
+              height={38}
+              className="h-9 w-auto"
+            />
             <span className="font-display text-2xl font-bold text-[var(--color-heading)]">
-              Sol<span className="font-serif italic font-normal">vior</span>
+              Catalution
             </span>
-          </a>
+          </Link>
 
           <p className="mt-6 max-w-xs text-sm leading-relaxed text-[var(--color-body)]">
             Our mission is to empower businesses of all sizes to thrive in an
@@ -121,7 +127,7 @@ export default function FooterV2() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#C7CFDA] text-white transition-colors hover:bg-[var(--color-accent)]"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-purple-300)] text-white transition-colors hover:bg-[var(--color-accent)]"
               >
                 <s.icon className="h-4 w-4" />
               </a>
@@ -202,14 +208,14 @@ export default function FooterV2() {
 
       {/* Bottom bar */}
       <div className="bg-[var(--color-navy)]">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[#B7C4D6]">
+        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--color-purple-100)]">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-white" />
             <span>Trusted partner in business excellence</span>
           </div>
           <div>
             © {new Date().getFullYear()}{" "}
-            <span className="font-semibold text-white">Solvior</span> All right
+            <span className="font-semibold text-white">Catalution</span> All right
             reserved.
           </div>
           <div className="flex items-center gap-3">

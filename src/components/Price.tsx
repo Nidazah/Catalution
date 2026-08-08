@@ -24,13 +24,13 @@ export default function PricingHeader() {
           
           {/* LEFT COLUMN: STATIC */}
           <div className="flex flex-col justify-center">
-            <div className="inline-flex items-center gap-2 rounded bg-blue-50 px-3 py-1.5 text-xs font-semibold tracking-wide text-blue-600">
-              <span className="h-1.5 w-1.5 rounded-full bg-blue-600" />
+            <div className="inline-flex items-center gap-2 rounded bg-orange-100 px-3 py-1.5 text-xs font-semibold tracking-wide text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               PRICING PLAN
             </div>
 
             {/* ⬇️ Shrunk Title */}
-            <h1 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-[#0B1426] leading-[1.1] tracking-tight">
+            <h1 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-navy leading-[1.1] tracking-tight">
               Flexible pricing,<br />
               powerful tangible<br />
               results
@@ -44,10 +44,10 @@ export default function PricingHeader() {
             {/* TOGGLE SWITCH - Stays on the left */}
             {/* ⬇️ Compressed the toggle slightly */}
             <div className="mt-8">
-              <div className="relative inline-flex h-12 items-center rounded-full bg-[#0B1426] p-1.5 shadow-sm">
+              <div className="relative inline-flex h-12 items-center rounded-full bg-navy p-1.5 shadow-sm">
                 
                 <motion.div
-                  className="absolute h-[38px] w-[90px] rounded-full bg-blue-600 shadow-sm"
+                  className="absolute h-[38px] w-[90px] rounded-full bg-accent shadow-sm"
                   initial={false}
                   animate={{
                     x: billingCycle === "monthly" ? 0 : 92,
@@ -88,7 +88,7 @@ export default function PricingHeader() {
                   key={plan.name}
                   className="w-full rounded-2xl border border-gray-200 bg-white p-5 shadow-sm"
                 >
-                  <h3 className="font-display text-lg md:text-xl font-bold text-[#0B1426]">
+                  <h3 className="font-display text-lg md:text-xl font-bold text-navy">
                     {plan.name}
                   </h3>
 
@@ -98,7 +98,7 @@ export default function PricingHeader() {
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="text-3xl md:text-4xl font-bold text-[#0B1426]"
+                      className="text-3xl md:text-4xl font-bold text-navy"
                     >
                       {billingCycle === "monthly" ? plan.monthly : plan.yearly}
                     </motion.span>

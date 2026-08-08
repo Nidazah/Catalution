@@ -1,29 +1,62 @@
 @import "tailwindcss";
+/* Poppins/Inter are loaded via next/font in layout.tsx (--font-poppins, --font-inter below) */
 
 :root {
-  --color-navy: #0a2540;
-  --color-navy-ink: #071a2e;
-  --color-accent: #2563eb;
-  --color-accent-soft: #60a5fa;
-  --color-bg: #ffffff;
-  --color-section: #f5f7fa;
-  --color-heading: #111827;
-  --color-body: #6b7280;
-  --color-line: #e2e8f0;
+  /* ---------- Catalution brand tokens ---------- */
+  /* Primary — Purple family */
+  --color-purple-900: #4B1D96;
+  --color-purple-700: #6D28D9;
+  --color-purple-500: #885CF6;
+  --color-purple-300: #A78BFA;
+  --color-purple-100: #DCCBFF;
 
-  --font-display: "Segoe UI Semibold", "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-body: "Inter", "Segoe UI", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* Secondary — Orange family */
+  --color-orange-900: #FF6800;
+  --color-orange-700: #FB923C;
+  --color-orange-500: #FFB164;
+  --color-orange-300: #FFD59E;
+  --color-orange-100: #FFEAD5;
+
+  /* ---------- Existing site tokens, remapped to Catalution brand ---------- */
+  /* Kept under their original names so every component (Navbar, Hero, buttons,
+     cursor, gradients, etc.) re-themes automatically without per-file edits. */
+  --color-navy: var(--color-purple-900);       /* was #0a2540 — primary brand color */
+  --color-navy-ink: #34146B;                    /* was #071a2e — darker purple for hover/ink states */
+  --color-accent: var(--color-orange-900);      /* was #2563eb — CTAs, highlights, accents */
+  --color-accent-soft: var(--color-orange-500); /* was #60a5fa — soft accent / hover glow */
+  --color-bg: #ffffff;
+  --color-section: #F8F5FF;                     /* was #f5f7fa — faint purple-tinted section bg */
+  --color-heading: #1E1233;                     /* was #111827 — near-black with purple undertone */
+  --color-body: #6b7280;
+  --color-line: #E7DEF7;                        /* was #e2e8f0 — soft lavender border */
+
+  --font-display: var(--font-poppins), "Poppins", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-body: var(--font-inter), "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Buttons */
+  --radius-btn: 12px;
 }
 
 @theme inline {
   --color-navy: var(--color-navy);
+  --color-navy-ink: var(--color-navy-ink);
   --color-accent: var(--color-accent);
   --color-accent-soft: var(--color-accent-soft);
   --color-section: var(--color-section);
   --color-heading: var(--color-heading);
   --color-body: var(--color-body);
   --color-line: var(--color-line);
+  --color-purple-900: var(--color-purple-900);
+  --color-purple-700: var(--color-purple-700);
+  --color-purple-500: var(--color-purple-500);
+  --color-purple-300: var(--color-purple-300);
+  --color-purple-100: var(--color-purple-100);
+  --color-orange-900: var(--color-orange-900);
+  --color-orange-700: var(--color-orange-700);
+  --color-orange-500: var(--color-orange-500);
+  --color-orange-300: var(--color-orange-300);
+  --color-orange-100: var(--color-orange-100);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
@@ -81,14 +114,14 @@ body {
   width: 34px;
   height: 34px;
   border: 1.5px solid var(--color-accent-soft);
-  background: rgba(37, 99, 235, 0.06);
+  background: rgba(255, 104, 0, 0.06);
   transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
 }
 
 .cursor-ring.is-active {
   width: 56px;
   height: 56px;
-  background: rgba(37, 99, 235, 0.1);
+  background: rgba(255, 104, 0, 0.1);
   border-color: var(--color-accent);
 }
 
@@ -103,7 +136,7 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(95deg, var(--color-navy) 0%, var(--color-accent) 60%, var(--color-accent-soft) 100%);
+  background: linear-gradient(95deg, var(--color-navy) 0%, var(--color-purple-500) 45%, var(--color-accent) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -142,7 +175,7 @@ body {
 }
 
 /* home-05 additions */
-.font-serif { font-family: var(--font-playfair), Georgia, serif; }
+.font-serif { font-family: var(--font-display), Georgia, serif; }
 .outline-text {
   -webkit-text-stroke: 1px rgba(255,255,255,0.85);
   color: transparent;
@@ -173,4 +206,92 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* ===================================================================
+   Catalution Typography Hierarchy
+   (Poppins for headings/UI, Inter for body — per brand guide)
+=================================================================== */
+.h1, h1 { font-family: var(--font-display); font-weight: 700; font-size: 48px; line-height: 120%; color: var(--color-heading); }
+.h2, h2 { font-family: var(--font-display); font-weight: 600; font-size: 36px; line-height: 120%; color: var(--color-heading); }
+.h3, h3 { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 120%; color: var(--color-heading); }
+.h4, h4 { font-family: var(--font-display); font-weight: 500; font-size: 22px; line-height: 130%; color: var(--color-heading); }
+.h5, h5 { font-family: var(--font-display); font-weight: 500; font-size: 18px; line-height: 140%; color: var(--color-heading); }
+.h6, h6 { font-family: var(--font-display); font-weight: 400; font-size: 16px; line-height: 140%; color: var(--color-heading); }
+
+.body-lg { font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 150%; color: var(--color-body); }
+.body-md { font-family: var(--font-body); font-weight: 400; font-size: 14px; line-height: 160%; color: var(--color-body); }
+.body-sm { font-family: var(--font-body); font-weight: 400; font-size: 12px; line-height: 160%; color: var(--color-body); }
+.caption { font-family: var(--font-body); font-weight: 400; font-size: 11px; line-height: 150%; color: var(--color-body); }
+
+/* ===================================================================
+   Catalution Button Styles
+   12px radius, action-oriented — purple primary / orange secondary
+=================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: var(--radius-btn);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--color-purple-900);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+.btn-primary:hover {
+  background: var(--color-purple-700);
+}
+.btn-primary:disabled {
+  background: var(--color-purple-100);
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: var(--color-orange-900);
+  color: #ffffff;
+  border: 1px solid transparent;
+}
+.btn-secondary:hover {
+  background: var(--color-orange-700);
+}
+.btn-secondary:disabled {
+  background: var(--color-orange-100);
+  color: #ffffff;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-purple-900);
+  border: 1px solid var(--color-purple-900);
+}
+.btn-outline:hover {
+  background: var(--color-purple-100);
+}
+.btn-outline:disabled {
+  color: var(--color-purple-300);
+  border-color: var(--color-purple-100);
+  cursor: not-allowed;
+}
+
+.btn-link {
+  background: transparent;
+  color: var(--color-orange-900);
+  padding: 0;
+  border-radius: 0;
+  font-weight: 500;
+}
+.btn-link:hover {
+  color: var(--color-orange-700);
+  text-decoration: underline;
 }

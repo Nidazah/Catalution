@@ -16,7 +16,7 @@ export default function PageHero({
   return (
     // Background still bleeds up behind the transparent/fixed navbar (-mt-20),
     // but text content gets its OWN top offset so it clears the navbar height.
-    <section className="relative -mt-20 h-[500px] flex justify-center overflow-hidden bg-[#0B1426]">
+    <section className="relative -mt-20 h-[500px] flex justify-center overflow-hidden bg-navy">
       <div className="absolute inset-0 z-0">
         <Image
           src={imageSrc}
@@ -25,7 +25,7 @@ export default function PageHero({
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-[#0B1426]/85" />
+        <div className="absolute inset-0 bg-navy/85" />
       </div>
 
       {/* pt-40/44 instead of pt-24 — clears the ~100px navbar + the -mt-20 offset */}

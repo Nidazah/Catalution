@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
-import { blogPosts } from "@/app/data/blog"; // Using your actual data source!
-import Button from "@/components/Button"; // ✅ Import your Button component
-import { ArrowRight } from "lucide-react";
+import { blogPosts } from "@/app/data/blog";
+import Button from "@/components/Button";
 
 export default function BlogGridPage() {
-  const itemsPerPage = 6; // 3 columns x 2 rows
+  const itemsPerPage = 6;
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = Math.ceil(blogPosts.length / itemsPerPage);
@@ -23,11 +23,12 @@ export default function BlogGridPage() {
     }
   };
 
-  // Helper to format "October 15, 2024" to "15 OCT"
   const formatDateBadge = (dateString: string) => {
     const date = new Date(dateString);
     const day = date.getDate().toString().padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "short" }).toUpperCase();
+    const month = date
+      .toLocaleString("default", { month: "short" })
+      .toUpperCase();
     return { day, month };
   };
 
@@ -35,136 +36,167 @@ export default function BlogGridPage() {
     <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
       <PageHero title="Blog Grid" />
 
-      {/* --- MAIN GRID SECTION --- */}
       <section className="container mx-auto px-6 py-20 max-w-7xl">
-        
-        {/* Blog Grid (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {currentPosts.map((post) => {
-            const { day, month } = formatDateBadge(post.date);
-            
-            return (
-              <Link 
-                key={post.id} 
-                href={`/blog/${post.id}`} 
-                className="group block bg-white border border-gray-300 hover:shadow-lg transition-all duration-300"
-              >
-                {/* Image Area with Date Badge */}
-                <div className="relative w-full aspect-[4/3] bg-gray-50 overflow-hidden">
-                  <Image 
-                    src={post.image} 
-                    alt={post.title} 
-                    fill 
-                    className="object-cover group-hover:scale-105 transition-transform duration-500" 
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  
-                  {/* Date Badge (Top Right Corner) */}
-                  <div className="absolute top-0 right-0 bg-[#374151]/90 text-white flex flex-col items-center justify-center p-2.5 min-w-[56px] backdrop-blur-sm">
-                    <span className="text-[20px] font-bold leading-none">
-                      {day}
-                    </span>
-                    <span className="text-[11px] font-medium uppercase tracking-wide mt-0.5">
-                      {month}
-                    </span>
-                  </div>
-                </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {currentPosts.map((post) => {
+              const { day, month } = formatDateBadge(post.date);
 
-                {/* Content Area */}
-                <div className="p-6 md:p-7 flex flex-col">
-                  
-                  {/* Tags & Comments Row */}
-                  <div className="flex items-center justify-between mb-3.5">
-                    <span className="px-3.5 py-1 border border-gray-300 rounded-full text-[11px] font-medium text-gray-600 bg-white">
-                      {post.category}
-                    </span>
-                    <span className="text-[12px] text-gray-500 font-medium">
-                      {post.comments} Comments
-                    </span>
+              return (
+                <Link
+                  key={post.id}
+                  href={`/blog/${post.id}`}
+                  className="group block bg-white border border-gray-300 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="relative w-full aspect-[4/3] bg-gray-50 overflow-hidden">
+                    <Image
+                      src={post.image}
+                      alt={post.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                    <div className="absolute top-0 right-0 bg-[#374151]/90 text-white flex flex-col items-center justify-center p-2.5 min-w-[56px] backdrop-blur-sm">
+                      <span className="text-[20px] font-bold leading-none">
+                        {day}
+                      </span>
+                      <span className="text-[11px] font-medium uppercase tracking-wide mt-0.5">
+                        {month}
+                      </span>
+                    </div>
                   </div>
-                  
-                  {/* Title */}
-                  <h3 className="text-[22px] font-bold text-[#0B1426] leading-tight group-hover:text-blue-600 transition-colors mb-3 line-clamp-2">
-                    {post.title}
-                  </h3>
-                  
-                  {/* Excerpt */}
-                  <p className="text-[15px] text-[#4B5563] leading-relaxed mb-6 line-clamp-3">
-                    {post.excerpt}
-                  </p>
-                  
-                  {/* ✅ "Read more" as a span — card is already a Link, so no nested interactive element */}
-                  <div className="mt-auto pt-2">
-                    <span
-                      data-cursor-hover
-                      className="group/btn inline-flex items-center gap-1.5 text-[13px] font-bold text-[#0B1426] transition-colors group-hover:text-blue-600"
-                    >
-                      Read more
-                      <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-0.5" />
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
 
-        {/* --- PAGINATION --- */}
+                  <div className="p-6 md:p-7 flex flex-col">
+                    <div className="flex items-center justify-between mb-3.5">
+                      <span className="px-3.5 py-1 border border-gray-300 rounded-full text-[11px] font-medium text-gray-600 bg-white">
+                        {post.category}
+                      </span>
+                      <span className="text-[12px] text-gray-500 font-medium">
+                        {post.comments} Comments
+                      </span>
+                    </div>
+                    <h3 className="text-[22px] font-bold text-navy leading-tight group-hover:text-accent transition-colors mb-3 line-clamp-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-[15px] text-[#4B5563] leading-relaxed mb-6 line-clamp-3">
+                      {post.excerpt}
+                    </p>
+
+                    {/* ✅ Replaced manual Read More link with Button */}
+                    <div className="mt-auto pt-2">
+                      <Button
+                        href={`/blog/${post.id}`}
+                        size="sm"
+                        className="bg-transparent !text-navy hover:text-accent p-0 h-auto font-bold"
+                      >
+                        Read more
+                      </Button>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* --- PAGINATION WITH ANIMATIONS & ARROWS ON BOTH SIDES --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-3 mt-16">
-            {/* Previous (+) Button */}
-            <Button
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+            className="flex justify-center items-center gap-2 mt-16"
+          >
+            {/* Previous Arrow (←) */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              size="sm"
-              className={`w-10 h-10 rounded-full border bg-white ${
+              className={`relative flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                 currentPage === 1
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-gray-500"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
               }`}
-              icon={false}
+              aria-label="Previous page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6" />
               </svg>
-            </Button>
+            </motion.button>
 
             {/* Page Numbers */}
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-              <Button
-                key={number}
-                onClick={() => paginate(number)}
-                size="sm"
-                className={`w-10 h-10 rounded-full text-sm font-bold transition-colors ${
-                  currentPage === number
-                    ? "bg-[#1D4ED8] text-white"
-                    : "border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"
-                }`}
-                icon={false}
-              >
-                {number.toString().padStart(2, "0")}
-              </Button>
-            ))}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+              (number) => (
+                <motion.button
+                  key={number}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{
+                    delay: 0.1 * number,
+                    duration: 0.3,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20,
+                  }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => paginate(number)}
+                  className={`relative flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
+                    currentPage === number
+                      ? "bg-accent text-white border-2 border-black shadow-md scale-105"
+                      : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5"
+                  }`}
+                  aria-label={`Go to page ${number}`}
+                >
+                  {number.toString().padStart(2, "0")}
+                </motion.button>
+              ),
+            )}
 
-            {/* Next (+) Button */}
-            <Button
+            {/* Next Arrow (→) */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              size="sm"
-              className={`w-10 h-10 rounded-full border bg-white ${
+              className={`relative flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                 currentPage === totalPages
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-gray-500"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
               }`}
-              icon={false}
+              aria-label="Next page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6" />
               </svg>
-            </Button>
-          </div>
+            </motion.button>
+          </motion.div>
         )}
       </section>
     </main>

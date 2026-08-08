@@ -85,8 +85,8 @@ const allServices = [
 // --- ICON HELPER ---
 const ServiceIcon = ({ type, isHovered }: { type: string; isHovered?: boolean }) => {
   return (
-    <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 shrink-0 transition-colors duration-300 ${isHovered ? "bg-white/20" : "bg-[#EAF1FD]"}`}>
-      <div className={`relative w-10 h-10 transition-colors duration-300 ${isHovered ? "text-white" : "text-[#2563EB]"}`}>
+    <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-6 shrink-0 transition-colors duration-300 ${isHovered ? "bg-white/20" : "bg-orange-100"}`}>
+      <div className={`relative w-10 h-10 transition-colors duration-300 ${isHovered ? "text-white" : "text-accent"}`}>
         {type === "waves" && (
           <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z" />
@@ -162,7 +162,7 @@ export default function ServicesPage() {
                     className="object-cover"
                   />
                   {/* Dark Gradient Overlay so text stays readable */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#0B1426]/90 via-[#0B1426]/70 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-transparent" />
                 </div>
 
                 {/* CONTENT WRAPPER (Always visible) */}
@@ -175,7 +175,7 @@ export default function ServicesPage() {
                   {/* The Icon Box and Icon Change Colors on Hover */}
                   <ServiceIcon type={s.icon} isHovered={true} />
 
-                  <h3 className="text-2xl font-bold text-[#0B1426] group-hover:text-white mb-3 transition-colors">
+                  <h3 className="text-2xl font-bold text-navy group-hover:text-white mb-3 transition-colors">
                     {s.title}
                   </h3>
                   
@@ -184,7 +184,7 @@ export default function ServicesPage() {
                     {s.desc}
                   </p>
                   
-                  <div className="mt-6 flex items-center gap-2 text-[14px] font-bold text-[#0B1426] group-hover:text-white transition-colors">
+                  <div className="mt-6 flex items-center gap-2 text-[14px] font-bold text-navy group-hover:text-white transition-colors">
                     Get optimization <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
@@ -193,54 +193,58 @@ export default function ServicesPage() {
           })}
         </div>
 
-        {/* --- PAGINATION --- */}
+        {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-3 mt-16">
+          <div className="flex justify-center items-center gap-2 mt-16">
+            
+            {/* Previous Arrow (←) */}
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                 currentPage === 1
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-gray-500"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
               }`}
               aria-label="Previous page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
 
+            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
               <button
                 key={number}
                 onClick={() => paginate(number)}
-                className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-colors ${
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
                   currentPage === number
-                    ? "bg-[#1D4ED8] text-white"
-                    : "border border-gray-300 text-gray-600 bg-white hover:bg-gray-50"
+                    ? "bg-accent text-white border-2 border-black shadow-md scale-105"
+                    : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5"
                 }`}
+                aria-label={`Go to page ${number}`}
               >
                 {number.toString().padStart(2, "0")}
               </button>
             ))}
 
+            {/* Next Arrow (→) */}
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                 currentPage === totalPages
                   ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-gray-500"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
               }`}
               aria-label="Next page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
+
           </div>
         )}
       </div>

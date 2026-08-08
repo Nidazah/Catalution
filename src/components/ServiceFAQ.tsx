@@ -21,8 +21,8 @@ export default function ServiceFAQ() {
             onClick={() => setOpenIndex(openIndex === index ? null : index)}
             className="w-full flex items-center justify-between gap-3 p-3.5 sm:p-4 md:p-5 text-left"
           >
-            <span className="font-semibold text-sm sm:text-[15px] leading-snug text-[#0B1426]">{faq.q}</span>
-            <span className={`shrink-0 text-[#0B1426] transition-transform duration-300 ${openIndex === index ? "rotate-45" : "rotate-0"}`}>
+            <span className="font-semibold text-sm sm:text-[15px] leading-snug text-navy">{faq.q}</span>
+            <span className={`shrink-0 text-navy transition-transform duration-300 ${openIndex === index ? "rotate-45" : "rotate-0"}`}>
               <svg width="18" height="18" className="sm:w-5 sm:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
               </svg>

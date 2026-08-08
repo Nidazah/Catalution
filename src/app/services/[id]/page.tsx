@@ -245,7 +245,7 @@ const servicesData = {
 // --- KEY FEATURES ICON HELPER ---
 const FeatureIcon = ({ type }: { type: string }) => {
   return (
-    <div className="w-12 h-12 text-[#2563EB] mb-4">
+    <div className="w-12 h-12 text-accent mb-4">
       {type === "quicksolutions" && (
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M4 4h6v6H4V4zm10 0h6v6h-6V-4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
@@ -277,6 +277,12 @@ export default async function ServicePage({
     notFound();
   }
 
+  // Get service IDs for pagination
+  const serviceIds = Object.keys(servicesData);
+  const currentIndex = serviceIds.indexOf(id);
+  const prevId = currentIndex > 0 ? serviceIds[currentIndex - 1] : null;
+  const nextId = currentIndex < serviceIds.length - 1 ? serviceIds[currentIndex + 1] : null;
+
   return (
     <main className="min-h-screen bg-white pt-20">
       <PageHero title={service.title} />
@@ -286,6 +292,40 @@ export default async function ServicePage({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* ================= LEFT COLUMN (8/12) ================= */}
           <div className="lg:col-span-8 space-y-12">
+            
+            {/* TOP NAVIGATION: PAGINATION ARROWS ON BOTH SIDES */}
+            <div className="flex items-center justify-between mb-4">
+              {/* Previous Arrow (←) */}
+              {prevId ? (
+                <Link
+                  href={`/services/${prevId}`}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 transition-all duration-300 hover:border-accent hover:text-accent hover:bg-accent/5"
+                  aria-label="Previous service"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </Link>
+              ) : (
+                <div className="h-11 w-11" />
+              )}
+
+              {/* Next Arrow (→) */}
+              {nextId ? (
+                <Link
+                  href={`/services/${nextId}`}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 transition-all duration-300 hover:border-accent hover:text-accent hover:bg-accent/5"
+                  aria-label="Next service"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </Link>
+              ) : (
+                <div className="h-11 w-11" />
+              )}
+            </div>
+
             {/* 1. Large Hero Image */}
             <div className="relative aspect-[16/9] w-full bg-gray-100 overflow-hidden">
               <Image
@@ -298,7 +338,7 @@ export default async function ServicePage({
 
             {/* 2. Main Title & Description */}
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-[#0B1426] mb-4 leading-tight">
+              <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4 leading-tight">
                 {service.title} in the comprehensive process of formulating
                 goals
               </h1>
@@ -317,7 +357,7 @@ export default async function ServicePage({
 
             {/* 3. Service Overview & 2x2 Grid */}
             <div>
-              <h2 className="text-2xl font-bold text-[#0B1426] mb-3">
+              <h2 className="text-2xl font-bold text-navy mb-3">
                 Service overview
               </h2>
               <p className="text-gray-600 leading-relaxed text-[15px] mb-6">
@@ -332,8 +372,8 @@ export default async function ServicePage({
                     key={idx}
                     className="p-5 border-b border-r border-gray-300 bg-white flex items-start gap-3"
                   >
-                    <Check className="h-5 w-5 text-[#2563EB] shrink-0 mt-0.5" />
-                    <p className="text-[14px] text-[#0B1426] leading-relaxed font-medium">
+                    <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                    <p className="text-[14px] text-navy leading-relaxed font-medium">
                       {item}
                     </p>
                   </div>
@@ -363,7 +403,7 @@ export default async function ServicePage({
 
             {/* 5. Key Features (3 Columns) */}
             <div>
-              <h2 className="text-2xl font-bold text-[#0B1426] mb-3">
+              <h2 className="text-2xl font-bold text-navy mb-3">
                 Key features
               </h2>
               <div className="space-y-4 text-gray-600 leading-relaxed text-[15px] mb-6">
@@ -383,9 +423,9 @@ export default async function ServicePage({
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {service.keyFeatures.map((feature, idx) => (
-                  <div key={idx} className="bg-[#EAF1FD] p-6 rounded-sm">
+                  <div key={idx} className="bg-orange-100 p-6 rounded-sm">
                     <FeatureIcon type={feature.icon} />
-                    <h4 className="text-[17px] font-bold text-[#0B1426] mb-2">
+                    <h4 className="text-[17px] font-bold text-navy mb-2">
                       {feature.title}
                     </h4>
                     <p className="text-[14px] text-[#4B5563] leading-relaxed">
@@ -397,7 +437,7 @@ export default async function ServicePage({
             </div>
 
             {/* 6. Video Section (Dark Background with Play Button) */}
-            <div className="relative aspect-[21/9] w-full bg-[#0B1426] overflow-hidden mt-4">
+            <div className="relative aspect-[21/9] w-full bg-navy overflow-hidden mt-4">
               <Image
                 src={service.heroImage}
                 alt="Video Placeholder"
@@ -406,14 +446,14 @@ export default async function ServicePage({
               />
               <div className="absolute inset-0 flex items-center justify-center">
                 <button className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition-transform">
-                  <Play className="h-8 w-8 text-[#0B1426] fill-[#0B1426] ml-1" />
+                  <Play className="h-8 w-8 text-navy fill-navy ml-1" />
                 </button>
               </div>
             </div>
 
             {/* 7. General Questions FAQ (Client Component imported) */}
             <div className="mt-12">
-              <h2 className="text-2xl font-bold text-[#0B1426] mb-6">
+              <h2 className="text-2xl font-bold text-navy mb-6">
                 General questions
               </h2>
               <ServiceFAQ />
@@ -434,11 +474,11 @@ export default async function ServicePage({
                   fill
                   className="object-cover opacity-20 grayscale"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1426]/80 via-[#0B1426]/60 to-[#0B1426]/90" />
+                <div className="absolute inset-0 bg-gradient-to-b from-navy/80 via-navy/60 to-navy/90" />
               </div>
 
               <div className="relative z-10 pt-2">
-                <div className="w-12 h-12 bg-[#1D4ED8] rounded-lg flex items-center justify-center text-white mb-6">
+                <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center text-white mb-6">
                   <svg
                     viewBox="0 0 24 24"
                     fill="currentColor"
@@ -452,7 +492,7 @@ export default async function ServicePage({
                   <br />
                   Feel free contact us
                 </h3>
-                <p className="text-sm text-blue-100/80 leading-relaxed max-w-[200px]">
+                <p className="text-sm text-orange-100/80 leading-relaxed max-w-[200px]">
                   Our mission is to empowers businesses off all size in an
                   businesses.
                 </p>
@@ -461,9 +501,9 @@ export default async function ServicePage({
               <div className="relative z-10">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-3 rounded-full bg-white hover:bg-gray-100 pl-2 pr-6 py-2 text-[14px] font-semibold text-[#0B1426] transition-all shadow-lg"
+                  className="inline-flex items-center gap-3 rounded-full bg-white hover:bg-gray-100 pl-2 pr-6 py-2 text-[14px] font-semibold text-navy transition-all shadow-lg"
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1D4ED8] text-white">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-white">
                     <ArrowRight className="h-4 w-4" />
                   </span>
                   Get in touch

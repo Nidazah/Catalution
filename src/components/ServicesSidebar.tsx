@@ -72,31 +72,10 @@ interface ServicesSidebarProps {
 export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
   return (
     <div className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <style>{`
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slide-in { animation: slideIn 0.3s ease-out forwards; }
-        @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.4); }
-          50% { box-shadow: 0 0 0 8px rgba(26, 115, 232, 0); }
-        }
-        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
-        @keyframes shimmer {
-          0% { background-position: -200% 0; }
-          100% { background-position: 200% 0; }
-        }
-        .animate-shimmer {
-          background: linear-gradient(90deg, #EAF3FF 25%, #d4e6ff 50%, #EAF3FF 75%);
-          background-size: 200% 100%;
-          animation: shimmer 3s ease-in-out infinite;
-        }
-      `}</style>
       {/* Header */}
-      <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-[#F8FAFD] to-white">
-        <h3 className="text-[15px] font-bold text-[#0B1426] flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-[#1A73E8] animate-pulse" />
+      <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-section to-white">
+        <h3 className="text-[15px] font-bold text-navy flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-accent animate-pulse-glow" />
           Our Services
         </h3>
         <p className="text-sm text-gray-500 mt-1">
@@ -111,27 +90,27 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
             <Link
               key={service.id}
               href={service.href}
-              className={`group relative block p-4 sm:p-5 transition-all duration-300 hover:bg-[#F8FAFD] sm:hover:pl-6 cursor-pointer ${
-                isActive ? "bg-[#F8FAFD] sm:pl-6" : ""
+              className={`group relative block p-4 sm:p-5 transition-all duration-300 hover:bg-section sm:hover:pl-6 cursor-pointer ${
+                isActive ? "bg-section sm:pl-6" : ""
               }`}
             >
               {/* Hover & Active gradient accent line */}
               <div
-                className={`absolute left-0 top-0 bottom-0 w-1 bg-[#1A73E8] transition-opacity duration-300 rounded-l-full ${
+                className={`absolute left-0 top-0 bottom-0 w-1 bg-accent transition-opacity duration-300 rounded-l-full ${
                   isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                 }`}
               />
 
               {/* Subtle background pattern */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#1A73E8]/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-r from-accent/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               <div className="flex items-start gap-4 relative z-10">
                 {/* Circular Icon Background */}
                 <div
                   className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
                     isActive
-                      ? "bg-[#1A73E8] text-white shadow-lg shadow-[#1A73E8]/25 scale-105"
-                      : "bg-[#EAF3FF] text-[#1A73E8] group-hover:bg-[#1A73E8] group-hover:text-white group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-[#1A73E8]/25"
+                      ? "bg-accent text-white shadow-lg shadow-accent/25 scale-105"
+                      : "bg-orange-100 text-accent group-hover:bg-accent group-hover:text-white group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-accent/25"
                   }`}
                 >
                   <service.icon
@@ -146,8 +125,8 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
                   <h4
                     className={`text-[15px] font-bold leading-snug transition-colors duration-300 ${
                       isActive
-                        ? "text-[#1A73E8]"
-                        : "text-[#0B1426] group-hover:text-[#1A73E8]"
+                        ? "text-accent"
+                        : "text-navy group-hover:text-accent"
                     }`}
                   >
                     {service.title}
@@ -160,14 +139,14 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
 
               {/* Hover "View Details" Action */}
               <div
-                className={`mt-3 flex items-center gap-1 text-sm font-medium text-[#1A73E8] transition-all duration-300 pl-14 sm:pl-16 opacity-100 translate-y-0 sm:opacity-0 sm:translate-y-1 ${
+                className={`mt-3 flex items-center gap-1 text-sm font-medium text-accent transition-all duration-300 pl-14 sm:pl-16 opacity-100 translate-y-0 sm:opacity-0 sm:translate-y-1 ${
                   isActive ? "sm:opacity-100 sm:translate-y-0" : "sm:group-hover:opacity-100 sm:group-hover:translate-y-0"
                 }`}
               >
                 <span className="relative">
                   View Details
                   <span
-                    className={`absolute -bottom-0.5 left-0 h-px bg-[#1A73E8] transition-all duration-300 ${
+                    className={`absolute -bottom-0.5 left-0 h-px bg-accent transition-all duration-300 ${
                       isActive ? "w-full" : "w-0 group-hover:w-full"
                     }`}
                   />
@@ -179,8 +158,8 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
               <div
                 className={`absolute top-5 right-5 text-[10px] font-medium transition-colors duration-300 ${
                   isActive
-                    ? "text-[#1A73E8]/60"
-                    : "text-gray-300 group-hover:text-[#1A73E8]/60"
+                    ? "text-accent/60"
+                    : "text-gray-300 group-hover:text-accent/60"
                 }`}
               >
                 {String(Number(index) + 1).padStart(2, "0")}
@@ -200,7 +179,7 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
           href="/services"
           variant="primary"
           size="lg"
-          className="bg-[#07162E] !pl-2 pr-6 w-full sm:w-auto justify-center sm:justify-start"
+          className="bg-navy !pl-2 pr-6 w-full sm:w-auto justify-center sm:justify-start"
         >
           More services
         </Button>

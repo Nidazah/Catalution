@@ -22,85 +22,86 @@ export default function TeamPage() {
       role: "Sr. Manager",
       image: "/images/team/Kristin-Watson.webp",
     },
-      {
-    name: "Savanah Nguyen",
-    role: "Manager",
-    image: "/images/team/Savanah-Nguyen.webp",
-  },
-  {
-    name: "Esther Howard",
-    role: "Co. Founder",
-    image: "/images/team/Esther-Howard.webp",
-  },
-  {
-    name: "Kristin Watson",
-    role: "Sr. Manager",
-    image: "/images/team/Kristin-Watson.webp",
-  },
-  {
-    name: "Guy Hawkins",
-    role: "Sr. Marketer",
-    image: "/images/team/Guy-Hawkins.webp",
-  },
     {
-    name: "Savanah Nguyen",
-    role: "Manager",
-    image: "/images/team/Savanah-Nguyen.webp",
-  },
-  {
-    name: "Esther Howard",
-    role: "Co. Founder",
-    image: "/images/team/Esther-Howard.webp",
-  },
-  {
-    name: "Kristin Watson",
-    role: "Sr. Manager",
-    image: "/images/team/Kristin-Watson.webp",
-  },
-  {
-    name: "Guy Hawkins",
-    role: "Sr. Marketer",
-    image: "/images/team/Guy-Hawkins.webp",
-  },
+      name: "Savanah Nguyen",
+      role: "Manager",
+      image: "/images/team/Savanah-Nguyen.webp",
+    },
     {
-    name: "Savanah Nguyen",
-    role: "Manager",
-    image: "/images/team/Savanah-Nguyen.webp",
-  },
-  {
-    name: "Esther Howard",
-    role: "Co. Founder",
-    image: "/images/team/Esther-Howard.webp",
-  },
-  {
-    name: "Kristin Watson",
-    role: "Sr. Manager",
-    image: "/images/team/Kristin-Watson.webp",
-  },
-  {
-    name: "Guy Hawkins",
-    role: "Sr. Marketer",
-    image: "/images/team/Guy-Hawkins.webp",
-  },
+      name: "Esther Howard",
+      role: "Co. Founder",
+      image: "/images/team/Esther-Howard.webp",
+    },
     {
-    name: "Savanah Nguyen",
-    role: "Manager",
-    image: "/images/team/Savanah-Nguyen.webp",
-  },
-  {
-    name: "Esther Howard",
-    role: "Co. Founder",
-    image: "/images/team/Esther-Howard.webp",
-  },
-  {
-    name: "Guy Hawkins",
-    role: "Sr. Marketer",
-    image: "/images/team/Guy-Hawkins.webp",
-  },  {
-    name: "Kristin Watson",
-    role: "Sr. Manager",
-    image: "/images/team/Kristin-Watson.webp",
-  },
+      name: "Kristin Watson",
+      role: "Sr. Manager",
+      image: "/images/team/Kristin-Watson.webp",
+    },
+    {
+      name: "Guy Hawkins",
+      role: "Sr. Marketer",
+      image: "/images/team/Guy-Hawkins.webp",
+    },
+    {
+      name: "Savanah Nguyen",
+      role: "Manager",
+      image: "/images/team/Savanah-Nguyen.webp",
+    },
+    {
+      name: "Esther Howard",
+      role: "Co. Founder",
+      image: "/images/team/Esther-Howard.webp",
+    },
+    {
+      name: "Kristin Watson",
+      role: "Sr. Manager",
+      image: "/images/team/Kristin-Watson.webp",
+    },
+    {
+      name: "Guy Hawkins",
+      role: "Sr. Marketer",
+      image: "/images/team/Guy-Hawkins.webp",
+    },
+    {
+      name: "Savanah Nguyen",
+      role: "Manager",
+      image: "/images/team/Savanah-Nguyen.webp",
+    },
+    {
+      name: "Esther Howard",
+      role: "Co. Founder",
+      image: "/images/team/Esther-Howard.webp",
+    },
+    {
+      name: "Kristin Watson",
+      role: "Sr. Manager",
+      image: "/images/team/Kristin-Watson.webp",
+    },
+    {
+      name: "Guy Hawkins",
+      role: "Sr. Marketer",
+      image: "/images/team/Guy-Hawkins.webp",
+    },
+    {
+      name: "Savanah Nguyen",
+      role: "Manager",
+      image: "/images/team/Savanah-Nguyen.webp",
+    },
+    {
+      name: "Esther Howard",
+      role: "Co. Founder",
+      image: "/images/team/Esther-Howard.webp",
+    },
+    {
+      name: "Guy Hawkins",
+      role: "Sr. Marketer",
+      image: "/images/team/Guy-Hawkins.webp",
+    },
+    {
+      name: "Kristin Watson",
+      role: "Sr. Manager",
+      image: "/images/team/Kristin-Watson.webp",
+    },
   ];
 
   const itemsPerPage = 8;
@@ -147,7 +148,7 @@ export default function TeamPage() {
               />
               
               {/* Dark Gradient Overlay at the bottom */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1426]/90 via-[#0B1426]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
               
               {/* Text Content over the overlay */}
               <div className="absolute bottom-6 left-6 right-6 z-10">
@@ -162,56 +163,58 @@ export default function TeamPage() {
           ))}
         </div>
 
-        {/* --- WORKING PAGINATION --- */}
+        {/* --- CLEAN PAGINATION WITH ARROWS ON BOTH SIDES --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-4 mt-16">
-            {/* Previous Button */}
-            <button 
+          <div className="flex justify-center items-center gap-3 mt-16">
+            
+            {/* Previous Arrow (<) */}
+            <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
-                currentPage === 1 
-                  ? "border-gray-100 text-gray-300 cursor-not-allowed" 
-                  : "border-gray-200 text-gray-600 hover:border-gray-400"
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                currentPage === 1
+                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent"
               }`}
               aria-label="Previous page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 18l-6-6 6-6" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
               </svg>
             </button>
 
-            {/* Page Numbers */}
+            {/* Page Numbers (01, 02...) */}
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
               <button
                 key={number}
                 onClick={() => paginate(number)}
-                className={`flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold transition-colors ${
+                className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
                   currentPage === number
-                    ? "bg-[#1D4ED8] text-white" // Active state
-                    : "border border-gray-200 text-gray-600 bg-white hover:bg-gray-50" // Inactive state
+                    ? "bg-accent text-white shadow-md"
+                    : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent"
                 }`}
+                aria-label={`Go to page ${number}`}
               >
-                {number.toString().padStart(2, '0')}
+                {number.toString().padStart(2, "0")}
               </button>
             ))}
 
-            {/* Next Button (+ Button) */}
-            <button 
+            {/* Next Arrow (>) */}
+            <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={`flex items-center justify-center w-10 h-10 rounded-full border transition-colors bg-white ${
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
                 currentPage === totalPages
-                  ? "border-gray-100 text-gray-300 cursor-not-allowed"
-                  : "border-gray-200 text-gray-600 hover:border-gray-400"
+                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent"
               }`}
               aria-label="Next page"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
+
           </div>
         )}
       </div>

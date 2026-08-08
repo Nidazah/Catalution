@@ -36,6 +36,17 @@ export default function FAQPage() {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
+  // Pagination state (added for future scalability)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Placeholder: shows all FAQs for now
+  const totalPages = Math.ceil(faqs.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#FAFBFC] pt-20">
       <PageHero title="FAQ" />
@@ -44,8 +55,8 @@ export default function FAQPage() {
 
         {/* --- TOP SECTION: HEADER & SEARCH --- */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-[#0B1426] mb-8">
-            Hi, how we <span className="text-[#1D4ED8]">support</span> you?
+          <h1 className="text-4xl md:text-5xl font-bold text-navy mb-8">
+            Hi, how we <span className="text-accent">support</span> you?
           </h1>
           
           <div className="flex max-w-3xl mx-auto bg-white border border-gray-300">
@@ -54,10 +65,10 @@ export default function FAQPage() {
               <input 
                 type="text" 
                 placeholder="Ask a question" 
-                className="w-full py-3 text-[15px] outline-none bg-transparent text-[#0B1426] placeholder:text-gray-400"
+                className="w-full py-3 text-[15px] outline-none bg-transparent text-navy placeholder:text-gray-400"
               />
             </div>
-            <button className="bg-[#1D4ED8] text-white font-medium px-8 py-3 hover:bg-blue-700 transition-colors text-[15px]">
+            <button className="bg-accent text-white font-medium px-8 py-3 hover:bg-orange-700 transition-colors text-[15px]">
               Search
             </button>
           </div>
@@ -71,7 +82,7 @@ export default function FAQPage() {
           
           {/* LEFT COLUMN: HEADLINE */}
           <div className="lg:col-span-5 pt-2">
-            <h2 className="text-[38px] md:text-[44px] font-bold text-[#0B1426] leading-[1.15] tracking-tight">
+            <h2 className="text-[38px] md:text-[44px] font-bold text-navy leading-[1.15] tracking-tight">
               No matter the strategy,<br />
               we've got it handled.
             </h2>
@@ -87,6 +98,61 @@ export default function FAQPage() {
                 onToggle={() => toggleFAQ(index)}
               />
             ))}
+
+            {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-10">
+                
+                {/* Previous Arrow (←) */}
+                <button
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                    currentPage === 1
+                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                      : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+                  }`}
+                  aria-label="Previous page"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6" />
+                  </svg>
+                </button>
+
+                {/* Page Numbers */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                  <button
+                    key={number}
+                    onClick={() => paginate(number)}
+                    className={`relative flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
+                      currentPage === number
+                        ? "bg-accent text-white border-2 border-black shadow-md scale-105"
+                        : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5"
+                    }`}
+                    aria-label={`Go to page ${number}`}
+                  >
+                    {number.toString().padStart(2, "0")}
+                  </button>
+                ))}
+
+                {/* Next Arrow (→) */}
+                <button
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                    currentPage === totalPages
+                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                      : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+                  }`}
+                  aria-label="Next page"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+
+              </div>
+            )}
           </div>
 
         </div>
@@ -111,11 +177,11 @@ function FAQItem({
         onClick={onToggle}
         className="w-full flex items-center justify-between p-4 md:py-4 md:px-5 text-left group"
       >
-        <span className="font-semibold text-[15px] text-[#0B1426] pr-4">
+        <span className="font-semibold text-[15px] text-navy pr-4">
           {faq.question}
         </span>
         <span className="flex h-6 w-6 shrink-0 items-center justify-center">
-          <Plus className={`h-5 w-5 text-[#0B1426] transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`} />
+          <Plus className={`h-5 w-5 text-navy transition-transform duration-300 ${isOpen ? "rotate-45" : "rotate-0"}`} />
         </span>
       </button>
 

@@ -71,7 +71,7 @@ export default async function BlogDetailPage({
             </div>
 
             {/* 2. Title */}
-            <h1 className="text-3xl md:text-4xl font-bold text-[#0B1426] leading-tight">
+            <h1 className="text-3xl md:text-4xl font-bold text-navy leading-tight">
               {post.title}
             </h1>
 
@@ -90,31 +90,31 @@ export default async function BlogDetailPage({
                 </div>
                 <div>
                   <p className="text-[12px] font-medium text-gray-400 uppercase tracking-wider">Authored by</p>
-                  <p className="text-[15px] font-bold text-[#0B1426]">{post.author}</p>
+                  <p className="text-[15px] font-bold text-navy">{post.author}</p>
                 </div>
               </div>
 
               {/* Date */}
               <div className="flex items-center gap-3 p-5">
-                <div className="h-12 w-12 bg-[#EAF1FD] rounded-lg flex items-center justify-center text-[#1D4ED8] shrink-0">
+                <div className="h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center text-accent shrink-0">
                   <Calendar className="h-5 w-5" />
                 </div>
                 <div>
                   <p className="text-[12px] font-medium text-gray-400 uppercase tracking-wider">Date Issued</p>
-                  <p className="text-[15px] font-bold text-[#0B1426]">{post.date}</p>
+                  <p className="text-[15px] font-bold text-navy">{post.date}</p>
                 </div>
               </div>
 
               {/* Comments */}
               <div className="flex items-center gap-3 p-5">
-                <div className="h-12 w-12 bg-[#EAF1FD] rounded-lg flex items-center justify-center text-[#1D4ED8] shrink-0">
+                <div className="h-12 w-12 bg-orange-100 rounded-lg flex items-center justify-center text-accent shrink-0">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
                   </svg>
                 </div>
                 <div>
                   <p className="text-[12px] font-medium text-gray-400 uppercase tracking-wider">Comments</p>
-                  <p className="text-[15px] font-bold text-[#0B1426]">{post.comments} Comments</p>
+                  <p className="text-[15px] font-bold text-navy">{post.comments} Comments</p>
                 </div>
               </div>
             </div>
@@ -130,17 +130,17 @@ export default async function BlogDetailPage({
             </div>
 
             {/* 5. Quote Block */}
-            <div className="bg-[#EAF1FD] p-8 md:p-10 relative">
+            <div className="bg-orange-100 p-8 md:p-10 relative">
               <div className="mb-4">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-[#1D4ED8]">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" className="text-accent">
                   <path d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H15.017C14.4647 8 14.017 8.44772 14.017 9V11C14.017 12.1046 13.1216 13 12.017 13H10.017V21H14.017ZM7.0166 21L7.0166 18C7.0166 16.8954 7.91203 16 9.0166 16H12.0166C12.5689 16 13.0166 15.5523 13.0166 15V9C13.0166 8.44772 12.5689 8 12.0166 8H8.0166C7.46432 8 7.0166 8.44772 7.0166 9V11C7.0166 12.1046 6.12117 13 5.0166 13H3.0166V21H7.0166Z" />
                 </svg>
               </div>
-              <p className="text-[18px] md:text-[20px] font-semibold text-[#0B1426] leading-relaxed mb-3">
+              <p className="text-[18px] md:text-[20px] font-semibold text-navy leading-relaxed mb-3">
                 The greatest asset of a consultant is the ability to ask the right questions and guide clients to discover their own consulting answers.
               </p>
               <p className="text-[14px] text-gray-500 font-medium flex items-center gap-2">
-                — <span className="text-[#0B1426]">Aryan Gronic</span>
+                — <span className="text-navy">Aryan Gronic</span>
               </p>
             </div>
 
@@ -153,7 +153,7 @@ export default async function BlogDetailPage({
 
             {/* 7. Key Lessons Section */}
             <div>
-              <h2 className="text-[22px] font-bold text-[#0B1426] mb-4">Key lessons of business</h2>
+              <h2 className="text-[22px] font-bold text-navy mb-4">Key lessons of business</h2>
               <p className="text-gray-600 leading-relaxed text-[15px] mb-4">
                 Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals.
               </p>
@@ -164,8 +164,8 @@ export default async function BlogDetailPage({
                   "Meet our team and learn",
                   "Meet our team"
                 ].map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-[15px] text-[#0B1426] font-medium">
-                    <Check className="h-5 w-5 text-[#1D4ED8] shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-3 text-[15px] text-navy font-medium">
+                    <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                     {item}
                   </li>
                 ))}
@@ -174,7 +174,7 @@ export default async function BlogDetailPage({
 
             {/* 8. Conclusion */}
             <div>
-              <h2 className="text-[22px] font-bold text-[#0B1426] mb-3">Conclusions</h2>
+              <h2 className="text-[22px] font-bold text-navy mb-3">Conclusions</h2>
               <div className="space-y-4 text-gray-600 leading-relaxed text-[15px]">
                 <p>
                   Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptionals the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to thrive. Committed to the delivering exceptional.
@@ -188,15 +188,15 @@ export default async function BlogDetailPage({
             {/* 9. Tags & Share */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-6 border-t border-gray-200">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[15px] font-bold text-[#0B1426] mr-2">Tags:</span>
+                <span className="text-[15px] font-bold text-navy mr-2">Tags:</span>
                 {post.tags.map((tag, idx) => (
-                  <span key={idx} className="px-4 py-1.5 border border-gray-300 rounded-full text-[13px] font-medium text-[#0B1426] bg-white">
+                  <span key={idx} className="px-4 py-1.5 border border-gray-300 rounded-full text-[13px] font-medium text-navy bg-white">
                     {tag}
                   </span>
                 ))}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-bold text-[#0B1426] mr-2">Share:</span>
+                <span className="text-[15px] font-bold text-navy mr-2">Share:</span>
                 <div className="flex gap-2">
                   <button className="w-9 h-9 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#1877F2] hover:text-white transition-colors">
                     <FaFacebookF className="h-4 w-4" />
@@ -220,22 +220,22 @@ export default async function BlogDetailPage({
                 <div className="flex flex-col gap-1">
                   <div className="grid grid-cols-4 gap-0.5">
                     {[...Array(4)].map((_, i) => (
-                      <div key={i} className="w-3 h-3 bg-[#1D4ED8]" />
+                      <div key={i} className="w-3 h-3 bg-accent" />
                     ))}
                   </div>
                 </div>
               </div>
               <Link
                 href={`/blog/${post.id + 1}`}
-                className="flex items-center gap-3 text-[14px] font-bold text-[#0B1426] hover:text-[#1D4ED8] transition-colors"
+                className="flex items-center gap-3 text-[14px] font-bold text-navy hover:text-accent transition-colors"
               >
-                Next <div className="w-8 h-8 rounded-full bg-[#EAF1FD] flex items-center justify-center"><ArrowRight className="h-4 w-4 text-[#1D4ED8]" /></div>
+                Next <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center"><ArrowRight className="h-4 w-4 text-accent" /></div>
               </Link>
             </div>
 
             {/* 11. Comments Section */}
             <div className="pt-4">
-              <h3 className="text-[22px] font-bold text-[#0B1426] mb-6">Comments ({post.comments})</h3>
+              <h3 className="text-[22px] font-bold text-navy mb-6">Comments ({post.comments})</h3>
               
               <div className="space-y-6">
                 {[
@@ -250,11 +250,11 @@ export default async function BlogDetailPage({
                           <Image src={comment.avatar} alt={comment.name} fill className="object-cover" />
                         </div>
                         <div>
-                          <h4 className="text-[16px] font-bold text-[#0B1426]">{comment.name}</h4>
+                          <h4 className="text-[16px] font-bold text-navy">{comment.name}</h4>
                           <p className="text-[13px] text-gray-500">{comment.date}</p>
                         </div>
                       </div>
-                      <button className="flex items-center gap-1.5 text-[13px] font-medium text-[#0B1426] hover:text-[#1D4ED8] transition-colors">
+                      <button className="flex items-center gap-1.5 text-[13px] font-medium text-navy hover:text-accent transition-colors">
                         <Reply className="h-4 w-4" /> Reply
                       </button>
                     </div>
@@ -268,20 +268,20 @@ export default async function BlogDetailPage({
 
             {/* 12. Leave a Reply Form */}
             <div className="pt-4">
-              <h3 className="text-[22px] font-bold text-[#0B1426] mb-6">Leave a reply</h3>
+              <h3 className="text-[22px] font-bold text-navy mb-6">Leave a reply</h3>
               <form className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <input type="text" placeholder="Enter name" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426]" />
-                  <input type="email" placeholder="Enter email" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426]" />
+                  <input type="text" placeholder="Enter name" className="w-full px-4 py-3 bg-section border border-gray-200 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy" />
+                  <input type="email" placeholder="Enter email" className="w-full px-4 py-3 bg-section border border-gray-200 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy" />
                 </div>
-                <input type="text" placeholder="Your website" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426]" />
-                <textarea placeholder="Enter your comments" className="w-full px-4 py-3 bg-[#F3F6F9] border border-gray-200 rounded-sm text-[14px] outline-none focus:border-[#1D4ED8] placeholder:text-gray-400 text-[#0B1426] resize-none h-32" />
+                <input type="text" placeholder="Your website" className="w-full px-4 py-3 bg-section border border-gray-200 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy" />
+                <textarea placeholder="Enter your comments" className="w-full px-4 py-3 bg-section border border-gray-200 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy resize-none h-32" />
                 
-                {/* ✅ Replaced manual button with Button component */}
+                {/* ✅ Submit Button */}
                 <Button
                   type="button"
                   size="md"
-                  className="bg-[#0B1426] hover:bg-[#1a253f] text-white"
+                  className="bg-navy hover:bg-navy-ink text-white"
                 >
                   Leave comment
                 </Button>
@@ -297,7 +297,7 @@ export default async function BlogDetailPage({
             
             {/* 1. Search Widget */}
             <div className="border border-gray-300 p-6 bg-white">
-              <h3 className="text-[18px] font-bold text-[#0B1426] mb-4 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+              <h3 className="text-[18px] font-bold text-navy mb-4 border-b-2 border-accent pb-2 inline-block">
                 Search here
               </h3>
               <div className="relative mt-4">
@@ -307,14 +307,14 @@ export default async function BlogDetailPage({
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="w-full pl-10 pr-4 py-3 bg-[#F3F6F9] border border-transparent focus:border-[#1D4ED8] outline-none text-[14px] text-[#0B1426] placeholder:text-gray-400 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-section border border-transparent focus:border-accent outline-none text-[14px] text-navy placeholder:text-gray-400 transition-colors"
                 />
               </div>
             </div>
 
             {/* 2. Recent Posts Widget */}
             <div className="border border-gray-300 p-6 bg-white">
-              <h3 className="text-[18px] font-bold text-[#0B1426] mb-5 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+              <h3 className="text-[18px] font-bold text-navy mb-5 border-b-2 border-accent pb-2 inline-block">
                 Recent Post
               </h3>
               <div className="space-y-5">
@@ -326,7 +326,7 @@ export default async function BlogDetailPage({
                         <Image src={post.image} alt={post.title} fill className="object-cover" sizes="64px" />
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-[14px] font-semibold text-[#0B1426] group-hover:text-[#1D4ED8] transition-colors line-clamp-2 leading-snug">
+                        <h4 className="text-[14px] font-semibold text-navy group-hover:text-accent transition-colors line-clamp-2 leading-snug">
                           {post.title.length > 30 ? post.title.substring(0, 30) + "..." : post.title}
                         </h4>
                         <p className="text-[12px] text-gray-500 mt-1">
@@ -341,13 +341,13 @@ export default async function BlogDetailPage({
 
             {/* 3. Categories Widget */}
             <div className="border border-gray-300 p-6 bg-white">
-              <h3 className="text-[18px] font-bold text-[#0B1426] mb-5 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+              <h3 className="text-[18px] font-bold text-navy mb-5 border-b-2 border-accent pb-2 inline-block">
                 Categories
               </h3>
               <ul className="space-y-2.5 text-[14px] font-medium">
                 {["Branding", "Business", "Consulting", "Innovations", "Managements", "Marketing"].map((cat, idx) => (
                   <li key={cat}>
-                    <Link href="#" className="flex justify-between items-center text-[#0B1426] hover:text-[#1D4ED8] transition-colors bg-[#F3F6F9] px-4 py-3">
+                    <Link href="#" className="flex justify-between items-center text-navy hover:text-accent transition-colors bg-section px-4 py-3">
                       <span>{cat}</span>
                       <span className="text-gray-500 font-normal">({idx + 1})</span>
                     </Link>
@@ -358,12 +358,12 @@ export default async function BlogDetailPage({
 
             {/* 4. Tags Widget */}
             <div className="border border-gray-300 p-6 bg-white">
-              <h3 className="text-[18px] font-bold text-[#0B1426] mb-5 border-b-2 border-[#1D4ED8] pb-2 inline-block">
+              <h3 className="text-[18px] font-bold text-navy mb-5 border-b-2 border-accent pb-2 inline-block">
                 Tags
               </h3>
               <div className="flex flex-wrap gap-2.5 mt-2">
                 {["Branding", "Business", "Design", "Marketing", "Strategy"].map((tag) => (
-                  <Link key={tag} href="#" className="px-4 py-1.5 border border-gray-300 rounded-full text-[13px] font-medium text-[#0B1426] hover:bg-[#0B1426] hover:text-white transition-colors">
+                  <Link key={tag} href="#" className="px-4 py-1.5 border border-gray-300 rounded-full text-[13px] font-medium text-navy hover:bg-navy hover:text-white transition-colors">
                     {tag}
                   </Link>
                 ))}
@@ -379,11 +379,11 @@ export default async function BlogDetailPage({
                   fill
                   className="object-cover opacity-20 grayscale"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-[#0B1426]/80 via-[#0B1426]/60 to-[#0B1426]/90" />
+                <div className="absolute inset-0 bg-gradient-to-b from-navy/80 via-navy/60 to-navy/90" />
               </div>
 
               <div className="relative z-10 pt-2">
-                <div className="w-12 h-12 bg-[#1D4ED8] rounded-lg flex items-center justify-center text-white mb-6">
+                <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center text-white mb-6">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
                     <path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
                   </svg>
@@ -391,17 +391,16 @@ export default async function BlogDetailPage({
                 <h3 className="text-2xl font-bold text-white leading-tight mb-3">
                   Need help?<br />Feel free contact us
                 </h3>
-                <p className="text-sm text-blue-100/80 leading-relaxed max-w-[200px]">
+                <p className="text-sm text-orange-100/80 leading-relaxed max-w-[200px]">
                   Our mission is to empowers businesses off all size in an businesses.
                 </p>
               </div>
 
               <div className="relative z-10">
-                {/* ✅ Replaced <Link> with Button */}
                 <Button
                   href="/contact"
                   size="md"
-                  className="bg-white hover:bg-gray-100 text-[#0B1426] shadow-lg"
+                  className="bg-white hover:bg-gray-100 !text-navy shadow-lg"
                 >
                   Get in touch
                 </Button>

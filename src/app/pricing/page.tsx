@@ -63,11 +63,21 @@ export default function PricingPage() {
     },
   ];
 
+  // Pagination state (ready if you want to paginate pricing cards)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 3; // Shows all cards on one page
+  const totalPages = Math.ceil(plans.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-white pt-20">
       
       {/* --- TOP HERO SECTION --- */}
-      {/* 👈 PASSING THE TITLE AND IMAGE TO THE REUSABLE HERO */}
       <PageHero 
         title="Pricing plan" 
         imageSrc="/images/portfolios/porofolio.webp" 
@@ -87,10 +97,10 @@ export default function PricingPage() {
               transition={{ duration: 0.6 }}
               className="space-y-4"
             >
-              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-blue-600">
-                <span className="h-1 w-1 rounded-full bg-blue-600" /> PRICING PLAN <span className="h-1 w-1 rounded-full bg-blue-600" />
+              <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-accent">
+                <span className="h-1 w-1 rounded-full bg-accent" /> PRICING PLAN <span className="h-1 w-1 rounded-full bg-accent" />
               </span>
-              <h2 className="text-4xl md:text-5xl font-bold text-[#0B1426] leading-[1.1]">
+              <h2 className="text-4xl md:text-5xl font-bold text-navy leading-[1.1]">
                 Our Pricing Tiers
               </h2>
               <p className="text-gray-600 text-sm md:text-base max-w-md">
@@ -98,12 +108,12 @@ export default function PricingPage() {
               </p>
 
               {/* Toggle Button - Exact Bright Blue Style */}
-              <div className="mt-6 inline-flex items-center rounded-full bg-[#0B1426] p-1.5">
+              <div className="mt-6 inline-flex items-center rounded-full bg-navy p-1.5">
                 <button
                   onClick={() => setBillingCycle("monthly")}
                   className={`px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                     billingCycle === "monthly"
-                      ? "bg-[#2D7FF9] text-white shadow-md"
+                      ? "bg-accent text-white shadow-md"
                       : "text-white/70 hover:text-white"
                   }`}
                 >
@@ -113,7 +123,7 @@ export default function PricingPage() {
                   onClick={() => setBillingCycle("yearly")}
                   className={`px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
                     billingCycle === "yearly"
-                      ? "bg-[#2D7FF9] text-white shadow-md"
+                      ? "bg-accent text-white shadow-md"
                       : "text-white/70 hover:text-white"
                   }`}
                 >
@@ -138,8 +148,8 @@ export default function PricingPage() {
                   "Journey and commitment to explained",
                   "Meet our team and learn"
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-medium text-[#0B1426]">
-                    <Check className="h-5 w-5 text-[#2D7FF9]" />
+                  <li key={i} className="flex items-center gap-3 text-sm font-medium text-navy">
+                    <Check className="h-5 w-5 text-accent" />
                     {item}
                   </li>
                 ))}
@@ -170,18 +180,18 @@ export default function PricingPage() {
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 className={`relative rounded-2xl p-8 flex flex-col ${
                   plan.isPopular
-                    ? "bg-[#2D7FF9] text-white shadow-xl shadow-blue-500/20"
-                    : "bg-[#EBF0F7] text-[#0B1426]"
+                    ? "bg-accent text-white shadow-xl shadow-accent/20"
+                    : "bg-orange-100 text-navy"
                 }`}
               >
                 {/* Recommended Badge - Sharp angled ribbon */}
                 {plan.isPopular && (
                   <div className="absolute -top-[1px] right-8 z-10">
-                    <div className="bg-[#0B1426] text-white text-[10px] font-bold px-4 py-1.5 rounded-t-md shadow-md">
+                    <div className="bg-navy text-white text-[10px] font-bold px-4 py-1.5 rounded-t-md shadow-md">
                       Recommended
                     </div>
                     {/* Small sharp angled triangle at the bottom left of the badge */}
-                    <div className="absolute -bottom-[6px] left-0 w-0 h-0 border-l-[6px] border-l-[#0B1426] border-t-[6px] border-t-transparent" />
+                    <div className="absolute -bottom-[6px] left-0 w-0 h-0 border-l-[6px] border-l-navy border-t-[6px] border-t-transparent" />
                   </div>
                 )}
 
@@ -189,19 +199,19 @@ export default function PricingPage() {
                 
                 <div className="flex items-baseline gap-1 mt-2 mb-4">
                   <span className="text-5xl font-bold">${plan.price}</span>
-                  <span className={`text-sm ${plan.isPopular ? "text-blue-100" : "text-gray-500"}`}>/month</span>
+                  <span className={`text-sm ${plan.isPopular ? "text-orange-100" : "text-gray-500"}`}>/month</span>
                 </div>
 
-                <p className={`text-sm mb-6 ${plan.isPopular ? "text-blue-100" : "text-gray-500"}`}>
+                <p className={`text-sm mb-6 ${plan.isPopular ? "text-orange-100" : "text-gray-500"}`}>
                   {plan.description}
                 </p>
 
-                <div className={`h-px w-full mb-6 ${plan.isPopular ? "bg-blue-400/40" : "bg-gray-300"}`} />
+                <div className={`h-px w-full mb-6 ${plan.isPopular ? "bg-orange-300/40" : "bg-gray-300"}`} />
 
                 <ul className="space-y-3 mb-8 flex-grow">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-3 text-sm">
-                      <CheckCircle className={`h-5 w-5 shrink-0 mt-0.5 ${plan.isPopular ? "text-white" : "text-[#2D7FF9]"}`} />
+                      <CheckCircle className={`h-5 w-5 shrink-0 mt-0.5 ${plan.isPopular ? "text-white" : "text-accent"}`} />
                       {feature}
                     </li>
                   ))}
@@ -218,8 +228,8 @@ export default function PricingPage() {
                     href="/contact"
                     className={`w-full flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold transition-colors ${
                       plan.isPopular
-                        ? "bg-white text-[#2D7FF9] hover:bg-gray-100"
-                        : "bg-[#0B1426] text-white hover:bg-[#1a253f]"
+                        ? "bg-white text-accent hover:bg-gray-100"
+                        : "bg-navy text-white hover:bg-navy-ink"
                     }`}
                   >
                     {plan.buttonText} <ArrowRight className="h-4 w-4" />
@@ -228,6 +238,79 @@ export default function PricingPage() {
               </motion.div>
             ))}
           </motion.div>
+
+          {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-16">
+              {/* Previous Arrow (←) */}
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                  currentPage === 1
+                    ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                    : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+                }`}
+                aria-label="Previous page"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (number) => (
+                  <button
+                    key={number}
+                    onClick={() => paginate(number)}
+                    className={`relative flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
+                      currentPage === number
+                        ? "bg-accent text-white border-2 border-black shadow-md scale-105"
+                        : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5"
+                    }`}
+                    aria-label={`Go to page ${number}`}
+                  >
+                    {number.toString().padStart(2, "0")}
+                  </button>
+                ),
+              )}
+
+              {/* Next Arrow (→) */}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                  currentPage === totalPages
+                    ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                    : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+                }`}
+                aria-label="Next page"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       </section>
     </main>

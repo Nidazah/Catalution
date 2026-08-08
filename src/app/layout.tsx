@@ -1,25 +1,33 @@
 import type { Metadata } from "next";
-import { Playfair_Display } from "next/font/google";
+import { Poppins, Inter } from "next/font/google";
 
 import RootShell from "./RootShell";
 
 import "./globals.css";
 
-const playfairDisplay = Playfair_Display({
+const poppins = Poppins({
   subsets: ["latin"],
-  style: ["italic", "normal"],
-  variable: "--font-playfair",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Solvior — Proven Consulting for Modern Global Enterprises",
+  title: "Catalution — Catalyzing Solutions. Accelerating Growth.",
   description:
-    "Solvior is a consulting agency helping modern global enterprises transform their business with expert consultancy services.",
+    "Catalution is an ERP & POS solutions provider and business transformation partner. We combine the power of a catalyst with smart solutions to help businesses streamline operations, boost efficiency, and achieve sustainable growth.",
   openGraph: {
-    title: "Solvior — Proven Consulting for Modern Global Enterprises",
+    title: "Catalution — Catalyzing Solutions. Accelerating Growth.",
     description:
-      "Solvior is a consulting agency helping modern global enterprises transform their business with expert consultancy services.",
+      "Catalution is an ERP & POS solutions provider and business transformation partner. We combine the power of a catalyst with smart solutions to help businesses streamline operations, boost efficiency, and achieve sustainable growth.",
     type: "website",
   },
 };
@@ -30,7 +38,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${playfairDisplay.variable}`}>
+    <html lang="en" className={`h-full antialiased ${poppins.variable} ${inter.variable}`}>
       <body className="min-h-full flex flex-col">
         <RootShell>{children}</RootShell>
       </body>

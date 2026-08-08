@@ -14,7 +14,7 @@ export default function ContactPage() {
           
           {/* Left Column: Contact Info */}
           <div>
-            <h2 className="text-3xl font-bold text-[#0B1426] mb-4">Contact Information</h2>
+            <h2 className="text-3xl font-bold text-navy mb-4">Contact Information</h2>
             <p className="text-gray-600 mb-10">
               Fill out the form and our team will get back to you shortly. 
               Or, use the contact details below to reach us directly.
@@ -23,11 +23,11 @@ export default function ContactPage() {
             <div className="space-y-8">
               {/* Info Card 1 */}
               <div className="flex items-start gap-5">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-accent">
                   <Mail className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#0B1426]">Email Us</h3>
+                  <h3 className="font-semibold text-navy">Email Us</h3>
                   <p className="text-gray-600 mt-1">hello@solvior.com</p>
                   <p className="text-gray-600">support@solvior.com</p>
                 </div>
@@ -35,11 +35,11 @@ export default function ContactPage() {
 
               {/* Info Card 2 */}
               <div className="flex items-start gap-5">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-accent">
                   <Phone className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#0B1426]">Call Us</h3>
+                  <h3 className="font-semibold text-navy">Call Us</h3>
                   <p className="text-gray-600 mt-1">+1 (555) 123-4567</p>
                   <p className="text-gray-600">Mon - Fri, 9 AM - 6 PM EST</p>
                 </div>
@@ -47,11 +47,11 @@ export default function ContactPage() {
 
               {/* Info Card 3 */}
               <div className="flex items-start gap-5">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-accent">
                   <MapPin className="h-6 w-6" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-[#0B1426]">Visit Us</h3>
+                  <h3 className="font-semibold text-navy">Visit Us</h3>
                   <p className="text-gray-600 mt-1">123 Innovation Drive, Suite 400</p>
                   <p className="text-gray-600">San Francisco, CA 94105</p>
                 </div>
@@ -73,7 +73,7 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-[15px] font-semibold text-[#0B1426]">4.9/5.0 Client Satisfaction</p>
+                  <p className="text-[15px] font-semibold text-navy">4.9/5.0 Client Satisfaction</p>
                   <p className="text-[13px] text-gray-500">Based on 200+ reviews</p>
                 </div>
               </div>
@@ -82,34 +82,34 @@ export default function ContactPage() {
 
           {/* Right Column: Contact Form */}
           <div className="bg-gray-50 rounded-2xl p-8 md:p-10 border border-gray-100 shadow-sm">
-            <h2 className="text-2xl font-bold text-[#0B1426] mb-2">Send us a message</h2>
+            <h2 className="text-2xl font-bold text-navy mb-2">Send us a message</h2>
             <p className="text-gray-600 mb-8">Fill out the form below and we'll get back to you promptly.</p>
             
             <form className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label htmlFor="firstName" className="block text-sm font-medium text-[#0B1426] mb-1.5">First Name</label>
-                  <input type="text" id="firstName" placeholder="John" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
+                  <label htmlFor="firstName" className="block text-sm font-medium text-navy mb-1.5">First Name</label>
+                  <input type="text" id="firstName" placeholder="John" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" />
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="block text-sm font-medium text-[#0B1426] mb-1.5">Last Name</label>
-                  <input type="text" id="lastName" placeholder="Doe" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
+                  <label htmlFor="lastName" className="block text-sm font-medium text-navy mb-1.5">Last Name</label>
+                  <input type="text" id="lastName" placeholder="Doe" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-[#0B1426] mb-1.5">Email Address</label>
-                <input type="email" id="email" placeholder="john@example.com" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
+                <label htmlFor="email" className="block text-sm font-medium text-navy mb-1.5">Email Address</label>
+                <input type="email" id="email" placeholder="john@example.com" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" />
               </div>
 
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-[#0B1426] mb-1.5">Phone Number (optional)</label>
-                <input type="tel" id="phone" placeholder="+1 (555) 000-0000" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all" />
+                <label htmlFor="phone" className="block text-sm font-medium text-navy mb-1.5">Phone Number (optional)</label>
+                <input type="tel" id="phone" placeholder="+1 (555) 000-0000" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" />
               </div>
 
               <div>
-                <label htmlFor="service" className="block text-sm font-medium text-[#0B1426] mb-1.5">Service Interested In</label>
-                <select id="service" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all appearance-none">
+                <label htmlFor="service" className="block text-sm font-medium text-navy mb-1.5">Service Interested In</label>
+                <select id="service" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all appearance-none">
                   <option value="">Select a service...</option>
                   <option value="business">Business Process Optimization</option>
                   <option value="strategy">Strategic Planning & Execution</option>
@@ -121,11 +121,11 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-[#0B1426] mb-1.5">Your Message</label>
-                <textarea id="message" rows={4} placeholder="Tell us about your project, goals, or any questions you have..." className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all resize-none" />
+                <label htmlFor="message" className="block text-sm font-medium text-navy mb-1.5">Your Message</label>
+                <textarea id="message" rows={4} placeholder="Tell us about your project, goals, or any questions you have..." className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none" />
               </div>
 
-              <button type="button" className="w-full group bg-[#0B1426] hover:bg-[#1a253f] text-white font-semibold py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2">
+              <button type="button" className="w-full group bg-navy hover:bg-navy-ink text-white font-semibold py-4 rounded-lg transition-all duration-300 flex items-center justify-center gap-2">
                 Send Message
                 <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </button>
@@ -138,7 +138,7 @@ export default function ContactPage() {
       <section className="bg-white border-t border-gray-100">
         <div className="container mx-auto px-6 py-16">
           <div className="text-center max-w-2xl mx-auto mb-10">
-            <h2 className="text-2xl font-bold text-[#0B1426]">Our Location</h2>
+            <h2 className="text-2xl font-bold text-navy">Our Location</h2>
             <p className="text-gray-600 mt-2">Visit our headquarters in the heart of New York City.</p>
           </div>
           

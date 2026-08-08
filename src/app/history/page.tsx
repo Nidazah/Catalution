@@ -1,7 +1,10 @@
+"use client";
+
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, Globe2, Users } from "lucide-react";
+import { useState } from "react";
+import Button from "@/components/Button"; // ✅ Import Button
 
 const timelineData = [
   {
@@ -62,6 +65,17 @@ const timelineData = [
 ];
 
 export default function HistoryPage() {
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Currently showing all
+  const totalPages = Math.ceil(timelineData.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-white pt-20">
       <PageHero title="Our History" />
@@ -70,30 +84,36 @@ export default function HistoryPage() {
       <div className="w-full max-w-7xl mx-auto px-6 pt-16 pb-12">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10">
           <div className="max-w-xl">
-            <span className="text-xs font-semibold tracking-widest text-[#0B1426] uppercase">
+            <span className="text-xs font-semibold tracking-widest text-navy uppercase">
               • Our Background
             </span>
-            <h1 className="text-4xl lg:text-5xl font-bold text-[#0B1426] leading-[1.1] mt-4 mb-8">
-              Discover how we have evolved our company's <span className="text-[#1D4ED8]">on legacy.</span>
+            <h1 className="text-4xl lg:text-5xl font-bold text-navy leading-[1.1] mt-4 mb-8">
+              Discover how we have evolved our company's{" "}
+              <span className="text-accent">on legacy.</span>
             </h1>
           </div>
           <div className="max-w-md space-y-4 text-gray-600 leading-relaxed text-[15px]">
             <p>
-              Our mission is to empower businesses of all sizes to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights, innovative approaches.
+              Our mission is to empower businesses of all sizes to thrive in an
+              ever-changing marketplace. We are committed to delivering
+              exceptional value through strategic insights, innovative
+              approaches.
             </p>
             <p>
-              Committed to delivering exceptional value through strategic insights, innovative approaches empower.
+              Committed to delivering exceptional value through strategic
+              insights, innovative approaches empower.
             </p>
+
+            {/* ✅ REPLACED WITH THE EXACT "GET A QUOTE" BUTTON */}
             <div className="pt-2">
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-3 rounded-full bg-[#0B1426] pl-2 pr-6 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.03] shadow-sm"
+              <Button
+                href="/contact"
+                variant="primary"
+                size="md"
+                className="shadow-md hover:shadow-lg bg-navy text-white border-0"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2563EB]">
-                  <ArrowRight className="h-4 w-4" />
-                </span>
                 Learn More
-              </Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -122,7 +142,7 @@ export default function HistoryPage() {
 
               {/* Mobile Year (Top right on mobile) */}
               <div className="lg:hidden block w-full mb-2 pl-8 text-right">
-                 <span className="text-3xl font-bold text-gray-500 tracking-tight">
+                <span className="text-3xl font-bold text-gray-500 tracking-tight">
                   {item.year}
                 </span>
               </div>
@@ -135,7 +155,7 @@ export default function HistoryPage() {
                 {/* The Card */}
                 <div className="bg-white border border-gray-300 p-6 lg:p-8">
                   <div className="flex flex-col h-full">
-                    <h3 className="text-lg font-semibold text-[#0B1426] mb-3">
+                    <h3 className="text-lg font-semibold text-navy mb-3">
                       {item.step}. {item.title}
                     </h3>
                     <p className="text-sm text-gray-600 leading-relaxed mb-6">
@@ -144,7 +164,10 @@ export default function HistoryPage() {
                     {/* 2-Column Image Grid inside card */}
                     <div className="grid grid-cols-2 gap-4">
                       {item.images.map((src, i) => (
-                        <div key={i} className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                        <div
+                          key={i}
+                          className="relative aspect-[4/3] bg-gray-100 overflow-hidden"
+                        >
                           <Image
                             src={src}
                             alt={`${item.title} - image ${i + 1}`}
@@ -163,6 +186,79 @@ export default function HistoryPage() {
             </div>
           );
         })}
+
+        {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-16">
+            {/* Previous Arrow (←) */}
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                currentPage === 1
+                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+              }`}
+              aria-label="Previous page"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+              (number) => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`relative flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
+                    currentPage === number
+                      ? "bg-accent text-white border-2 border-black shadow-md scale-105"
+                      : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5"
+                  }`}
+                  aria-label={`Go to page ${number}`}
+                >
+                  {number.toString().padStart(2, "0")}
+                </button>
+              ),
+            )}
+
+            {/* Next Arrow (→) */}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                currentPage === totalPages
+                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+              }`}
+              aria-label="Next page"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </main>
   );

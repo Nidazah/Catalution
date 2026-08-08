@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import Image from "next/image";
@@ -43,6 +46,17 @@ const portfoliosData = [
 ];
 
 export default function PortfoliosPage() {
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6; // Show all 6 items on one page
+  const totalPages = Math.ceil(portfoliosData.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-white pt-20">
       <PageHero title="Portfolios" />
@@ -72,14 +86,14 @@ export default function PortfoliosPage() {
                 </div>
 
                 <div className="p-6 flex flex-col flex-grow">
-                  <span className="text-xs font-bold tracking-widest uppercase text-blue-600 mb-2">
+                  <span className="text-xs font-bold tracking-widest uppercase text-accent mb-2">
                     {portfolio.category}
                   </span>
-                  <h3 className="text-lg font-bold text-[#0B1426] group-hover:text-blue-600 transition-colors mb-2">
+                  <h3 className="text-lg font-bold text-navy group-hover:text-accent transition-colors mb-2">
                     {portfolio.title}
                   </h3>
                   
-                  <div className="mt-auto pt-4 flex items-center text-sm font-medium text-[#0B1426] group-hover:text-blue-600 transition-colors">
+                  <div className="mt-auto pt-4 flex items-center text-sm font-medium text-navy group-hover:text-accent transition-colors">
                     View Project
                     <ArrowRight className="h-4 w-4 ml-1.5 transition-transform group-hover:translate-x-1" />
                   </div>
@@ -87,8 +101,80 @@ export default function PortfoliosPage() {
               </div>
             </Link>
           ))}
-          
         </div>
+
+        {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-16">
+            {/* Previous Arrow (←) */}
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                currentPage === 1
+                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+              }`}
+              aria-label="Previous page"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+              (number) => (
+                <button
+                  key={number}
+                  onClick={() => paginate(number)}
+                  className={`relative flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
+                    currentPage === number
+                      ? "bg-accent text-white border-2 border-black shadow-md scale-105"
+                      : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5"
+                  }`}
+                  aria-label={`Go to page ${number}`}
+                >
+                  {number.toString().padStart(2, "0")}
+                </button>
+              ),
+            )}
+
+            {/* Next Arrow (→) */}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
+                currentPage === totalPages
+                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
+                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
+              }`}
+              aria-label="Next page"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          </div>
+        )}
       </section>
     </main>
   );

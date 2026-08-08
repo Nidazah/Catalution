@@ -163,10 +163,10 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
         {/* ================= LEFT COLUMN ================= */}
         <div className="lg:col-span-8 space-y-10">
           
-          {/* 1. Header Card (Blue Background) */}
-          <div className="bg-[#EAF5FF] p-8 md:p-10 rounded-lg">
+          {/* 1. Header Card (Light Orange Background) */}
+          <div className="bg-orange-100 p-8 md:p-10 rounded-lg">
             <div className="flex items-start gap-6">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-[#1D4ED8] rounded-lg flex items-center justify-center text-white shrink-0">
+              <div className="w-20 h-20 md:w-24 md:h-24 bg-accent rounded-lg flex items-center justify-center text-white shrink-0">
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-12 h-12">
                   <circle cx="12" cy="12" r="3" />
                   <circle cx="4" cy="12" r="2" />
@@ -185,11 +185,11 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
                     {job.urgency}
                   </span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-[#0B1426]">
+                <h1 className="text-3xl md:text-4xl font-bold text-navy">
                   {job.title}
                 </h1>
-                <div className="flex items-center gap-1.5 text-[15px] font-medium text-[#0B1426]">
-                  <MapPin className="h-4.5 w-4.5 text-[#0B1426]" />
+                <div className="flex items-center gap-1.5 text-[15px] font-medium text-navy">
+                  <MapPin className="h-4.5 w-4.5 text-navy" />
                   <span>{job.location}</span>
                 </div>
               </div>
@@ -198,7 +198,7 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
 
           {/* 2. Job Description */}
           <div>
-            <h2 className="text-2xl font-bold text-[#0B1426] mb-3">Job Description</h2>
+            <h2 className="text-2xl font-bold text-navy mb-3">Job Description</h2>
             <p className="text-gray-600 leading-relaxed text-[15px]">
               {job.description}
             </p>
@@ -206,7 +206,7 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
 
           {/* 3. Requirements */}
           <div>
-            <h2 className="text-2xl font-bold text-[#0B1426] mb-3">Requirements</h2>
+            <h2 className="text-2xl font-bold text-navy mb-3">Requirements</h2>
             <p className="text-gray-600 leading-relaxed text-[15px] mb-6">
               {job.requirements}
             </p>
@@ -214,8 +214,8 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {job.requirementsGrid.map((item: string, idx: number) => (
                 <div key={idx} className="border border-gray-200 p-5 bg-white flex items-start gap-3 rounded-sm">
-                  <Check className="h-5 w-5 text-[#2563EB] shrink-0 mt-0.5" />
-                  <p className="text-[14px] text-[#0B1426] leading-relaxed">{item}</p>
+                  <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
+                  <p className="text-[14px] text-navy leading-relaxed">{item}</p>
                 </div>
               ))}
             </div>
@@ -227,14 +227,14 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
 
           {/* 4. Responsibilities */}
           <div>
-            <h2 className="text-2xl font-bold text-[#0B1426] mb-3">Responsibilities</h2>
+            <h2 className="text-2xl font-bold text-navy mb-3">Responsibilities</h2>
             <p className="text-gray-600 leading-relaxed text-[15px] mb-4">
               {job.responsibilities}
             </p>
             <ul className="space-y-2.5">
               {job.responsibilitiesList.map((item: string, idx: number) => (
-                <li key={idx} className="flex items-start gap-3 text-[#0B1426] font-medium text-[15px]">
-                  <Check className="h-5 w-5 text-[#2563EB] shrink-0 mt-0.5" />
+                <li key={idx} className="flex items-start gap-3 text-navy font-medium text-[15px]">
+                  <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                   {item}
                 </li>
               ))}
@@ -244,7 +244,7 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
           {/* 5. Tags & Share Footer */}
           <div className="pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <span className="text-[15px] font-medium text-[#0B1426]">Tags:</span>
+              <span className="text-[15px] font-medium text-navy">Tags:</span>
               <div className="flex flex-wrap gap-2">
                 {job.tags.map((tag: string, idx: number) => (
                   <span key={idx} className="px-3.5 py-1 border border-gray-200 rounded-full text-[13px] font-medium text-gray-600 bg-white">
@@ -254,7 +254,7 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="text-[15px] font-medium text-[#0B1426]">Share:</span>
+              <span className="text-[15px] font-medium text-navy">Share:</span>
               <div className="flex gap-2">
                 <button className="w-8 h-8 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#1877F2] hover:text-white transition-colors">
                   <FaFacebook className="h-4 w-4" />
@@ -272,27 +272,34 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
             </div>
           </div>
 
-          {/* 6. Previous / Next Pagination Footer */}
+          {/* 6. Previous / Next Pagination with Arrows on Both Sides */}
           <div className="pt-8 border-t border-gray-200 flex items-center justify-between">
-            <Button
+            
+            {/* Previous Arrow (←) */}
+            <button
               onClick={handlePrev}
-              size="md"
-              className="bg-gray-50 hover:bg-gray-100 !text-[#0B1426] px-4 py-2.5"
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5`}
+              aria-label="Previous job"
             >
-              <span>Previous</span>
-            </Button>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
 
             <span className="text-sm font-medium text-gray-500">
               {currentIndex + 1} / {allIds.length}
             </span>
 
-            <Button
+            {/* Next Arrow (→) */}
+            <button
               onClick={handleNext}
-              size="md"
-              className="bg-gray-50 hover:bg-gray-100 !text-[#0B1426] px-4 py-2.5"
+              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5`}
+              aria-label="Next job"
             >
-              <span>Next</span>
-            </Button>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
           </div>
 
         </div>
@@ -302,52 +309,52 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
           
           {/* 1. Job Information Box */}
           <div className="border border-gray-200 rounded-lg p-6 bg-white">
-            <h3 className="text-xl font-bold text-[#0B1426] mb-5 border-b-2 border-[#2563EB] pb-2.5 inline-block">
+            <h3 className="text-xl font-bold text-navy mb-5 border-b-2 border-accent pb-2.5 inline-block">
               Job information
             </h3>
             
             <div className="grid grid-cols-1 gap-4 text-[15px] border border-gray-200 rounded-lg divide-y divide-gray-200">
               <div className="flex p-4">
                 <span className="w-28 font-medium text-[#4B5563] shrink-0">Category</span>
-                <span className="text-[#0B1426]">:</span>
-                <span className="pl-3 text-[#0B1426] font-medium">{job.category}</span>
+                <span className="text-navy">:</span>
+                <span className="pl-3 text-navy font-medium">{job.category}</span>
               </div>
               <div className="flex p-4">
                 <span className="w-28 font-medium text-[#4B5563] shrink-0">Number</span>
-                <span className="text-[#0B1426]">:</span>
-                <span className="pl-3 text-[#0B1426] font-medium">{job.number}</span>
+                <span className="text-navy">:</span>
+                <span className="pl-3 text-navy font-medium">{job.number}</span>
               </div>
               <div className="flex p-4">
                 <span className="w-28 font-medium text-[#4B5563] shrink-0">Company</span>
-                <span className="text-[#0B1426]">:</span>
-                <span className="pl-3 text-[#0B1426] font-medium">{job.company}</span>
+                <span className="text-navy">:</span>
+                <span className="pl-3 text-navy font-medium">{job.company}</span>
               </div>
               <div className="flex p-4">
                 <span className="w-28 font-medium text-[#4B5563] shrink-0">Website</span>
-                <span className="text-[#0B1426]">:</span>
-                <span className="pl-3 text-[#0B1426] font-medium">{job.website}</span>
+                <span className="text-navy">:</span>
+                <span className="pl-3 text-navy font-medium">{job.website}</span>
               </div>
               <div className="flex p-4">
                 <span className="w-28 font-medium text-[#4B5563] shrink-0">Salary</span>
-                <span className="text-[#0B1426]">:</span>
-                <span className="pl-3 text-[#0B1426] font-medium">{job.salary}</span>
+                <span className="text-navy">:</span>
+                <span className="pl-3 text-navy font-medium">{job.salary}</span>
               </div>
               <div className="flex p-4">
                 <span className="w-28 font-medium text-[#4B5563] shrink-0">Vacancy</span>
-                <span className="text-[#0B1426]">:</span>
-                <span className="pl-3 text-[#0B1426] font-medium">{job.vacancy}</span>
+                <span className="text-navy">:</span>
+                <span className="pl-3 text-navy font-medium">{job.vacancy}</span>
               </div>
               <div className="flex p-4">
                 <span className="w-28 font-medium text-[#4B5563] shrink-0">Apply on</span>
-                <span className="text-[#0B1426]">:</span>
-                <span className="pl-3 text-[#0B1426] font-medium">{job.applyOn}</span>
+                <span className="text-navy">:</span>
+                <span className="pl-3 text-navy font-medium">{job.applyOn}</span>
               </div>
             </div>
           </div>
 
           {/* 2. Apply Online Form */}
           <div className="border border-gray-200 rounded-lg p-6 bg-white">
-            <h3 className="text-xl font-bold text-[#0B1426] mb-6 border-b-2 border-[#2563EB] pb-2.5 inline-block">
+            <h3 className="text-xl font-bold text-navy mb-6 border-b-2 border-accent pb-2.5 inline-block">
               Apply online
             </h3>
             
@@ -355,27 +362,27 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
               <input
                 type="text"
                 placeholder="Full name*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-[#2563EB] placeholder:text-gray-400 text-[#0B1426]"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
               />
               <input
                 type="email"
                 placeholder="Enter email*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-[#2563EB] placeholder:text-gray-400 text-[#0B1426]"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
               />
               <input
                 type="tel"
                 placeholder="Phone number*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-[#2563EB] placeholder:text-gray-400 text-[#0B1426]"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
               />
               <textarea
                 placeholder="Cover letter*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-[#2563EB] placeholder:text-gray-400 text-[#0B1426] resize-none h-28"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy resize-none h-28"
               />
 
               <div className="flex items-center gap-3 pt-1">
-                <span className="text-[14px] font-medium text-[#0B1426]">Attach resume*</span>
-                <div className="flex items-center border border-[#2563EB] bg-[#F0F8FF] rounded-sm">
-                  <span className="px-3 py-1.5 text-[13px] font-medium text-[#2563EB] cursor-pointer bg-[#E1EFFE]">Choose File</span>
+                <span className="text-[14px] font-medium text-navy">Attach resume*</span>
+                <div className="flex items-center border border-accent bg-orange-100 rounded-sm">
+                  <span className="px-3 py-1.5 text-[13px] font-medium text-accent cursor-pointer bg-orange-100">Choose File</span>
                   <span className="px-3 py-1.5 text-[13px] text-gray-500">No file chosen</span>
                 </div>
               </div>
@@ -383,7 +390,7 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
               <Button
                 type="button"
                 size="md"
-                className="mt-2 bg-[#0B1426] hover:bg-[#1a253f] text-white"
+                className="mt-2 bg-navy hover:bg-navy-ink text-white"
               >
                 Submit now
               </Button>
