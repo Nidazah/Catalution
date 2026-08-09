@@ -57,7 +57,7 @@ export default function HowItWorks() {
           <ScrollReveal>
             <div className="relative aspect-[4/3] md:aspect-[16/13] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-sm">
               <Image
-                src="/images/work.jpg"
+                src="/images/h5-process-img.webp"
                 alt="Consultants reviewing business strategy"
                 width={800}
                 height={600}

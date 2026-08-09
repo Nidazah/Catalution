@@ -18,37 +18,8 @@ const item: Variants = {
 
 export default function AboutSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-[#f5f6f8] py-16 md:py-20 lg:py-[68px]">
-      {/* =====================================================
-          INLINE STYLES FOR ANIMATIONS & CSS VARIABLES
-      ====================================================== */}
-      <style>{`
-        @keyframes floatY {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        .animate-float-slow {
-          animation: floatY 4s ease-in-out infinite;
-        }
-
-        @keyframes spinSlow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-          animation: spinSlow 8s linear infinite;
-        }
-
-        @keyframes floatDrift {
-          0%, 100% { transform: translateY(0px) translateX(0px); }
-          50% { transform: translateY(-8px) translateX(4px); }
-        }
-        .animate-float-drift {
-          animation: floatDrift 4s ease-in-out infinite;
-        }
-      `}</style>
-
-      {/* Decorative rings */}
+    <section className="relative w-full overflow-hidden bg-section py-16 md:py-20 lg:py-[68px]">
+      {/* Decorative rings - Now using theme token */}
       <svg
         className="pointer-events-none absolute -left-40 top-10 opacity-10"
         width="520"
@@ -57,9 +28,9 @@ export default function AboutSection() {
         fill="none"
         aria-hidden
       >
-        <circle cx="260" cy="260" r="259" stroke="#BFD3F0" />
-        <circle cx="260" cy="260" r="200" stroke="#BFD3F0" />
-        <circle cx="260" cy="260" r="140" stroke="#BFD3F0" />
+        <circle cx="260" cy="260" r="259" stroke="stroke-purple-300" />
+        <circle cx="260" cy="260" r="200" stroke="stroke-purple-300" />
+        <circle cx="260" cy="260" r="140" stroke="stroke-purple-300" />
       </svg>
       <svg
         className="pointer-events-none absolute right-0 top-40 opacity-10"
@@ -71,13 +42,13 @@ export default function AboutSection() {
       >
         <path
           d="M320 20 C520 20 620 180 620 320 C620 500 460 620 320 620"
-          stroke="#BFD3F0"
+          stroke="stroke-purple-300"
           strokeWidth="1"
           fill="none"
         />
         <path
           d="M320 80 C480 80 560 200 560 320 C560 460 440 560 320 560"
-          stroke="#BFD3F0"
+          stroke="stroke-purple-300"
           strokeWidth="1"
           fill="none"
         />
@@ -105,8 +76,8 @@ export default function AboutSection() {
               className="object-cover"
             />
 
-            {/* Bottom dark gradient */}
-            <div className="absolute inset-x-0 bottom-0 h-[125px] bg-gradient-to-t from-[#07162e]/95 via-[#07162e]/40 to-transparent" />
+            {/* Bottom dark gradient - now using navy token */}
+            <div className="absolute inset-x-0 bottom-0 h-[125px] bg-gradient-to-t from-navy/95 via-navy/40 to-transparent" />
 
             {/* Reach 20M */}
             <div className="absolute bottom-7 left-4">
@@ -123,9 +94,9 @@ export default function AboutSection() {
             initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             transition={{ duration: 0.6, delay: 0.3, ease: easeOut }}
-            className="absolute -left-[17px] top-[112px] z-20 flex h-[91px] w-[91px] items-center justify-center rounded-full border-[5px] border-white bg-[#1674ed] shadow-md"
+            className="absolute -left-[17px] top-[112px] z-20 flex h-[91px] w-[91px] items-center justify-center rounded-full border-[5px] border-white bg-accent shadow-md"
           >
-            {/* Circular text — rotates continuously */}
+            {/* Circular text — rotates continuously (class from globals.css) */}
             <svg
               viewBox="0 0 120 120"
               className="absolute inset-0 h-full w-full animate-spin-slow"
@@ -178,16 +149,16 @@ export default function AboutSection() {
           {/* Label */}
           <motion.span
             variants={item}
-            className="inline-flex items-center gap-2 rounded bg-[#e8f0ff] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.7px] text-[#1472ed]"
+            className="inline-flex items-center gap-2 rounded bg-orange-100 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.7px] text-accent"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#1472ed]" />
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
             About Our Company
           </motion.span>
 
-          {/* Heading - Improved sizing */}
+          {/* Heading */}
           <motion.h2
             variants={item}
-            className="mt-4 font-display text-[28px] md:text-[32px] lg:text-[36px] font-bold leading-[1.08] tracking-[-1.2px] text-[#07162e]"
+            className="mt-4 font-display text-[28px] md:text-[32px] lg:text-[36px] font-bold leading-[1.08] tracking-[-1.2px] text-navy"
           >
             Crafting success tailored
             <br />
@@ -196,10 +167,10 @@ export default function AboutSection() {
             challenges
           </motion.h2>
 
-          {/* Description - Improved readability */}
+          {/* Description */}
           <motion.p
             variants={item}
-            className="mt-4 max-w-[420px] text-[15px] md:text-[16px] font-normal leading-[1.65] text-[#626b78]"
+            className="mt-4 max-w-[420px] text-[15px] md:text-[16px] font-normal leading-[1.65] text-heading"
           >
             Our mission is to empower businesses of all sizes to thrive in an
             ever-changing marketplace. In today's dynamic business environment,
@@ -212,14 +183,14 @@ export default function AboutSection() {
           ================================================== */}
           <motion.div
             variants={item}
-            className="mt-4 flex h-[79px] w-full max-w-[259px] bg-[#e3e9f0] transition-colors hover:bg-[#d5dce6]"
+            className="mt-4 flex h-[79px] w-full max-w-[259px] bg-section transition-colors hover:bg-purple-100"
           >
             {/* First stat */}
             <div className="flex flex-1 flex-col justify-center px-[15px]">
-              <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-[#07162e]">
+              <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-navy">
                 8.5x
               </p>
-              <p className="mt-[6px] text-[10px] font-medium text-[#263247]">
+              <p className="mt-[6px] text-[10px] font-medium text-heading">
                 Faster growth
               </p>
             </div>
@@ -229,13 +200,13 @@ export default function AboutSection() {
 
             {/* Second stat */}
             <div className="relative flex flex-1 flex-col justify-center px-[15px]">
-              {/* Small blue dot */}
-              <span className="absolute -left-[3px] top-1/2 h-[5px] w-[5px] -translate-y-1/2 rounded-full border border-[#1674ed] bg-white" />
+              {/* Small accent dot */}
+              <span className="absolute -left-[3px] top-1/2 h-[5px] w-[5px] -translate-y-1/2 rounded-full border border-accent bg-white" />
 
-              <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-[#07162e]">
+              <p className="text-[36px] font-bold leading-none tracking-[-1.5px] text-navy">
                 20M
               </p>
-              <p className="mt-[6px] text-[10px] font-medium text-[#263247]">
+              <p className="mt-[6px] text-[10px] font-medium text-heading">
                 Reach worldwide
               </p>
             </div>
@@ -260,13 +231,13 @@ export default function AboutSection() {
           </motion.div>
 
           {/* =================================================
-              CTA - Animated Button (improved size)
+              CTA - Animated Button
           ================================================== */}
           <motion.div variants={item} className="mt-4">
             <Button
               href="/about"
               size="md"
-              className="bg-[#07162e] text-white transition-transform hover:scale-[1.03]"
+              className="bg-navy text-white transition-transform hover:scale-[1.03]"
             >
               Know More
             </Button>

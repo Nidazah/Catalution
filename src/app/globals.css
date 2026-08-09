@@ -295,3 +295,20 @@ body {
   color: var(--color-orange-700);
   text-decoration: underline;
 }
+
+/* ✅ ADDED THE REMOVED ANIMATIONS BACK BELOW */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float-slow {
+  animation: floatY 4s ease-in-out infinite;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spinSlow 8s linear infinite;
+}

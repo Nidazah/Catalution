@@ -10,7 +10,16 @@ import {
   CircleDot,
   Repeat,
 } from "lucide-react";
+import { motion, type Variants } from "framer-motion"; // ✅ Added framer-motion imports
 import ScrollReveal from "./ScrollReveal";
+import Button from "@/components/Button"; // ✅ Imported your Button component
+
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
+};
 
 const steps = [
   {
@@ -61,31 +70,32 @@ export default function Process() {
         {/* Header Row */}
         <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_auto] items-end mb-10 md:mb-14">
           <ScrollReveal>
-            <span className="inline-flex items-center gap-2 rounded bg-[#F5F7FA] px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--color-accent)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+            <span className="inline-flex items-center gap-2 rounded bg-section px-3 py-1.5 text-xs font-semibold tracking-wide text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               TRANSFORMATIVE SOLUTION
             </span>
-            <h2 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-[var(--color-heading)] leading-[1.05]">
+            <h2 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-heading leading-[1.05]">
               In comprehensive service offer.
             </h2>
           </ScrollReveal>
           <ScrollReveal>
-            <p className="text-[var(--color-body)] max-w-xs text-sm">
+            <p className="text-body max-w-xs text-sm">
               In today&apos;s dynamic business environment, the key to success
               strategics..
             </p>
           </ScrollReveal>
+          
+          {/* ✅ EXACT SAME BUTTON AS AboutSection.tsx */}
           <ScrollReveal className="flex justify-start md:justify-end">
-            <a
-              href="#services"
-              data-cursor-hover
-              className="inline-flex items-center gap-3 rounded-full bg-[var(--color-navy)] pl-2 pr-7 py-2 text-sm font-semibold text-white transition-transform hover:scale-[1.03] whitespace-nowrap"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)]">
-                <ArrowRight className="h-4 w-4" />
-              </span>
-              More services
-            </a>
+            <motion.div variants={item} className="mt-4">
+              <Button
+                href="/services"
+                size="md"
+                className="bg-navy text-white transition-transform hover:scale-[1.03]"
+              >
+                More services
+              </Button>
+            </motion.div>
           </ScrollReveal>
         </div>
 
@@ -95,22 +105,22 @@ export default function Process() {
             const Icon = s.icon;
             return (
               <ScrollReveal key={s.label} delay={i * 0.06}>
-                <div className="flex flex-col items-center text-center rounded-2xl bg-[#F5F7FA] px-4 py-6 h-full">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]">
+                <div className="flex flex-col items-center text-center rounded-2xl bg-section px-4 py-6 h-full">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent">
                     <Icon className="h-5 w-5 text-white" />
                   </div>
-                  <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[var(--color-accent)]/40">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+                  <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-accent/40">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   </span>
-                  <h3 className="mt-3 font-display text-[15px] font-semibold text-[var(--color-heading)] leading-snug">
+                  <h3 className="mt-3 font-display text-[15px] font-semibold text-heading leading-snug">
                     {s.title}
                   </h3>
-                  <p className="mt-2 text-[12px] leading-relaxed text-[var(--color-body)]">
+                  <p className="mt-2 text-[12px] leading-relaxed text-body">
                     {s.text}
                   </p>
                   <button
                     aria-label={`Learn more about ${s.title}`}
-                    className="mt-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-navy)] text-white"
+                    className="mt-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-navy text-white"
                   >
                     <ArrowRight className="h-3 w-3 -rotate-45" />
                   </button>
@@ -120,9 +130,9 @@ export default function Process() {
           })}
         </div>
 
-        {/* ===================== DESKTOP: original hover accordion, unchanged ===================== */}
-        <div className="relative rounded-3xl bg-[#F5F7FA] overflow-hidden min-h-[550px] hidden md:block">
-          <div className="flex flex-row divide-x divide-[var(--color-line)] h-full">
+        {/* ===================== DESKTOP: original hover accordion ===================== */}
+        <div className="relative rounded-3xl bg-section overflow-hidden min-h-[550px] hidden md:block">
+          <div className="flex flex-row divide-x divide-line h-full">
             {steps.map((s, i) => {
               const isActive = i === activeIndex;
               const Icon = s.icon;
@@ -146,7 +156,7 @@ export default function Process() {
                     `}
                   >
                     <span
-                      className="font-display text-sm font-medium text-[var(--color-heading)] whitespace-nowrap tracking-wider"
+                      className="font-display text-sm font-medium text-heading whitespace-nowrap tracking-wider"
                       style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
                     >
                       {s.label}
@@ -159,23 +169,23 @@ export default function Process() {
                       ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}
                     `}
                   >
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]">
+                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent">
                       <Icon className="h-5 w-5 text-white" />
                     </div>
-                    <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[var(--color-accent)]/40">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
+                    <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-accent/40">
+                      <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                     </span>
                     <div className="mt-4 px-4">
-                      <h3 className="font-display text-xl font-semibold text-[var(--color-heading)]">
+                      <h3 className="font-display text-xl font-semibold text-heading">
                         {s.title}
                       </h3>
-                      <p className="mt-2 text-[13px] leading-relaxed text-[var(--color-body)] max-w-[200px] mx-auto">
+                      <p className="mt-2 text-[13px] leading-relaxed text-body max-w-[200px] mx-auto">
                         {s.text}
                       </p>
                     </div>
                     <button
                       aria-label={`Learn more about ${s.title}`}
-                      className="mt-5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-navy)] text-white transition-transform duration-300 hover:scale-105"
+                      className="mt-5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-navy text-white transition-transform duration-300 hover:scale-105"
                     >
                       <ArrowRight className="h-3.5 w-3.5 -rotate-45" />
                     </button>
