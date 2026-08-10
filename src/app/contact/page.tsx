@@ -28,8 +28,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-navy">Email Us</h3>
-                  <p className="text-gray-600 mt-1">hello@solvior.com</p>
-                  <p className="text-gray-600">support@solvior.com</p>
+                  <p className="text-gray-600 mt-1">support@catalution.com</p>
+                  <p className="text-gray-600">accounts@catalution.com</p>
                 </div>
               </div>
 
@@ -40,8 +40,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-navy">Call Us</h3>
-                  <p className="text-gray-600 mt-1">+1 (555) 123-4567</p>
-                  <p className="text-gray-600">Mon - Fri, 9 AM - 6 PM EST</p>
+                  <p className="text-gray-600 mt-1">0301 5221051</p>
                 </div>
               </div>
 
@@ -52,8 +51,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-navy">Visit Us</h3>
-                  <p className="text-gray-600 mt-1">123 Innovation Drive, Suite 400</p>
-                  <p className="text-gray-600">San Francisco, CA 94105</p>
+                  <p className="text-gray-600 mt-1">Near Plot 37, Tipu Block</p>
+                  <p className="text-gray-600">Garden Town, Lahore</p>
                 </div>
               </div>
             </div>
@@ -104,7 +103,7 @@ export default function ContactPage() {
 
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-navy mb-1.5">Phone Number (optional)</label>
-                <input type="tel" id="phone" placeholder="+1 (555) 000-0000" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" />
+                <input type="tel" id="phone" placeholder="+92 (555) 000-0000" className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all" />
               </div>
 
               <div>
@@ -139,12 +138,12 @@ export default function ContactPage() {
         <div className="container mx-auto px-6 py-16">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <h2 className="text-2xl font-bold text-navy">Our Location</h2>
-            <p className="text-gray-600 mt-2">Visit our headquarters in the heart of New York City.</p>
+            <p className="text-gray-600 mt-2">Visit our headquarters in Garden Town, Lahore.</p>
           </div>
           
           <div className="rounded-2xl overflow-hidden shadow-md h-[400px] w-full relative bg-gray-100">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.25280007065!2d-74.1444893819517!3d40.69763125825989!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13609.767!2d74.3184!3d31.4989!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190157d97dd50f%3A0x0!2sTipu%20Block%2C%20Garden%20Town%2C%20Lahore!5e0!3m2!1sen!2spk!4v1700000000000!5m2!1sen!2spk"
               width="100%"
               height="100%"
               style={{ border: 0 }}
