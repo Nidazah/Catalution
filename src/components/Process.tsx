@@ -100,22 +100,22 @@ export default function Process() {
         </div>
 
         {/* ===================== MOBILE: static 2-column grid ===================== */}
-        <div className="grid grid-cols-2 gap-3 md:hidden">
+        <div className="grid grid-cols-2 gap-3 items-stretch md:hidden">
           {steps.map((s, i) => {
             const Icon = s.icon;
             return (
-              <ScrollReveal key={s.label} delay={i * 0.06}>
-                <div className="flex flex-col items-center text-center rounded-2xl bg-section px-4 py-6 h-full">
+              <ScrollReveal key={s.label} delay={i * 0.06} className="h-full">
+                <div className="flex h-full flex-col items-center text-center rounded-2xl bg-section px-4 py-6">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent">
                     <Icon className="h-5 w-5 text-white" />
                   </div>
                   <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-accent/40">
                     <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   </span>
-                  <h3 className="mt-3 font-display text-[15px] font-semibold text-heading leading-snug">
+                  <h3 className="mt-3 line-clamp-2 min-h-[38px] font-display text-[15px] font-semibold text-heading leading-snug">
                     {s.title}
                   </h3>
-                  <p className="mt-2 text-[12px] leading-relaxed text-body">
+                  <p className="mt-2 line-clamp-3 text-[12px] leading-relaxed text-body">
                     {s.text}
                   </p>
                   <button
