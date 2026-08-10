@@ -353,6 +353,57 @@ function NavItem({
   );
 }
 
+// --- MOBILE PAGES SUBMENU (sized for the drawer, not the 900px desktop grid) ---
+function MobilePagesMenu({
+  pathname,
+  onNavigate,
+}: {
+  pathname: string;
+  onNavigate: () => void;
+}) {
+  const groups = [
+    { title: "Main pages", items: pagesLinks.main },
+    { title: "Other pages", items: pagesLinks.other },
+  ];
+
+  return (
+    <div className="mt-3 ml-3 flex flex-col gap-5 border-l border-gray-300 pl-3">
+      {groups.map((group) => (
+        <div key={group.title}>
+          <p className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
+            {group.title}
+          </p>
+          <div className="flex flex-col gap-3">
+            {group.items.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onNavigate}
+                className={`flex items-center gap-2 text-sm ${
+                  item.href === pathname
+                    ? "text-[var(--color-accent)] font-semibold"
+                    : "text-gray-600 hover:text-[var(--color-accent)]"
+                }`}
+              >
+                {item.label}
+                {item.badge && (
+                  <span
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white ${
+                      item.badge === "HOT" ? "bg-red-500" : "bg-[var(--color-accent)]"
+                    }`}
+                  >
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // --- MOBILE NAV COMPONENT ---
 function MobileSection({
   link,
@@ -399,13 +450,7 @@ function MobileSection({
           />
         </button>
         {open && (
-          <div className="mt-3 ml-0">
-            <PagesMegaMenu
-              open={open}
-              pathname={pathname}
-              onNavigate={onNavigate}
-            />
-          </div>
+          <MobilePagesMenu pathname={pathname} onNavigate={onNavigate} />
         )}
       </div>
     );
