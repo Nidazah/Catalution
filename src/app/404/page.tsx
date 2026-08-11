@@ -4,9 +4,9 @@ import Link from "next/link";
 
 export default function Custom404() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white pt-20">
       
-      <PageHero title="404" />
+            <PageHero title="About Us" />
 
       {/* --- SECTION 2: WHITE ERROR CONTENT (Illustration & Text) --- */}
       <section className="bg-white py-16 md:py-24 flex flex-col items-center justify-center px-6 flex-1">

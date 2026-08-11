@@ -11,7 +11,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import Button from "./Button";
 
 // --- DATA EXPORTED SO IT CAN BE USED IN THE PAGE TOO ---
 export const services = [
@@ -73,15 +72,16 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
   return (
     <div className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="p-4 sm:p-5 border-b border-gray-100 bg-gradient-to-r from-section to-white">
+      <div className="p-3.5 sm:p-4 border-b border-gray-100 bg-gradient-to-r from-section to-white">
         <h3 className="text-[15px] font-bold text-navy flex items-center gap-2">
           <span className="h-2 w-2 rounded-full bg-accent animate-pulse-glow" />
           Our Services
         </h3>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 mt-0.5">
           Explore our comprehensive consulting solutions
         </p>
       </div>
+      
       <div className="divide-y divide-gray-100">
         {services.map((service, index) => {
           const isActive = service.id === activeId;
@@ -90,7 +90,7 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
             <Link
               key={service.id}
               href={service.href}
-              className={`group relative block p-4 sm:p-5 transition-all duration-300 hover:bg-section sm:hover:pl-6 cursor-pointer ${
+              className={`group relative block p-3.5 sm:p-4 transition-all duration-300 hover:bg-section sm:hover:pl-6 cursor-pointer ${
                 isActive ? "bg-section sm:pl-6" : ""
               }`}
             >
@@ -168,21 +168,20 @@ export default function ServicesSidebar({ activeId }: ServicesSidebarProps) {
           );
         })}
       </div>
-      {/* Footer - CTA with Button component */}
+      
+      {/* Footer - CTA with native Link + Global Primary Class */}
       <motion.div
         variants={item}
         initial="hidden"
         animate="show"
-        className="p-4 sm:p-5 border-t border-gray-100"
+        className="p-3.5 sm:p-4 border-t border-gray-100"
       >
-        <Button
+        <Link
           href="/services"
-          variant="primary"
-          size="lg"
-          className="bg-navy !pl-2 pr-6 w-full sm:w-auto justify-center sm:justify-start"
+          className="btn btn-primary w-full justify-center"
         >
           More services
-        </Button>
+        </Link>
       </motion.div>
     </div>
   );

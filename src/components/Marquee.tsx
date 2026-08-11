@@ -15,13 +15,14 @@ function Row() {
           <span className="font-display text-3xl md:text-4xl font-semibold text-white whitespace-nowrap">
             {t}
           </span>
-          <svg viewBox="0 0 48 48" width="28" height="28" fill="none" className="text-white/90">
+          {/* --- UPDATED ICON: 40px size, 6px stroke, 5px center dot --- */}
+          <svg viewBox="0 0 48 48" width="40" height="40" fill="none" className="text-white/90">
             <polygon
               points="24,4 42,14 42,34 24,44 6,34 6,14"
               stroke="currentColor"
-              strokeWidth="1.5"
+              strokeWidth="6" 
             />
-            <circle cx="24" cy="24" r="3" fill="currentColor" />
+            <circle cx="24" cy="24" r="5" fill="currentColor" />
           </svg>
         </div>
       ))}

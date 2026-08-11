@@ -31,16 +31,16 @@ const servicesLinks = [
 
 // --- PORTFOLIOS DROPDOWN ---
 const portfolioLinks = [
-  { icon: Hexagon, label: "Portfolios", href: "/portfolios" },
-  { icon: Hexagon, label: "Portfolio details", href: "/portfolios/1" },
+  { label: "Portfolios", href: "/portfolios" },
+  { label: "Portfolio details", href: "/portfolios/1" },
 ];
 
 // --- BLOG DROPDOWN ---
 const blogLinks = [
-  { icon: Hexagon, label: "Blog", href: "/blog" },
-  { icon: Hexagon, label: "Blog grid", href: "/blog-grid" },
-  { icon: Hexagon, label: "Blog with sidebar", href: "/blog-sidebar" },
-  { icon: Hexagon, label: "Blog details", href: "/blog/1" },
+  { label: "Blog", href: "/blog" },
+  { label: "Blog grid", href: "/blog-grid" },
+  { label: "Blog with sidebar", href: "/blog-sidebar" },
+  { label: "Blog details", href: "/blog/1" },
 ];
 
 // --- PAGES MEGA MENU ---
@@ -79,20 +79,20 @@ const links = [
     label: "Services",
     href: "/services",
     dropdown: servicesLinks,
-    width: "w-96",
+    width: "w-56",
   },
   {
     label: "Portfolios",
     href: "/portfolios",
     dropdown: portfolioLinks,
-    width: "w-56",
+    width: "w-48",
     hasSimpleDropdown: true,
   },
   {
     label: "Blog",
     href: "/blog",
     dropdown: blogLinks,
-    width: "w-60",
+    width: "w-48",
     hasSimpleDropdown: true,
   },
   { label: "Contact", href: "/contact" },
@@ -315,11 +315,6 @@ function NavItem({
                     : ""
                 }`}
               >
-                {item.icon && (
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
-                    <item.icon className="h-[18px] w-[18px]" />
-                  </span>
-                )}
                 {item.label}
               </Link>
             );
@@ -488,10 +483,11 @@ export default function Navbar({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Force transparent mode on Careers and Blog pages.
-  const isCareersPage = pathname.startsWith("/careers");
-  const isBlogPage = pathname.startsWith("/blog");
-  const isHeroMode = isCareersPage || isBlogPage || (transparent && !scrolled);
+  // --- UPDATED LOGIC: Transparent everywhere EXCEPT the Home Page ---
+  const isHomePage = pathname === "/";
+  // If it's NOT the home page, it starts transparent, 
+  // BUT turns solid white if the user has scrolled down.
+  const isHeroMode = !isHomePage && !scrolled;
 
   // Logo selection based on mode
   const logoSrc = isHeroMode

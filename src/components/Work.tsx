@@ -6,20 +6,20 @@ import ScrollReveal from "./ScrollReveal";
 const steps = [
   {
     n: "01.",
-    title: "Understand business",
-    text: "Our consultancy excels in providing quick solutions tailored to your business challenges",
+    title: "System Audit & Scope",
+    text: "We analyze your existing software stack, workflow bottlenecks, and core accounting needs.",
     active: false,
   },
   {
     n: "02.",
-    title: "Custom strategy",
-    text: "Our consultancy excels in providing quick solutions tailored to your business challenges",
+    title: "Tailored Deployment",
+    text: "We configure and integrate ERP, POS, or bookkeeping modules tailored to your operational structure.",
     active: true,
   },
   {
     n: "03.",
-    title: "Execute & optimize",
-    text: "Our consultancy excels in providing quick solutions tailored to your business challenges",
+    title: "Migration & Training",
+    text: "We handle data migration, train your operational team, and offer continuous post-launch optimization.",
     active: false,
   },
 ];
@@ -75,10 +75,6 @@ export default function HowItWorks() {
                   <span className="h-1 w-1 rounded-full bg-accent" />
                   HOW IT WORKS
                 </span>
-                {/* 
-                  EXACT TEXT STYLES PRESERVED:
-                  font-display, text-2xl, leading-[1.08]
-                */}
                 <h2 className="mt-3 font-display text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.08] text-heading">
                   Three steps to <br className="hidden sm:block" />
                   <span className="text-accent">transform</span> your business
@@ -90,7 +86,6 @@ export default function HowItWorks() {
                 {steps.map((s) => (
                   <div key={s.title} className="flex flex-col">
                     <div className="flex items-center mb-2">
-                      {/* Uniform circle color for every step */}
                       <div
                         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy font-display text-xs font-bold text-white
                                    transition-all duration-300 ease-out

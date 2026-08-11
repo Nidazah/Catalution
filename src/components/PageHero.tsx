@@ -25,7 +25,8 @@ export default function PageHero({
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-navy/85" />
+        {/* --- CHANGED FROM /85 TO /50 FOR A LIGHTER PURPLE OVERLAY --- */}
+        <div className="absolute inset-0 bg-navy/50" /> 
       </div>
 
       {/* pt-40/44 instead of pt-24 — clears the ~100px navbar + the -mt-20 offset */}

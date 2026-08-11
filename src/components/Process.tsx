@@ -3,15 +3,13 @@
 import { useState } from "react";
 import {
   ArrowRight,
-  Waves,
-  Boxes,
-  Users,
-  Sparkles,
-  CircleDot,
-  Repeat,
+  Database,
+  ShoppingCart,
+  FileText,
+  Share2,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import Link from "next/link"; // ✅ Added Link import
+import Link from "next/link";
 import ScrollReveal from "./ScrollReveal";
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
@@ -23,40 +21,28 @@ const item: Variants = {
 
 const steps = [
   {
-    icon: Waves,
-    label: "Business process optimization",
-    title: "Business process",
-    text: "In today's dynamic business environment, the key to success lies strategics our planning and operational business.",
+    icon: Database,
+    label: "Custom ERP Systems",
+    title: "Custom ERP Systems",
+    text: "Centralize operations, supply chain, HR, and reporting into a single cloud platform.",
   },
   {
-    icon: Boxes,
-    label: "Strategic planning & execution",
-    title: "Strategic planning & execution",
-    text: "In today's dynamic business environment, the key to success lies strategics our planning and operational business.",
+    icon: ShoppingCart,
+    label: "Omnichannel POS",
+    title: "Omnichannel POS",
+    text: "Sync physical retail stores, cash registers, and online inventory in real time.",
   },
   {
-    icon: Users,
-    label: "Leadership executive coaching",
-    title: "Leadership executive coaching",
-    text: "In today's dynamic business environment, the key to success lies strategics our planning and operational business.",
+    icon: FileText,
+    label: "Automated Bookkeeping",
+    title: "Automated Bookkeeping",
+    text: "Eliminate manual entry with automated invoicing, expense tracking, and financial logs.",
   },
   {
-    icon: Sparkles,
-    label: "Legacy leadership institute",
-    title: "Legacy leadership institute",
-    text: "In today's dynamic business environment, the key to success lies strategics our planning and operational business.",
-  },
-  {
-    icon: CircleDot,
-    label: "Executive growth solutions",
-    title: "Executive growth solutions",
-    text: "In today's dynamic business environment, the key to success lies strategics our planning and operational business.",
-  },
-  {
-    icon: Repeat,
-    label: "Empowered leadership journey",
-    title: "Empowered leadership journey",
-    text: "In today's dynamic business environment, the key to success lies strategics our planning and operational business.",
+    icon: Share2,
+    label: "System Integration",
+    title: "System Integration",
+    text: "Connect legacy databases, payment gateways, and custom APIs seamlessly.",
   },
 ];
 
@@ -64,23 +50,24 @@ export default function Process() {
   const [activeIndex, setActiveIndex] = useState(1);
 
   return (
-    <section id="process" className="bg-white py-24 md:py-32">
+    <section id="process" className="bg-white py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
         {/* Header Row */}
         <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_auto] items-end mb-10 md:mb-14">
           <ScrollReveal>
             <span className="inline-flex items-center gap-2 rounded bg-section px-3 py-1.5 text-xs font-semibold tracking-wide text-accent">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              TRANSFORMATIVE SOLUTION
+              CORE SERVICES
             </span>
             <h2 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-heading leading-[1.05]">
-              In comprehensive service offer.
+              Comprehensive <br className="hidden sm:block" />
+              <span className="text-accent">service</span> offer.
             </h2>
           </ScrollReveal>
           <ScrollReveal>
             <p className="text-body max-w-xs text-sm">
-              In today&apos;s dynamic business environment, the key to success
-              strategics..
+              Streamline your entire operation with tailored ERP, real-time POS, 
+              automated bookkeeping, and seamless system integrations.
             </p>
           </ScrollReveal>
 
