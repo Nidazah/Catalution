@@ -7,10 +7,10 @@ const services = [
     title: "Quick solutions",
     text: "Rapid problem-solving with agile methodologies to keep your business moving forward.",
     icon: (
-      <svg viewBox="0 0 48 48" fill="none" className="h-8 w-8 text-white/80">
-        <rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" strokeWidth="1.2" />
-        <rect x="14" y="14" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="1.2" />
-        <rect x="22" y="22" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="1.2" />
+      <svg viewBox="0 0 48 48" fill="none" className="h-10 w-10 text-white/90">
+        <rect x="6" y="6" width="36" height="36" rx="4" stroke="currentColor" strokeWidth="2" />
+        <rect x="14" y="14" width="16" height="16" rx="2" stroke="currentColor" strokeWidth="2" />
+        <rect x="22" y="22" width="12" height="12" rx="1" stroke="currentColor" strokeWidth="2" />
       </svg>
     ),
   },
@@ -18,13 +18,13 @@ const services = [
     title: "Expert advice",
     text: "Insights from industry veterans with decades of experience in your sector.",
     icon: (
-      <svg viewBox="0 0 48 48" fill="none" className="h-8 w-8 text-white/80">
-        <polygon points="24,6 43,17 43,31 24,42 5,31 5,17" stroke="currentColor" strokeWidth="1.2" />
-        <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="1.2" />
-        <line x1="24" y1="10" x2="24" y2="18" stroke="currentColor" strokeWidth="1.2" />
-        <line x1="24" y1="30" x2="24" y2="38" stroke="currentColor" strokeWidth="1.2" />
-        <line x1="13" y1="17" x2="19" y2="21" stroke="currentColor" strokeWidth="1.2" />
-        <line x1="29" y1="27" x2="35" y2="31" stroke="currentColor" strokeWidth="1.2" />
+      <svg viewBox="0 0 48 48" fill="none" className="h-10 w-10 text-white/90">
+        <polygon points="24,6 43,17 43,31 24,42 5,31 5,17" stroke="currentColor" strokeWidth="2" />
+        <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="2" />
+        <line x1="24" y1="10" x2="24" y2="18" stroke="currentColor" strokeWidth="2" />
+        <line x1="24" y1="30" x2="24" y2="38" stroke="currentColor" strokeWidth="2" />
+        <line x1="13" y1="17" x2="19" y2="21" stroke="currentColor" strokeWidth="2" />
+        <line x1="29" y1="27" x2="35" y2="31" stroke="currentColor" strokeWidth="2" />
       </svg>
     ),
   },
@@ -32,10 +32,10 @@ const services = [
     title: "Strategic planning",
     text: "Long-term roadmaps tailored to your unique business goals and market position.",
     icon: (
-      <svg viewBox="0 0 48 48" fill="none" className="h-8 w-8 text-white/80">
-        <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="1.2" />
-        <circle cx="24" cy="24" r="11" stroke="currentColor" strokeWidth="1.2" />
-        <path d="M24 13 C31 13 35 19 35 24 C35 29 31 35 24 35" stroke="currentColor" strokeWidth="1.2" />
+      <svg viewBox="0 0 48 48" fill="none" className="h-10 w-10 text-white/90">
+        <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="2" />
+        <circle cx="24" cy="24" r="11" stroke="currentColor" strokeWidth="2" />
+        <path d="M24 13 C31 13 35 19 35 24 C35 29 31 35 24 35" stroke="currentColor" strokeWidth="2" />
       </svg>
     ),
   },
@@ -43,9 +43,9 @@ const services = [
     title: "Efficient operations",
     text: "Streamline workflows and eliminate bottlenecks for maximum productivity.",
     icon: (
-      <svg viewBox="0 0 48 48" fill="none" className="h-8 w-8 text-white/80">
-        <polygon points="12,10 28,10 36,24 28,38 12,38 20,24" stroke="currentColor" strokeWidth="1.2" />
-        <polygon points="22,16 32,16 37,24 32,32 22,32" stroke="currentColor" strokeWidth="1.2" />
+      <svg viewBox="0 0 48 48" fill="none" className="h-10 w-10 text-white/90">
+        <polygon points="12,10 28,10 36,24 28,38 12,38 20,24" stroke="currentColor" strokeWidth="2" />
+        <polygon points="22,16 32,16 37,24 32,32 22,32" stroke="currentColor" strokeWidth="2" />
       </svg>
     ),
   },
@@ -72,12 +72,12 @@ export default function Services() {
                 />
 
                 {/* --- ICON --- */}
-                <div className="mb-1 drop-shadow-md relative z-10 scale-75 sm:scale-90">
+                <div className="mb-2 drop-shadow-md relative z-10">
                   {s.icon}
                 </div>
 
                 {/* --- TEXT CONTENT --- */}
-                <h3 className="ui-sm font-bold text-white tracking-tight relative z-10">
+                <h3 className="text-base sm:text-lg font-bold text-white tracking-tight relative z-10">
                   {s.title}
                 </h3>
                 

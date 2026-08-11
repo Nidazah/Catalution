@@ -54,7 +54,12 @@ export default function AboutSection() {
         />
       </svg>
 
+      {/* 
+        FIX: Everything is now wrapped in one single parent div.
+        All content (Left image + Right content) is safely nested inside this grid container.
+      */}
       <div className="relative mx-auto max-w-[1020px] grid grid-cols-1 items-center gap-14 px-6 md:grid-cols-[390px_1fr] md:gap-[68px] lg:px-0">
+        
         {/* =====================================================
             LEFT IMAGE AREA - Animated
         ====================================================== */}
@@ -97,13 +102,12 @@ export default function AboutSection() {
           className="relative max-w-[460px]"
         >
           {/* Label - Updated to match your style */}
-          {/* --- HEADING --- */}
-              <div className="mb-6 md:mb-8">
-                <span className="inline-flex items-center gap-2 rounded bg-orange-100 px-2.5 py-1 text-[10px] font-bold tracking-wider text-accent">
-                  <span className="h-1 w-1 rounded-full bg-accent" />
-                  ABOUT OUR COMPANY
-                </span>
-              </div>
+          <div className="mb-6 md:mb-8">
+            <span className="inline-flex items-center gap-2 rounded bg-orange-100 px-2.5 py-1 text-[10px] font-bold tracking-wider text-accent">
+              <span className="h-1 w-1 rounded-full bg-accent" />
+              ABOUT OUR COMPANY
+            </span>
+          </div>
 
           {/* Heading - Updated to match your style */}
           <motion.h2 
@@ -161,13 +165,14 @@ export default function AboutSection() {
           {/* =================================================
               CTA - Animated Button (Native Link)
           ================================================== */}
-          <motion.div variants={item} className="mt-4">
-            <Link href="/about" className="btn btn-primary">
+          <motion.div variants={item} className="mt-6">
+            <Link href="#contact" className="btn btn-primary text-sm">
               Learn About Us
             </Link>
           </motion.div>
-        </motion.div>
-      </div>
+
+        </motion.div> {/* <-- CORRECT CLOSING TAG FOR RIGHT CONTENT */}
+      </div> {/* <-- CORRECT CLOSING TAG FOR THE MAIN GRID CONTAINER */}
     </section>
   );
 }
