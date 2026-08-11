@@ -2,8 +2,8 @@
 
 import { ArrowRight, Globe, Camera, AtSign, Share2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import ScrollReveal from "./ScrollReveal";
-import Button from "./Button";
 
 const team = [
   {
@@ -37,69 +37,80 @@ const socials = [
 
 export default function Team() {
   return (
-    <section id="team" className="bg-[#F7F8FA] py-20 md:py-28">
+    <section id="team" className="bg-[#F7F8FA] py-16 md:py-28">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-8 md:grid-cols-[1fr_auto_auto] md:items-end">
+        {/* Header Layout */}
+        <div className="grid gap-6 md:gap-8 lg:grid-cols-[1fr_auto_auto] md:items-end">
           <ScrollReveal>
-            <span className="inline-flex items-center gap-2 rounded bg-[#EAF1FD] px-3 py-1.5 text-sm font-semibold tracking-wide text-[var(--color-accent)]">
+            <span className="inline-flex items-center gap-2 rounded bg-[#EAF1FD] px-3 py-1.5 text-xs sm:text-sm font-semibold tracking-wide text-[var(--color-accent)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
               MEET OUR TEAMS
             </span>
-            <h2 className="mt-4 font-display text-4xl md:text-5xl font-bold text-[var(--color-heading)] leading-[1.05]">
+            <h2 className="mt-3 sm:mt-4 font-display text-3xl sm:text-4xl md:text-5xl font-bold text-[var(--color-heading)] leading-[1.05]">
               Expert team members
             </h2>
           </ScrollReveal>
 
           <ScrollReveal delay={0.05}>
-            <p className="text-[var(--color-body)] max-w-sm md:pb-2">
+            <p className="text-[var(--color-body)] max-w-sm text-sm sm:text-base md:pb-2">
               In today&apos;s dynamic business environment, the key to success
               strategics..
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <Button
-              href="#team"
-              className="bg-[var(--color-navy)] text-white transition-transform hover:scale-[1.03] whitespace-nowrap shadow-md"
-              size="md"
+            <Link 
+              href="#team" 
+              className="btn btn-primary shadow-md whitespace-nowrap w-full sm:w-auto text-center justify-center"
             >
               More members
-            </Button>
+            </Link>
           </ScrollReveal>
         </div>
 
-        {/* 2 columns on mobile (sm), 4 columns on desktop (lg) */}
-        <div className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 
+          GRID LAYOUT:
+          Base = 2 columns (Mobile & Tablets)
+          lg: = 4 columns (Desktops)
+        */}
+        <div className="mt-10 sm:mt-12 md:mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {team.map((member, i) => (
-            <ScrollReveal key={member.name} delay={i * 0.08}>
-              <div className="group flex h-full flex-col items-center rounded-xl border border-[var(--color-line)] bg-white px-6 pt-8 pb-6 text-center transition-shadow duration-300 hover:shadow-md">
-                <div className="relative h-32 w-32 overflow-hidden rounded-full">
+            <ScrollReveal key={member.name} delay={i * 0.08} className="h-full">
+              <div className="group flex h-full min-h-[260px] sm:min-h-[300px] lg:min-h-[340px] flex-col items-center rounded-xl border border-[var(--color-line)] bg-white px-4 py-6 sm:px-6 sm:pt-8 sm:pb-6 text-center transition-shadow duration-300 hover:shadow-md">
+                
+                {/* Responsive Avatar */}
+                <div className="relative h-20 w-20 sm:h-24 sm:w-24 lg:h-32 lg:w-32 overflow-hidden rounded-full">
                   <Image
                     src={member.image}
                     alt={member.name}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="128px"
+                    sizes="(max-width: 640px) 80px, (max-width: 1024px) 96px, 128px"
                   />
                 </div>
 
-                <h3 className="mt-6 font-display text-lg font-semibold text-[var(--color-heading)]">
+                {/* 
+                  Responsive Text 
+                  FIXED: Removed `whitespace-nowrap` so long names wrap to a second line naturally.
+                */}
+                <h3 className="mt-4 sm:mt-5 lg:mt-6 font-display text-base sm:text-lg font-semibold text-[var(--color-heading)] text-center">
                   {member.name}
                 </h3>
-                <p className="mt-1 text-sm text-[var(--color-body)]">
+                <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-[var(--color-body)]">
                   {member.role}
                 </p>
 
-                <div className="mt-auto flex w-full items-center justify-center gap-3 border-t border-[var(--color-line)] pt-5">
+                {/* Social Icons */}
+                <div className="mt-auto flex w-full items-center justify-center gap-2 sm:gap-3 border-t border-[var(--color-line)] pt-4 sm:pt-5 transition-colors duration-300">
                   {socials.map((s) => (
                     <a
                       key={s.label}
                       href={s.href}
                       aria-label={`${member.name} on ${s.label}`}
                       data-cursor-hover
-                      className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors duration-300 hover:bg-[var(--color-accent)] hover:text-white"
+                      className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors duration-300 group-hover:bg-[var(--color-accent)] group-hover:text-white"
                     >
-                      <s.icon className="h-3.5 w-3.5" />
+                      <s.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                     </a>
                   ))}
                 </div>

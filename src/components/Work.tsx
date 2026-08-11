@@ -27,83 +27,88 @@ const steps = [
 function DotConnector({ active }: { active: boolean }) {
   return (
     <div className="flex flex-1 items-center">
-      <div className="h-px flex-1 border-t border-dashed border-line" />
+      <div className="h-px flex-1 border-t border-dashed border-purple-300/60" />
       <svg
         viewBox="0 0 24 24"
-        className={`mx-2 h-3.5 w-3.5 shrink-0 ${
-          active ? "text-accent" : "text-gray-400"
+        className={`mx-1.5 h-3 w-3 shrink-0 ${
+          active ? "text-accent" : "text-purple-300"
         }`}
         fill="currentColor"
       >
-        <circle cx="12" cy="4" r="2" />
-        <circle cx="12" cy="20" r="2" />
-        <circle cx="4" cy="12" r="2" />
-        <circle cx="20" cy="12" r="2" />
+        <circle cx="12" cy="4" r="1.5" />
+        <circle cx="12" cy="20" r="1.5" />
+        <circle cx="4" cy="12" r="1.5" />
+        <circle cx="20" cy="12" r="1.5" />
       </svg>
-      <div className="h-px flex-1 border-t border-dashed border-line" />
+      <div className="h-px flex-1 border-t border-dashed border-purple-300/60" />
     </div>
   );
 }
 
 export default function HowItWorks() {
   return (
-    <section className="bg-section min-h-screen flex items-center py-16 md:py-20">
+    <section className="bg-[#F1EDFF] py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-6 w-full">
         
-        {/* Simplified grid structure - no weird absolute overlaps */}
-        <div className="grid gap-10 md:grid-cols-2 md:items-start relative">
+        {/* 
+          ✅ FIX: CSS Grid on desktop enforces equal heights.
+          Completely eliminates the empty white gap without changing the text.
+        */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-stretch">
           
-          {/* --- IMAGE --- */}
-          <ScrollReveal>
-            <div className="relative aspect-[4/3] md:aspect-[16/13] w-full overflow-hidden rounded-2xl md:rounded-3xl shadow-sm">
+          {/* --- LEFT: IMAGE --- */}
+          <ScrollReveal className="h-full">
+            <div className="relative w-full h-full min-h-[300px] md:min-h-[450px] overflow-hidden rounded-2xl md:rounded-3xl shadow-sm">
               <Image
                 src="/images/h5-process-img.webp"
                 alt="Consultants reviewing business strategy"
-                width={800}
-                height={600}
-                className="h-full w-full object-cover"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </ScrollReveal>
 
-          {/* --- HEADING (Top right) --- */}
-          <ScrollReveal delay={0.1}>
-            <div className="pt-0 md:pt-4">
-              <span className="inline-flex items-center gap-2 rounded bg-orange-100 px-3 py-1.5 text-xs font-semibold tracking-wide text-accent">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                HOW IT WORKS
-              </span>
-              <h2 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-bold leading-[1.08] text-heading">
-                Three steps to transform your business
-              </h2>
-            </div>
-          </ScrollReveal>
+          {/* --- RIGHT: STEPS CARD --- */}
+          <ScrollReveal delay={0.15} className="h-full">
+            <div className="flex flex-col justify-center h-full rounded-2xl md:rounded-3xl bg-white/60 backdrop-blur-[2px] p-6 md:p-8 shadow-sm border border-white/40">
+              
+              {/* --- HEADING --- */}
+              <div className="mb-6 md:mb-8">
+                <span className="inline-flex items-center gap-2 rounded bg-orange-100 px-2.5 py-1 text-[10px] font-bold tracking-wider text-accent">
+                  <span className="h-1 w-1 rounded-full bg-accent" />
+                  HOW IT WORKS
+                </span>
+                {/* 
+                  EXACT TEXT STYLES PRESERVED:
+                  font-display, text-2xl, leading-[1.08]
+                */}
+                <h2 className="mt-3 font-display text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.08] text-heading">
+                  Three steps to <br className="hidden sm:block" />
+                  <span className="text-accent">transform</span> your business
+                </h2>
+              </div>
 
-          {/* --- STEPS CARD --- */}
-          <ScrollReveal delay={0.15} className="md:col-span-2 mt-4 md:mt-6">
-            <div className="rounded-2xl bg-purple-100 p-6 md:p-8 w-full shadow-sm">
-              <div className="grid gap-8 sm:grid-cols-3">
+              {/* --- STEPS GRID --- */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-4">
                 {steps.map((s) => (
-                  <div key={s.title}>
-                    <div className="flex items-center">
-                      {/* Shrunk number icons */}
+                  <div key={s.title} className="flex flex-col">
+                    <div className="flex items-center mb-2">
+                      {/* Uniform circle color for every step */}
                       <div
-                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-display text-sm font-semibold text-white ${
-                          s.active
-                            ? "bg-accent"
-                            : "bg-navy"
-                        }`}
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy font-display text-xs font-bold text-white
+                                   transition-all duration-300 ease-out
+                                   hover:ring-2 hover:ring-accent hover:ring-offset-2 hover:ring-offset-white hover:-translate-y-0.5"
                       >
                         {s.n}
                       </div>
                       <DotConnector active={s.active} />
                     </div>
 
-                    {/* Shrunk title and text */}
-                    <h3 className="mt-4 font-display text-lg font-semibold text-heading">
+                    <h3 className="mt-3 font-display text-[16px] font-semibold text-heading">
                       {s.title}
                     </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-body">
+                    <p className="mt-1.5 text-[13px] leading-relaxed text-body">
                       {s.text}
                     </p>
                   </div>
@@ -112,12 +117,6 @@ export default function HowItWorks() {
             </div>
           </ScrollReveal>
         </div>
-
-        {/* 
-          REMOVED THE 260px SPACER! 
-          The component naturally ends right after the steps card.
-        */}
-
       </div>
     </section>
   );

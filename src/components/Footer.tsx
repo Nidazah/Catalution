@@ -127,7 +127,8 @@ export default function FooterV2() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-purple-300)] text-white transition-colors hover:bg-[var(--color-accent)]"
+                /* ✅ UPDATED HOVER COLOR TO LIGHT PURPLE */
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-purple-300)] text-white transition-colors hover:bg-[var(--color-purple-300)] hover:text-white"
               >
                 <s.icon className="h-4 w-4" />
               </a>

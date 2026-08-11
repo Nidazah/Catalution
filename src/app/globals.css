@@ -4,37 +4,40 @@
 :root {
   /* ---------- Catalution brand tokens ---------- */
   /* Primary — Purple family */
-  --color-purple-900: #4B1D96;
-  --color-purple-700: #6D28D9;
-  --color-purple-500: #885CF6;
-  --color-purple-300: #A78BFA;
-  --color-purple-100: #DCCBFF;
+  --color-purple-900: #481d96;
+  --color-purple-700: #6d28d9;
+  --color-purple-500: #8b5cf6;
+  --color-purple-300: #a78bfa;
+  --color-purple-100: #dccbff;
 
   /* Secondary — Orange family */
-  --color-orange-900: #FF6800;
-  --color-orange-700: #FB923C;
-  --color-orange-500: #FFB164;
-  --color-orange-300: #FFD59E;
-  --color-orange-100: #FFEAD5;
+  --color-orange-900: #ff6800;
+  --color-orange-700: #fb923c;
+  --color-orange-500: #ffb164;
+  --color-orange-300: #ffd59e;
+  --color-orange-100: #ffead5;
 
-  /* ---------- Existing site tokens, remapped to Catalution brand ---------- */
-  /* Kept under their original names so every component (Navbar, Hero, buttons,
-     cursor, gradients, etc.) re-themes automatically without per-file edits. */
-  --color-navy: var(--color-purple-900);       /* was #0a2540 — primary brand color */
-  --color-navy-ink: #34146B;                    /* was #071a2e — darker purple for hover/ink states */
-  --color-accent: var(--color-orange-900);      /* was #2563eb — CTAs, highlights, accents */
-  --color-accent-soft: var(--color-orange-500); /* was #60a5fa — soft accent / hover glow */
+  /* ---------- Existing site tokens ---------- */
+  --color-navy: var(--color-purple-900);
+  --color-navy-ink: #34146b;
+  --color-accent: var(--color-orange-900);
+  --color-accent-soft: var(--color-orange-500);
   --color-bg: #ffffff;
-  --color-section: #F8F5FF;                     /* was #f5f7fa — faint purple-tinted section bg */
-  --color-heading: #1E1233;                     /* was #111827 — near-black with purple undertone */
+  --color-section: #f8f5ff;
+  --color-heading: #1e1233;
   --color-body: #6b7280;
-  --color-line: #E7DEF7;                        /* was #e2e8f0 — soft lavender border */
+  --color-line: #e7def7;
 
-  --font-display: var(--font-poppins), "Poppins", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-body: var(--font-inter), "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Font family setup */
+  --font-poppins:
+    var(--font-poppins), "Poppins", ui-sans-serif, system-ui, -apple-system,
+    sans-serif;
+  --font-inter:
+    var(--font-inter), "Inter", ui-sans-serif, system-ui, -apple-system,
+    sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
-  /* Buttons */
   --radius-btn: 12px;
 }
 
@@ -57,15 +60,14 @@
   --color-orange-500: var(--color-orange-500);
   --color-orange-300: var(--color-orange-300);
   --color-orange-100: var(--color-orange-100);
-  --font-display: var(--font-display);
-  --font-body: var(--font-body);
+  --font-poppins: var(--font-poppins);
+  --font-inter: var(--font-inter);
   --font-mono: var(--font-mono);
 }
 
 * {
   border-color: var(--color-line);
 }
-
 html {
   scroll-behavior: smooth;
 }
@@ -73,23 +75,622 @@ html {
 body {
   background: var(--color-bg);
   color: var(--color-heading);
-  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
-  cursor: none;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (hover: none), (pointer: coarse) {
-  body {
-    cursor: auto;
+/* ---------- Standard Utilities ---------- */
+.text-gradient {
+  background: linear-gradient(
+    95deg,
+    var(--color-navy) 0%,
+    var(--color-purple-500) 45%,
+    var(--color-accent) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.grid-fade-mask {
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 60% 30%,
+    black 40%,
+    transparent 90%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 60% 30%,
+    black 40%,
+    transparent 90%
+  );
+}
+
+/* ---------- Animations ---------- */
+@keyframes pulse-node {
+  0%,
+  100% {
+    opacity: 0.35;
+    r: 2.4;
   }
-  .cursor-dot,
-  .cursor-ring {
-    display: none !important;
+  50% {
+    opacity: 1;
+    r: 3.4;
+  }
+}
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes float-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-6px, -14px);
   }
 }
 
-::selection {
-  background: var(--color-accent);
+.node-pulse {
+  animation: pulse-node 3.2s ease-in-out infinite;
+}
+.flow-line {
+  stroke-dasharray: 6 10;
+  animation: dash-flow 6s linear infinite;
+}
+.animate-float-slow {
+  animation: floatY 4s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spinSlow 8s linear infinite;
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+.animate-float {
+  animation: float 4.5s ease-in-out infinite;
+}
+.animate-float-drift {
+  animation: float-drift 6s ease-in-out infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===================================================================
+   TYPOGRAPHY HIERARCHY
+=================================================================== */
+.h1,
+h1 {
+  font-family: var(--font-poppins);
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 120%;
+}
+.h2,
+h2 {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 120%;
+}
+.h3,
+h3 {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 120%;
+}
+.h4,
+h4 {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 130%;
+}
+.h5,
+h5 {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 140%;
+}
+.h6,
+h6 {
+  font-family: var(--font-poppins);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 140%;
+}
+
+.ui-lg {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 140%;
+}
+.ui-md {
+  font-family: var(--font-poppins);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 140%;
+}
+.ui-sm {
+  font-family: var(--font-poppins);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 140%;
+}
+
+.body-lg {
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+}
+.body-md {
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 160%;
+}
+.body-sm {
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 160%;
+}
+.caption {
+  font-family: var(--font-inter);
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 150%;
+}
+
+/* ===================================================================
+   BUTTON SYSTEM (Fixing the Variants)
+=================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: var(--radius-btn);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid transparent;
+}
+
+/* 1. PRIMARY (Purple 900 Fill) */
+.btn-primary {
+  background: var(--color-purple-900);
+  color: #ffffff;
+  border-color: var(--color-purple-900);
+}
+.btn-primary:hover {
+  background: var(--color-purple-700);
+  border-color: var(--color-purple-700);
+}
+
+/* 2. SECONDARY (Orange 900 Fill - NOT USED YET, but ready) */
+.btn-secondary {
+  background: var(--color-orange-900);
+  color: #ffffff;
+  border-color: var(--color-orange-900);
+}
+.btn-secondary:hover {
+  background: var(--color-orange-700);
+  border-color: var(--color-orange-700);
+}
+
+/* 3. OUTLINE (White fill, Purple border/text) */
+.btn-outline {
+  background: #ffffff;
+  color: var(--color-purple-900);
+  border-color: var(--color-purple-900);
+}
+.btn-outline:hover {
+  background: var(--color-purple-100);
+}
+
+/* 4. GHOST (Transparent with Orange text, used for Read More / Links) */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-orange-900);
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  font-weight: 500;
+}
+.btn-ghost:hover {
+  color: var(--color-orange-700);
+  text-decoration: underline;
+}
+
+/* 5. NAVBAR CTA (Specific to your screenshot's exact look) */
+.btn-nav-primary {
+  background: var(--color-purple-900);
+  color: #ffffff;
+  border-radius: var(--radius-btn);
+  padding: 10px 20px;
+  font-family: var(--font-poppins);
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.btn-nav-primary:hover {
+  background: var(--color-purple-700);
+}
+.btn-nav-primary .arrow {
+  transition: transform 0.2s ease;
+}
+.btn-nav-primary:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* ===================================================================
+   NAVBAR COMPONENT STYLES
+=================================================================== */
+.catalution-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 4%;
+  background-color: var(--color-bg);
+  font-family: var(--font-inter), sans-serif;
+}
+.navbar-logo img {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.nav-link {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 140%;
+  color: var(--color-purple-900);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-link:hover,
+.nav-link.active {
+  color: var(--color-orange-900);
+}
+.btn-nav-menu {
+  display: none;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--color-purple-900);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-btn);
+  transition: color 0.2s ease;
+}
+.btn-nav-menu:hover {
+  color: var(--color-orange-900);
+}
+@media (max-width: 1024px) {
+  .navbar-links {
+    display: none;
+  }
+  .btn-nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* Dropdowns & Mega Menus */
+.nav-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+  background: var(--color-bg);
+  border-radius: var(--radius-btn);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-line);
+  padding: 8px 0;
+  min-width: 200px;
+}
+.nav-dropdown-item {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-purple-900);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.nav-dropdown-item:hover {
+  color: var(--color-orange-900);
+  background: var(--color-purple-100);
+}
+
+.nav-mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+  background: var(--color-bg);
+  border-radius: var(--radius-btn);
+  box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-line);
+  overflow: hidden;
+  min-width: 900px;
+}
+.nav-mega-menu-column {
+  padding: 24px;
+  border-right: 1px solid var(--color-line);
+}
+.nav-mega-menu-column:last-child {
+  border-right: none;
+}
+.nav-mega-menu-title {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-purple-900);
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--color-orange-900);
+  padding-bottom: 8px;
+  display: inline-block;
+}
+.nav-mega-menu-link {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-purple-900);
+  padding: 6px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-mega-menu-link:hover {
+  color: var(--color-orange-900);
+}
+
+/* Mobile Menu Drawer */
+.nav-mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  max-width: 340px;
+  background: var(--color-bg);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+}
+.nav-mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--color-line);
+}
+.nav-mobile-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.nav-mobile-drawer-brand span {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--color-purple-900);
+}
+.nav-mobile-drawer-close {
+  color: var(--color-purple-900);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.nav-mobile-drawer-close:hover {
+  color: var(--color-orange-900);
+}
+
+.nav-mobile-drawer-search {
+  padding: 16px 24px;
+}
+.nav-mobile-drawer-search input {
+  width: 100%;
+  background: var(--color-purple-100);
+  color: var(--color-purple-900);
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius-btn);
+  outline: none;
+  border: 2px solid transparent;
+  font-family: var(--font-inter);
+}
+.nav-mobile-drawer-search input:focus {
+  border-color: var(--color-purple-900);
+}
+
+.nav-mobile-drawer-links {
+  flex: 1;
+  padding: 8px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-mobile-link {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-purple-900);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-mobile-link:hover {
+  color: var(--color-orange-900);
+}
+.nav-mobile-dropdown {
+  padding: 12px 0 12px 12px;
+  border-left: 1px solid var(--color-line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.nav-mobile-dropdown-link {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-purple-900);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-mobile-dropdown-link:hover {
+  color: var(--color-orange-900);
+}
+
+.nav-mobile-drawer-footer {
+  background: var(--color-purple-900);
+  padding: 32px 24px;
   color: white;
+}
+.nav-mobile-drawer-footer h4 {
+  font-family: var(--font-poppins);
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+.nav-mobile-drawer-footer-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.nav-mobile-drawer-footer-value {
+  font-size: 14px;
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-mobile-drawer-footer-value:hover {
+  color: var(--color-orange-900);
+}
+.nav-mobile-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+.nav-mobile-social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.nav-mobile-social-link:hover {
+  background: var(--color-orange-900);
+}
+.nav-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(72, 29, 150, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+}
+
+/* HIDE ORANGE BADGE IN EMPTY SPACE WITHOUT REMOVING ANYTHING */
+.cursor-ring.is-active ~ .cursor-text-badge {
+  display: none;
 }
 
 /* ---------- Custom cursor ---------- */
@@ -115,6 +716,7 @@ body {
   height: 34px;
   border: 1.5px solid var(--color-accent-soft);
   background: rgba(255, 104, 0, 0.06);
+  /* Replaced transition-all with specific properties for better performance */
   transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
 }
 
@@ -125,190 +727,16 @@ body {
   border-color: var(--color-accent);
 }
 
-/* ---------- Utility ---------- */
-.font-display {
-  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-}
-
-.font-mono-caps {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  letter-spacing: 0.14em;
-}
-
-.text-gradient {
-  background: linear-gradient(95deg, var(--color-navy) 0%, var(--color-purple-500) 45%, var(--color-accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.grid-fade-mask {
-  mask-image: radial-gradient(ellipse 70% 60% at 60% 30%, black 40%, transparent 90%);
-  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 30%, black 40%, transparent 90%);
-}
-
-@keyframes pulse-node {
-  0%, 100% { opacity: 0.35; r: 2.4; }
-  50% { opacity: 1; r: 3.4; }
-}
-
-@keyframes dash-flow {
-  to { stroke-dashoffset: -200; }
-}
-
-.node-pulse {
-  animation: pulse-node 3.2s ease-in-out infinite;
-}
-
-.flow-line {
-  stroke-dasharray: 6 10;
-  animation: dash-flow 6s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
+/* 
+  Hide cursor on touch devices (Tablets/Mobile)
+  Because custom cursors don't make sense on phones.
+*/
+@media (hover: none), (pointer: coarse) {
+  body {
+    cursor: auto;
   }
-}
-
-/* home-05 additions */
-.font-serif { font-family: var(--font-display), Georgia, serif; }
-.outline-text {
-  -webkit-text-stroke: 1px rgba(255,255,255,0.85);
-  color: transparent;
-}
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-33.333%); }
-}
-.animate-marquee { animation: marquee 28s linear infinite; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-@keyframes float-drift {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-6px, -14px); }
-}
-.animate-float { animation: float 4.5s ease-in-out infinite; }
-.animate-float-drift { animation: float-drift 6s ease-in-out infinite; }
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
-
-/* ===================================================================
-   Catalution Typography Hierarchy
-   (Poppins for headings/UI, Inter for body — per brand guide)
-=================================================================== */
-.h1, h1 { font-family: var(--font-display); font-weight: 700; font-size: 48px; line-height: 120%; color: var(--color-heading); }
-.h2, h2 { font-family: var(--font-display); font-weight: 600; font-size: 36px; line-height: 120%; color: var(--color-heading); }
-.h3, h3 { font-family: var(--font-display); font-weight: 600; font-size: 28px; line-height: 120%; color: var(--color-heading); }
-.h4, h4 { font-family: var(--font-display); font-weight: 500; font-size: 22px; line-height: 130%; color: var(--color-heading); }
-.h5, h5 { font-family: var(--font-display); font-weight: 500; font-size: 18px; line-height: 140%; color: var(--color-heading); }
-.h6, h6 { font-family: var(--font-display); font-weight: 400; font-size: 16px; line-height: 140%; color: var(--color-heading); }
-
-.body-lg { font-family: var(--font-body); font-weight: 400; font-size: 16px; line-height: 150%; color: var(--color-body); }
-.body-md { font-family: var(--font-body); font-weight: 400; font-size: 14px; line-height: 160%; color: var(--color-body); }
-.body-sm { font-family: var(--font-body); font-weight: 400; font-size: 12px; line-height: 160%; color: var(--color-body); }
-.caption { font-family: var(--font-body); font-weight: 400; font-size: 11px; line-height: 150%; color: var(--color-body); }
-
-/* ===================================================================
-   Catalution Button Styles
-   12px radius, action-oriented — purple primary / orange secondary
-=================================================================== */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 14px;
-  padding: 12px 24px;
-  border-radius: var(--radius-btn);
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: var(--color-purple-900);
-  color: #ffffff;
-  border: 1px solid transparent;
-}
-.btn-primary:hover {
-  background: var(--color-purple-700);
-}
-.btn-primary:disabled {
-  background: var(--color-purple-100);
-  color: #ffffff;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: var(--color-orange-900);
-  color: #ffffff;
-  border: 1px solid transparent;
-}
-.btn-secondary:hover {
-  background: var(--color-orange-700);
-}
-.btn-secondary:disabled {
-  background: var(--color-orange-100);
-  color: #ffffff;
-  cursor: not-allowed;
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--color-purple-900);
-  border: 1px solid var(--color-purple-900);
-}
-.btn-outline:hover {
-  background: var(--color-purple-100);
-}
-.btn-outline:disabled {
-  color: var(--color-purple-300);
-  border-color: var(--color-purple-100);
-  cursor: not-allowed;
-}
-
-.btn-link {
-  background: transparent;
-  color: var(--color-orange-900);
-  padding: 0;
-  border-radius: 0;
-  font-weight: 500;
-}
-.btn-link:hover {
-  color: var(--color-orange-700);
-  text-decoration: underline;
-}
-
-/* ✅ ADDED THE REMOVED ANIMATIONS BACK BELOW */
-@keyframes floatY {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-.animate-float-slow {
-  animation: floatY 4s ease-in-out infinite;
-}
-
-@keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.animate-spin-slow {
-  animation: spinSlow 8s linear infinite;
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
 }

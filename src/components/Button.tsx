@@ -1,114 +1,84 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { ReactNode } from "react";
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ReactNode,
+} from "react";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "outline" | "link";
 type ButtonSize = "sm" | "md" | "lg";
 
-interface ButtonProps {
-  children: ReactNode;
-  href?: string;
-  onClick?: () => void;
+type ButtonProps = {
   variant?: ButtonVariant;
   size?: ButtonSize;
   icon?: boolean;
-  className?: string;
-  type?: "button" | "submit" | "reset";
-  target?: string;
-  rel?: string;
-  disabled?: boolean;
-}
+  children: ReactNode;
+} & (
+  | ({ href: string } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children">)
+  | ({
+      href?: never;
+      type?: "button" | "submit" | "reset";
+    } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">)
+);
 
-const sizeStyles: Record<ButtonSize, string> = {
-  sm: "py-1.5 pl-3 pr-5 text-xs",
-  md: "py-2 pl-3 pr-7 text-sm",
-  lg: "py-2.5 pl-3.5 pr-8 text-base",
+const variantClasses: Record<ButtonVariant, string> = {
+  primary: "btn btn-primary",
+  secondary: "btn btn-secondary",
+  outline: "btn btn-outline",
+  link: "btn btn-link",
 };
 
-const iconSizeStyles: Record<ButtonSize, string> = {
-  sm: "h-7 w-7",
-  md: "h-9 w-9",
-  lg: "h-10 w-10",
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: "text-xs px-3 py-1.5",
+  md: "text-sm px-4 py-2",
+  lg: "text-base px-6 py-3",
 };
 
 export default function Button({
-  children,
   href,
-  onClick,
   variant = "primary",
   size = "md",
-  icon = true,
+  icon,
+  type = "button" as "button" | "submit" | "reset",
   className = "",
-  type = "button",
-  target,
-  rel,
-  disabled = false,
+  children,
+  ...rest
 }: ButtonProps) {
-  const base =
-    "group relative inline-flex items-center overflow-hidden rounded-full font-semibold transition-colors duration-300";
+  const classes = `${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim();
 
-  const variantStyles: Record<ButtonVariant, string> = {
-    primary: "bg-primary text-white",
-    secondary: "bg-accent text-white",
-    outline:
-      "bg-transparent text-primary border border-border hover:border-accent",
-    ghost: "bg-transparent text-primary hover:text-accent",
-  };
-
-  const showFill = variant === "primary" || variant === "secondary";
-
-  const content = (
-    <>
-      {showFill && (
-        <span
-          aria-hidden
-          className={`absolute inset-y-0 left-3 z-0 my-auto rounded-full transition-all duration-500 ease-out group-hover:w-[calc(100%-24px)] ${iconSizeStyles[size]} ${
-            variant === "primary" ? "bg-accent" : "bg-primary-dark"
-          }`}
-        />
-      )}
-
-      {icon && showFill && (
-        <span
-          className={`relative z-10 flex shrink-0 items-center justify-center ${iconSizeStyles[size]}`}
-        >
-          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-        </span>
-      )}
-
-      <span
-        className={`relative z-10 flex items-center ${
-          icon && showFill ? "ml-3" : ""
-        } ${!showFill ? "transition-colors duration-300" : ""}`}
-      >
-        {children}
-      </span>
-    </>
+  const iconMarkup = icon && (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M7 17L17 7" />
+      <path d="M7 7h10v10" />
+    </svg>
   );
 
-  const classes = `${base} ${variantStyles[variant]} ${sizeStyles[size]} ${
-    !showFill ? "hover:opacity-90" : ""
-  } ${disabled ? "opacity-60 pointer-events-none" : ""} ${className}`;
-
   if (href) {
+    const anchorProps = rest as AnchorHTMLAttributes<HTMLAnchorElement>;
     return (
-      <Link href={href} target={target} rel={rel} data-cursor-hover className={classes}>
-        {content}
+      <Link href={href} className={classes} {...anchorProps}>
+        {children}
+        {iconMarkup}
       </Link>
     );
   }
 
+  const buttonProps = rest as ButtonHTMLAttributes<HTMLButtonElement>;
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      data-cursor-hover
-      className={classes}
-    >
-      {content}
+    <button type={type} className={classes} {...buttonProps}>
+      {children}
+      {iconMarkup}
     </button>
   );
 }

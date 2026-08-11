@@ -7,7 +7,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 
 import ScrollReveal from "./ScrollReveal";
-import Button from "./Button"; // ✅ Import the Button component
 import { portfolios } from "../app/data/portfolios";
 
 import "swiper/css";
@@ -21,7 +20,7 @@ export default function CaseStudy() {
     >
       {/* Section Header */}
       <ScrollReveal className="mx-auto mb-8 max-w-2xl px-6 text-center">
-        <span className="inline-flex items-center gap-2 rounded bg-white px-3 py-1.5 text-xs font-semibold tracking-wide text-[var(--color-accent)]">
+        <span className="inline-flex items-center gap-2 rounded bg-white px-3 py-1.5 text-xs font-bold tracking-wider text-[var(--color-accent)]">
           <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]" />
           OUR CASE STUDIES
         </span>
@@ -52,36 +51,21 @@ export default function CaseStudy() {
             el: ".case-study-pagination",
           }}
           breakpoints={{
-            0: {
-              slidesPerView: 1,
-              spaceBetween: 16,
-            },
-            640: {
-              slidesPerView: 2,
-              spaceBetween: 16,
-            },
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 16,
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 16,
-            },
-            1280: {
-              slidesPerView: 3,
-              spaceBetween: 16,
-            },
+            0: { slidesPerView: 1, spaceBetween: 14 },
+            640: { slidesPerView: 2, spaceBetween: 14 },
+            1024: { slidesPerView: 3, spaceBetween: 14 },
+            1280: { slidesPerView: 3, spaceBetween: 14 },
           }}
-          className="!overflow-visible px-6 md:px-10"
+          // ✅ FIX: Reduced horizontal padding to squeeze the slides closer to the edges
+          className="!overflow-visible px-4 md:px-8"
         >
           {portfolios.map((project) => (
-            <SwiperSlide key={project.id}>
-              <ScrollReveal className="h-full">
+            <SwiperSlide key={project.id} className="h-auto">
+              <ScrollReveal className="h-full flex">
                 <Link
                   href={`/portfolios/${project.id}`}
                   data-cursor-hover
-                  className="group relative block h-[280px] overflow-hidden rounded-xl md:h-[380px]"
+                  className="group relative flex w-full flex-col overflow-hidden rounded-xl h-[280px] sm:h-[300px] md:h-[320px]"
                 >
                   {/* Active Online Portfolio Image */}
                   <Image
@@ -89,42 +73,41 @@ export default function CaseStudy() {
                     alt={`${project.title} case study`}
                     fill
                     priority={project.id <= 3}
-                    sizes="
-                      (max-width: 639px) 85vw,
-                      (max-width: 1023px) 45vw,
-                      32vw
-                    "
-                    className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                    sizes="(max-width: 639px) 85vw, (max-width: 1023px) 45vw, 32vw"
+                    className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                   />
 
                   {/* Dark Hover Overlay */}
                   <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/10" />
 
-                  {/* Project Information */}
-                  <div className="absolute bottom-0 right-0 flex max-w-[90%] items-end justify-between gap-3 rounded-tl-xl bg-white px-4 py-4 md:px-5 md:py-5">
-                    <div>
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-1.5">
-                        {project.tags.map((tag: string) => (
-                          <span
-                            key={tag}
-                            className="rounded-full border border-[var(--color-line)] px-2 py-0.5 text-[10px] font-medium text-[var(--color-navy)] md:text-xs"
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                  {/* Project Information — fixed height so every card matches exactly */}
+                  <div className="absolute inset-x-0 bottom-0">
+                    <div className="flex h-[96px] md:h-[104px] w-full items-center justify-between rounded-tl-xl bg-white px-4 md:px-5 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+                      {/* Left Text Area */}
+                      <div className="flex-1 pr-3">
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-1.5 mb-1">
+                          {project.tags.map((tag) => (
+                            <span
+                              key={`${project.id}-${tag}`}
+                              className="rounded-full border border-[var(--color-line)] bg-white px-2 py-0.5 text-[10px] font-medium text-[var(--color-navy)] md:text-xs"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Title — clamped to 1 line so panel height never needs to grow */}
+                        <h3 className="font-display text-[15px] md:text-[17px] font-semibold leading-tight text-[var(--color-heading)] line-clamp-1">
+                          {project.title}
+                        </h3>
                       </div>
 
-                      {/* Title */}
-                      <h3 className="mt-2 font-display text-base font-semibold leading-tight text-[var(--color-heading)] md:text-lg">
-                        {project.title}
-                      </h3>
+                      {/* Arrow Button — vertically centered in the fixed-height panel */}
+                      <span className="flex h-9 w-9 min-w-[36px] shrink-0 items-center justify-center rounded-full bg-[var(--color-navy)] text-white transition-all duration-300 group-hover:rotate-45 group-hover:bg-[var(--color-accent)]">
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </span>
                     </div>
-
-                    {/* Arrow */}
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--color-navy)] text-white transition-all duration-300 group-hover:rotate-45 group-hover:bg-[var(--color-accent)]">
-                      <ArrowUpRight className="h-3 w-3" />
-                    </span>
                   </div>
                 </Link>
               </ScrollReveal>

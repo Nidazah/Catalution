@@ -10,9 +10,9 @@ import {
   CircleDot,
   Repeat,
 } from "lucide-react";
-import { motion, type Variants } from "framer-motion"; // ✅ Added framer-motion imports
+import { motion, type Variants } from "framer-motion";
+import Link from "next/link"; // ✅ Added Link import
 import ScrollReveal from "./ScrollReveal";
-import Button from "@/components/Button"; // ✅ Imported your Button component
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -66,7 +66,6 @@ export default function Process() {
   return (
     <section id="process" className="bg-white py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-8">
-
         {/* Header Row */}
         <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_auto] items-end mb-10 md:mb-14">
           <ScrollReveal>
@@ -84,17 +83,15 @@ export default function Process() {
               strategics..
             </p>
           </ScrollReveal>
-          
-          {/* ✅ EXACT SAME BUTTON AS AboutSection.tsx */}
+
           <ScrollReveal className="flex justify-start md:justify-end">
             <motion.div variants={item} className="mt-4">
-              <Button
+              <Link
                 href="/services"
-                size="md"
-                className="bg-navy text-white transition-transform hover:scale-[1.03]"
+                className="btn btn-primary hover:scale-[1.03]"
               >
                 More services
-              </Button>
+              </Link>
             </motion.div>
           </ScrollReveal>
         </div>
@@ -157,7 +154,10 @@ export default function Process() {
                   >
                     <span
                       className="font-display text-sm font-medium text-heading whitespace-nowrap tracking-wider"
-                      style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+                      style={{
+                        writingMode: "vertical-rl",
+                        transform: "rotate(180deg)",
+                      }}
                     >
                       {s.label}
                     </span>

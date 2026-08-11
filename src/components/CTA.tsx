@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import ScrollReveal from "./ScrollReveal";
-import Button from "./Button"; 
 
 export default function CTA() {
   return (
@@ -35,13 +35,14 @@ export default function CTA() {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
             >
-              <Button
+              {/* Replaced Button with native Link */}
+              <Link
                 href="mailto:support@solvior.com"
-                size="md"
-                className="bg-white !text-black [&_svg]:!text-white transition-transform hover:scale-[1.03] shadow-md"
+                className="inline-flex items-center justify-center rounded-[12px] bg-white px-6 py-3 text-base font-medium !text-black transition-all shadow-md hover:scale-[1.03]"
+                style={{ fontFamily: "var(--font-display), sans-serif" }}
               >
                 Free consultation
-              </Button>
+              </Link>
             </motion.div>
           </div>
         </div>

@@ -81,7 +81,7 @@ export default function Testimonials() {
       <div className="mx-auto max-w-6xl px-6">
         <ScrollReveal className="max-w-2xl">
           <span className="font-mono-caps text-[11px] uppercase text-[var(--color-accent)]">
-            Client word
+            <b>Client word</b>
           </span>
           <h2 className="mt-4 font-display text-3xl md:text-4xl font-bold text-[var(--color-heading)]">
             Teams who kept us past the first project.
@@ -114,11 +114,13 @@ export default function Testimonials() {
                     <div className="h-9 w-9 rounded-full bg-[var(--color-navy)] flex items-center justify-center font-display text-xs font-bold text-white shrink-0">
                       {q.name.split(" ").map((n) => n[0]).join("")}
                     </div>
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-[var(--color-heading)] whitespace-nowrap">
+                    
+                    {/* ✅ FIX: Removed 'whitespace-nowrap' completely so text wraps naturally */}
+                    <div className="min-w-0 flex flex-col">
+                      <div className="text-sm font-semibold text-[var(--color-heading)]">
                         {q.name}
                       </div>
-                      <div className="text-sm text-[var(--color-body)] whitespace-nowrap overflow-hidden text-ellipsis">
+                      <div className="text-sm text-[var(--color-body)]">
                         {q.role}
                       </div>
                     </div>

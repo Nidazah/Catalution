@@ -5,12 +5,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  motion,
-  useScroll,
-  useMotionValueEvent,
-  AnimatePresence,
-} from "framer-motion";
-import {
   Menu,
   X,
   ArrowUpRight,
@@ -24,7 +18,6 @@ import {
   Repeat,
   Hexagon,
 } from "lucide-react";
-import Button from "@/components/Button";
 
 // --- SERVICES DROPDOWN ---
 const servicesLinks = [
@@ -129,108 +122,100 @@ function PagesMegaMenu({
   pathname: string;
   onNavigate: () => void;
 }) {
+  if (!open) return null;
+
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-          className="absolute left-0 top-full z-50 mt-3 w-[900px] rounded-xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden"
-        >
-          <div className="grid grid-cols-12 gap-0">
-            <div className="col-span-3 p-6 border-r border-gray-100">
-              <h4 className="text-[17px] font-bold text-[var(--color-heading)] mb-4 border-b-2 border-[var(--color-accent)] pb-2 inline-block">
-                Main pages
-              </h4>
-              <ul className="space-y-0.5">
-                {pagesLinks.main.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      onClick={onNavigate}
-                      className={`flex items-center justify-between py-1.5 text-[15px] font-medium transition-colors hover:text-[var(--color-accent)] ${
-                        pathname === link.href
-                          ? "text-[var(--color-accent)] font-semibold"
-                          : "text-gray-600"
+    <div className="absolute left-0 top-full z-50 mt-0 w-[900px] rounded-xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-[var(--color-line)] overflow-hidden">
+      <div className="grid grid-cols-12 gap-0">
+        <div className="col-span-3 p-6 border-r border-[var(--color-line)]">
+          <h4 className="nav-mega-menu-title">Main pages</h4>
+          <ul className="space-y-0.5">
+            {pagesLinks.main.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  onClick={onNavigate}
+                  className={`flex items-center justify-between py-1.5 hover:text-[var(--color-accent)] ${
+                    pathname === link.href
+                      ? "text-[var(--color-accent)] font-semibold"
+                      : "text-[var(--color-purple-900)]"
+                  }`}
+                >
+                  <span className="nav-link-menu-item">{link.label}</span>
+                  {link.badge && (
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${
+                        link.badge === "HOT"
+                          ? "bg-red-500"
+                          : "bg-[var(--color-accent)]"
                       }`}
                     >
-                      {link.label}
-                      {link.badge && (
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${link.badge === "HOT" ? "bg-red-500" : "bg-[var(--color-accent)]"}`}
-                        >
-                          {link.badge}
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-3 p-6 border-r border-gray-100">
-              <h4 className="text-[17px] font-bold text-[var(--color-heading)] mb-4 border-b-2 border-[var(--color-accent)] pb-2 inline-block">
-                Other pages
-              </h4>
-              <ul className="space-y-0.5">
-                {pagesLinks.other.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      onClick={onNavigate}
-                      className={`flex items-center justify-between py-1.5 text-[15px] font-medium transition-colors hover:text-[var(--color-accent)] ${
-                        pathname === link.href
-                          ? "text-[var(--color-accent)] font-semibold"
-                          : "text-gray-600"
+                      {link.badge}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="col-span-3 p-6 border-r border-[var(--color-line)]">
+          <h4 className="nav-mega-menu-title">Other pages</h4>
+          <ul className="space-y-0.5">
+            {pagesLinks.other.map((link) => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  onClick={onNavigate}
+                  className={`flex items-center justify-between py-1.5 hover:text-[var(--color-accent)] ${
+                    pathname === link.href
+                      ? "text-[var(--color-accent)] font-semibold"
+                      : "text-[var(--color-purple-900)]"
+                  }`}
+                >
+                  <span className="nav-link-menu-item">{link.label}</span>
+                  {link.badge && (
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${
+                        link.badge === "HOT"
+                          ? "bg-red-500"
+                          : "bg-[var(--color-accent)]"
                       }`}
                     >
-                      {link.label}
-                      {link.badge && (
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${link.badge === "HOT" ? "bg-red-500" : "bg-[var(--color-accent)]"}`}
-                        >
-                          {link.badge}
-                        </span>
-                      )}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-6 p-7 bg-gray-50/30 relative flex flex-col">
-              <div className="relative rounded-xl overflow-hidden bg-[var(--color-heading)] p-6 group hover:shadow-lg transition-shadow flex-1 flex flex-col justify-end max-h-[360px]">
-                <Image
-                  src="/images/blog/widget-cta.webp"
-                  alt="Contact Us"
-                  fill
-                  className="object-cover object-top opacity-30 group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-heading)] via-[var(--color-heading)]/40 to-transparent" />
-                <div className="relative z-10">
-                  <div className="text-[var(--color-accent)] mb-3">
-                    <Hexagon className="h-8 w-8 text-[var(--color-accent)]" />
-                  </div>
-                  <h5 className="text-[20px] font-bold text-white mb-1 leading-tight">
-                    Need help?
-                  </h5>
-                  <p className="text-sm text-white/80 mb-4 max-w-[160px]">
-                    Feel free contact us
-                  </p>
-                  <Button
-                    href="/contact"
-                    onClick={onNavigate}
-                    className="inline-flex items-center gap-2 bg-white !text-[var(--color-heading)] [&_svg]:text-white font-semibold text-xs px-3 py-1.5 rounded-full hover:bg-gray-100 transition-colors"
-                  >
-                    Get in touch
-                  </Button>
-                </div>
+                      {link.badge}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="col-span-6 p-7 bg-[var(--color-section)] relative flex flex-col">
+          <div className="relative rounded-xl overflow-hidden bg-[var(--color-purple-900)] p-6 hover:shadow-lg transition-shadow flex-1 flex flex-col justify-end max-h-[360px]">
+            <Image
+              src="/images/blog/widget-cta.webp"
+              alt="Contact Us"
+              fill
+              className="object-cover object-top opacity-30"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-purple-900)] via-[var(--color-purple-900)]/40 to-transparent" />
+            <div className="relative z-10">
+              <div className="text-[var(--color-accent)] mb-3">
+                <Hexagon className="h-8 w-8 text-[var(--color-accent)]" />
               </div>
+              <h5 className="nav-mega-cta-title">Need help?</h5>
+              <p className="nav-mega-cta-sub">Feel free contact us</p>
+              <Link
+                href="/contact"
+                onClick={onNavigate}
+                className="btn btn-outline"
+              >
+                Get in touch
+              </Link>
             </div>
           </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -256,7 +241,7 @@ function NavItem({
       : "text-white hover:text-[var(--color-accent)]"
     : isActive
       ? "text-[var(--color-accent)]"
-      : "text-[var(--color-heading)] hover:text-[var(--color-accent)]";
+      : "text-[var(--color-purple-900)] hover:text-[var(--color-accent)]";
 
   if (link.isMegaMenu) {
     return (
@@ -266,7 +251,7 @@ function NavItem({
         className="relative"
       >
         <button
-          className={`relative text-[15px] font-semibold transition-colors inline-flex items-center gap-1 pb-1 ${open ? "text-[var(--color-accent)]" : textColorClass}`}
+          className={`nav-link relative inline-flex items-center gap-1 pb-1 ${open ? "text-[var(--color-accent)]" : textColorClass}`}
         >
           {link.label}
           <ChevronDown
@@ -289,7 +274,7 @@ function NavItem({
     return (
       <Link
         href={link.href}
-        className={`text-[15px] font-semibold transition-colors inline-flex items-center gap-1 ${textColorClass}`}
+        className={`nav-link inline-flex items-center gap-1 ${textColorClass}`}
       >
         {link.label}
       </Link>
@@ -304,7 +289,7 @@ function NavItem({
     >
       <Link
         href={link.href}
-        className={`relative text-[15px] font-semibold transition-colors inline-flex items-center gap-1 pb-1 ${open || isActive ? "text-[var(--color-accent)]" : textColorClass}`}
+        className={`nav-link relative inline-flex items-center gap-1 pb-1 ${open || isActive ? "text-[var(--color-accent)]" : textColorClass}`}
       >
         {link.label}
         <ChevronDown
@@ -314,46 +299,38 @@ function NavItem({
           className={`absolute -bottom-1 left-0 h-[2px] w-full bg-[var(--color-accent)] transition-opacity duration-200 ${open ? "opacity-100" : "opacity-0"}`}
         />
       </Link>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-            className={`absolute left-0 top-full z-50 mt-3 ${link.width} rounded-lg bg-white py-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] border border-gray-100`}
-          >
-            {link.dropdown.map((item) => {
-              const itemActive = item.href === pathname;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  data-cursor-hover
-                  onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 px-5 py-2.5 text-[15px] font-semibold transition-colors hover:text-[var(--color-accent)] ${
-                    itemActive
-                      ? "text-[var(--color-accent)] bg-[var(--color-orange-100)]/60"
-                      : "text-[var(--color-heading)]"
-                  }`}
-                >
-                  {item.icon && (
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-orange-100)] text-[var(--color-accent)]">
-                      <item.icon className="h-[18px] w-[18px]" />
-                    </span>
-                  )}
-                  {item.label}
-                </Link>
-              );
-            })}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && (
+        <div className={`nav-dropdown-menu ${link.width}`}>
+          {link.dropdown.map((item) => {
+            const itemActive = item.href === pathname;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-cursor-hover
+                onClick={() => setOpen(false)}
+                className={`nav-dropdown-item ${
+                  itemActive
+                    ? "text-[var(--color-accent)] bg-[var(--color-accent)]/10"
+                    : ""
+                }`}
+              >
+                {item.icon && (
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent)]/10 text-[var(--color-accent)]">
+                    <item.icon className="h-[18px] w-[18px]" />
+                  </span>
+                )}
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
-// --- MOBILE PAGES SUBMENU (sized for the drawer, not the 900px desktop grid) ---
+// --- MOBILE PAGES SUBMENU ---
 function MobilePagesMenu({
   pathname,
   onNavigate,
@@ -367,29 +344,29 @@ function MobilePagesMenu({
   ];
 
   return (
-    <div className="mt-3 ml-3 flex flex-col gap-5 border-l border-gray-300 pl-3">
+    <div className="nav-mobile-dropdown">
       {groups.map((group) => (
         <div key={group.title}>
-          <p className="text-xs font-bold uppercase tracking-wide text-gray-400 mb-2">
-            {group.title}
-          </p>
+          <p className="nav-mobile-menu-heading">{group.title}</p>
           <div className="flex flex-col gap-3">
             {group.items.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={onNavigate}
-                className={`flex items-center gap-2 text-sm ${
+                className={`nav-mobile-dropdown-link flex items-center gap-2 ${
                   item.href === pathname
                     ? "text-[var(--color-accent)] font-semibold"
-                    : "text-gray-600 hover:text-[var(--color-accent)]"
+                    : ""
                 }`}
               >
                 {item.label}
                 {item.badge && (
                   <span
                     className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full text-white ${
-                      item.badge === "HOT" ? "bg-red-500" : "bg-[var(--color-accent)]"
+                      item.badge === "HOT"
+                        ? "bg-red-500"
+                        : "bg-[var(--color-accent)]"
                     }`}
                   >
                     {item.badge}
@@ -425,8 +402,8 @@ function MobileSection({
       <Link
         href={link.href}
         onClick={onNavigate}
-        className={`text-sm font-semibold ${
-          isActive ? "text-[var(--color-accent)]" : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
+        className={`nav-mobile-link ${
+          isActive ? "text-[var(--color-accent)]" : ""
         }`}
       >
         {link.label}
@@ -440,8 +417,8 @@ function MobileSection({
       <div>
         <button
           onClick={() => setOpen((v) => !v)}
-          className={`flex w-full items-center justify-between text-sm font-semibold ${
-            isActive ? "text-[var(--color-accent)]" : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
+          className={`nav-mobile-link w-full ${
+            isActive ? "text-[var(--color-accent)]" : ""
           }`}
         >
           {link.label}
@@ -461,8 +438,8 @@ function MobileSection({
     <div>
       <button
         onClick={() => setOpen((v) => !v)}
-        className={`flex w-full items-center justify-between text-sm font-semibold ${
-          isActive ? "text-[var(--color-accent)]" : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
+        className={`nav-mobile-link w-full ${
+          isActive ? "text-[var(--color-accent)]" : ""
         }`}
       >
         {link.label}
@@ -471,16 +448,16 @@ function MobileSection({
         />
       </button>
       {open && link.dropdown && (
-        <div className="mt-3 ml-3 flex flex-col gap-3 border-l border-gray-300 pl-3">
+        <div className="nav-mobile-dropdown">
           {link.dropdown.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={onNavigate}
-              className={`text-sm hover:text-[var(--color-accent)] ${
+              className={`nav-mobile-dropdown-link ${
                 item.href === pathname
                   ? "text-[var(--color-accent)] font-semibold"
-                  : "text-gray-600"
+                  : ""
               }`}
             >
               {item.label}
@@ -501,31 +478,15 @@ export default function Navbar({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Explicitly track scroll state
+  // Track scroll state
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll(); // Check immediately on load
+    onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  // Smart Hide/Show logic
-  const { scrollY } = useScroll();
-  const [hidden, setHidden] = useState(false);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = lastScrollY;
-    setLastScrollY(latest);
-
-    if (latest > previous && latest > 10) {
-      setHidden(true);
-    } else if (latest < previous) {
-      setHidden(false);
-    }
-  });
 
   // Force transparent mode on Careers and Blog pages.
   const isCareersPage = pathname.startsWith("/careers");
@@ -538,26 +499,18 @@ export default function Navbar({
     : "/images/Logo/secondary-logo.webp";
 
   return (
-    <motion.header
-      variants={{
-        visible: { y: 0 },
-        hidden: { y: "-100%" },
-      }}
-      animate={hidden ? "hidden" : "visible"}
-      transition={{ duration: 0.35, ease: "easeInOut" }}
-      className="fixed top-0 inset-x-0 z-50 transition-colors duration-300"
-    >
+    <header className="fixed top-0 inset-x-0 z-50 transition-colors duration-300">
       <div
-        className={`h-20 flex items-center justify-between px-6 mx-auto w-full transition-colors duration-300 ${
+        className={`catalution-navbar ${
           isHeroMode
-            ? "bg-transparent"
-            : "bg-white/90 backdrop-blur-md border-b border-[var(--color-line)]"
+            ? "bg-transparent shadow-none border-none"
+            : "bg-white/95 backdrop-blur-md border-b border-[var(--color-line)] shadow-[0_2px_10px_rgba(72,29,150,0.08)]"
         }`}
       >
-        {/* --- LOGO --- */}
+        {/* --- LOGO (Far Left) --- */}
         <Link
           href="/"
-          className="flex items-center gap-2 font-display font-bold text-2xl transition-colors"
+          className="navbar-logo flex items-center gap-2 text-2xl transition-colors"
         >
           <Image
             src={logoSrc}
@@ -569,7 +522,8 @@ export default function Navbar({
           />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-9">
+        {/* --- NAVIGATION LINKS (Center or Right) --- */}
+        <nav className="navbar-links hidden lg:flex items-center gap-9">
           {links.map((l) => (
             <NavItem
               key={l.label}
@@ -580,35 +534,30 @@ export default function Navbar({
           ))}
         </nav>
 
+        {/* --- CTA BUTTON & SEARCH (Far Right) --- */}
         <div className="hidden md:flex items-center gap-6">
           <button
-            className={`inline-flex items-center gap-2 text-sm font-semibold transition-colors ${
+            className={`inline-flex items-center gap-2 text-[13px] font-medium transition-colors ${
               isHeroMode
                 ? "text-white hover:text-[var(--color-accent)]"
-                : "text-[var(--color-heading)] hover:text-[var(--color-accent)]"
+                : "text-[var(--color-purple-900)] hover:text-[var(--color-accent)]"
             }`}
           >
             Explore <Search className="h-4 w-4" />
           </button>
 
-          <Button
-            href="/contact"
-            variant="primary"
-            size="md"
-            className={`shadow-md hover:shadow-lg ${
-              isHeroMode
-                ? "bg-[var(--color-navy)] text-white border-0"
-                : "bg-[var(--color-navy)] text-white"
-            }`}
-          >
-            Get a quote
-          </Button>
+          <Link href="/contact" className="btn-nav-primary">
+            Get Started
+            <span className="arrow">
+              <ArrowUpRight className="h-4 w-4" />
+            </span>
+          </Link>
         </div>
 
-        {/* --- UPDATED MENU BUTTON WITH CUSTOM 4-BOX ICON --- */}
+        {/* --- MOBILE MENU BUTTON --- */}
         <button
           onClick={() => setMobileOpen((v) => !v)}
-          className={`lg:hidden transition-colors flex items-center gap-2.5 text-[15px] font-medium ${isHeroMode ? "text-white" : "text-[var(--color-navy)]"}`}
+          className={`btn-nav-menu ${isHeroMode ? "text-white" : "text-[var(--color-purple-900)]"}`}
           aria-label="Toggle menu"
         >
           {mobileOpen ? (
@@ -632,144 +581,113 @@ export default function Navbar({
       </div>
 
       {/* --- MOBILE MENU --- */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileOpen(false)}
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
-            />
+      {mobileOpen && (
+        <>
+          <div
+            onClick={() => setMobileOpen(false)}
+            className="nav-mobile-overlay"
+          />
 
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 250 }}
-              className="fixed top-0 right-0 h-full w-full max-w-[340px] bg-white z-50 lg:hidden flex flex-col overflow-y-auto overscroll-contain shadow-2xl"
-            >
-              {/* 1. Header */}
-              <div className="flex items-center justify-between px-6 py-6 shrink-0">
-                <Link
-                  href="/"
-                  onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3"
+          <div className="nav-mobile-drawer">
+            {/* 1. Header */}
+            <div className="nav-mobile-drawer-header">
+              <Link
+                href="/"
+                onClick={() => setMobileOpen(false)}
+                className="nav-mobile-drawer-brand"
+              >
+                <Image
+                  src="/images/Logo/icon-mark.webp"
+                  alt="Catalution"
+                  width={32}
+                  height={34}
+                  className="h-8 w-auto"
+                />
+                <span>Catalution</span>
+              </Link>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="nav-mobile-drawer-close"
+              >
+                <X className="h-7 w-7" />
+              </button>
+            </div>
+
+            {/* 2. Search Bar */}
+            <div className="nav-mobile-drawer-search">
+              <div className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search here..."
+                  className="w-full"
+                />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-purple-900)]/50 w-5 h-5" />
+              </div>
+            </div>
+
+            {/* 3. Navigation Links */}
+            <div className="nav-mobile-drawer-links">
+              {links.map((l) => (
+                <div
+                  key={l.label}
+                  className="border-b border-[var(--color-line)] py-4 last:border-0"
                 >
-                  <Image
-                    src="/images/Logo/icon-mark.webp"
-                    alt="Catalution"
-                    width={32}
-                    height={34}
-                    className="h-8 w-auto"
+                  <MobileSection
+                    link={l}
+                    onNavigate={() => setMobileOpen(false)}
+                    pathname={pathname}
                   />
-                  <span className="font-display text-xl text-[var(--color-heading)] font-semibold tracking-wide">
-                    Catalution
-                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* 4. CONTACT INFO & SOCIAL */}
+            <div className="nav-mobile-drawer-footer">
+              <h4>Contact info</h4>
+              
+              <div className="space-y-4 mb-8">
+                <div>
+                  <p className="nav-mobile-drawer-footer-label">Email</p>
+                  <Link href="mailto:support@catalution.com" className="nav-mobile-drawer-footer-value block">
+                    support@catalution.com
+                  </Link>
+                  <Link href="mailto:accounts@catalution.com" className="nav-mobile-drawer-footer-value block mt-1">
+                    accounts@catalution.com
+                  </Link>
+                </div>
+                
+                <div>
+                  <p className="nav-mobile-drawer-footer-label">Phone</p>
+                  <Link href="tel:03015221051" className="nav-mobile-drawer-footer-value">
+                    03015221051
+                  </Link>
+                </div>
+                
+                <div>
+                  <p className="nav-mobile-drawer-footer-label">Address</p>
+                  <p className="text-sm">Near Plot 37, Tipu Block Garden Town, Lahore</p>
+                </div>
+              </div>
+
+              <h4 className="text-lg font-bold mb-4">Follow us</h4>
+              <div className="nav-mobile-social">
+                <Link href="#" className="nav-mobile-social-link">
+                  f
                 </Link>
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="text-[var(--color-heading)] hover:text-gray-500 transition-colors"
-                >
-                  <X className="h-7 w-7" />
-                </button>
+                <Link href="#" className="nav-mobile-social-link">
+                  ig
+                </Link>
+                <Link href="#" className="nav-mobile-social-link">
+                  in
+                </Link>
+                <Link href="#" className="nav-mobile-social-link">
+                  t
+                </Link>
               </div>
-
-              {/* 2. Search Bar */}
-              <div className="px-6 pb-6 shrink-0">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-full bg-gray-100 text-[var(--color-heading)] text-sm py-3 pl-4 pr-10 rounded-sm outline-none placeholder-gray-500 focus:ring-1 focus:ring-[var(--color-accent)]"
-                  />
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-                </div>
-              </div>
-
-              {/* 3. Navigation Links */}
-              <div className="flex-1 px-6 pb-6 flex flex-col gap-1">
-                {links.map((l) => (
-                  <div
-                    key={l.label}
-                    className="border-b border-gray-200 py-4 last:border-0"
-                  >
-                    <MobileSection
-                      link={l}
-                      onNavigate={() => setMobileOpen(false)}
-                      pathname={pathname}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* 4. CONTACT INFO & SOCIAL (Dark section at bottom) */}
-              <div className="bg-[var(--color-navy-ink)] px-6 py-8 shrink-0 text-white">
-                <h4 className="text-lg font-bold mb-4">Contact info</h4>
-                <div className="space-y-4 mb-8">
-                  <div>
-                    <p className="text-gray-400 text-xs font-medium mb-0.5">
-                      Email
-                    </p>
-                    <Link
-                      href="mailto:support@catalution.com"
-                      className="text-sm hover:text-[var(--color-accent-soft)] transition-colors"
-                    >
-                      support@catalution.com
-                    </Link>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-xs font-medium mb-0.5">
-                      Phone
-                    </p>
-                    <Link
-                      href="tel:(000)123456789"
-                      className="text-sm hover:text-[var(--color-accent-soft)] transition-colors"
-                    >
-                      (000) 123 456 789
-                    </Link>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-xs font-medium mb-0.5">
-                      Location
-                    </p>
-                    <p className="text-sm">Santa, United State</p>
-                  </div>
-                </div>
-
-                <h4 className="text-lg font-bold mb-4">Follow us</h4>
-                <div className="flex gap-3">
-                  <Link
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
-                  >
-                    <span className="font-bold text-sm">f</span>
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
-                  >
-                    <span className="font-bold text-sm">ig</span>
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
-                  >
-                    <span className="font-bold text-sm">in</span>
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-white/10 hover:bg-[var(--color-accent)] transition-colors flex items-center justify-center"
-                  >
-                    <span className="font-bold text-sm">t</span>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </motion.header>
+            </div>
+          </div>
+        </>
+      )}
+    </header>
   );
 }
