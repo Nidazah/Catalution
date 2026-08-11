@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   ArrowRight,
   Database,
@@ -47,19 +47,37 @@ const steps = [
 ];
 
 export default function Process() {
-  const [activeIndex, setActiveIndex] = useState(1);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Update active index based on scroll position (for pagination dots)
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const cardWidth = container.querySelector(".carousel-card")?.clientWidth || 0;
+      const gap = window.innerWidth < 640 ? 16 : 24; // 16px on mobile, 24px on tablet
+      const scrollLeft = container.scrollLeft;
+      const index = Math.round(scrollLeft / (cardWidth + gap));
+      setActiveIndex(Math.min(index, steps.length - 1));
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <section id="process" className="bg-white py-12 md:py-16">
-      <div className="mx-auto max-w-7xl px-6 md:px-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
         {/* Header Row */}
-        <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_auto] items-end mb-10 md:mb-14">
+        <div className="grid gap-6 md:grid-cols-[1.2fr_1fr_auto] items-end mb-8 md:mb-14">
           <ScrollReveal>
             <span className="inline-flex items-center gap-2 rounded bg-section px-3 py-1.5 text-xs font-semibold tracking-wide text-accent">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               CORE SERVICES
             </span>
-            <h2 className="mt-4 font-display text-3xl md:text-4xl lg:text-5xl font-bold text-heading leading-[1.05]">
+            <h2 className="mt-3 font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-heading leading-[1.05]">
               Comprehensive <br className="hidden sm:block" />
               <span className="text-accent">service</span> offer.
             </h2>
@@ -72,115 +90,112 @@ export default function Process() {
           </ScrollReveal>
 
           <ScrollReveal className="flex justify-start md:justify-end">
-            <motion.div variants={item} className="mt-4">
+            <motion.div variants={item} className="mt-2">
               <Link
                 href="/services"
-                className="btn btn-primary hover:scale-[1.03]"
+                className="btn btn-primary hover:scale-[1.03] inline-flex items-center gap-2"
               >
                 More services
+                <ArrowRight className="h-4 w-4" />
               </Link>
             </motion.div>
           </ScrollReveal>
         </div>
 
-        {/* ===================== MOBILE: static 2-column grid ===================== */}
-        <div className="grid grid-cols-2 gap-3 items-stretch md:hidden">
-          {steps.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <ScrollReveal key={s.label} delay={i * 0.06} className="h-full">
-                <div className="flex h-full flex-col items-center text-center rounded-2xl bg-section px-4 py-6">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent">
-                    <Icon className="h-5 w-5 text-white" />
+        {/* ===================== MOBILE/TABLET: Swipeable Carousel ===================== */}
+        <div className="lg:hidden">
+          <div
+            ref={scrollRef}
+            className="flex overflow-x-auto snap-x snap-mandatory gap-4 sm:gap-6 pb-6 -mx-4 sm:-mx-6 px-4 sm:px-6 scrollbar-hide"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {steps.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <div
+                  key={s.label}
+                  className="carousel-card snap-center shrink-0 w-[80%] sm:w-[65%] md:w-[55%] rounded-2xl bg-section p-6 sm:p-8 flex flex-col items-center text-center"
+                >
+                  <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-full bg-accent">
+                    <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-white" />
                   </div>
                   <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-accent/40">
                     <span className="h-1.5 w-1.5 rounded-full bg-accent" />
                   </span>
-                  <h3 className="mt-3 line-clamp-2 min-h-[38px] font-display text-[15px] font-semibold text-heading leading-snug">
+                  <h3 className="mt-3 font-display text-lg sm:text-xl font-semibold text-heading">
                     {s.title}
                   </h3>
-                  <p className="mt-2 line-clamp-3 text-[12px] leading-relaxed text-body">
+                  <p className="mt-2 text-sm sm:text-[15px] leading-relaxed text-body line-clamp-2">
                     {s.text}
                   </p>
                   <button
                     aria-label={`Learn more about ${s.title}`}
-                    className="mt-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-navy text-white"
+                    className="mt-5 flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-navy text-white transition-transform duration-300 hover:scale-105"
                   >
-                    <ArrowRight className="h-3 w-3 -rotate-45" />
+                    <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 -rotate-45" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center gap-2 mt-2">
+            {steps.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  const container = scrollRef.current;
+                  if (!container) return;
+                  const cardWidth = container.querySelector(".carousel-card")?.clientWidth || 0;
+                  const gap = window.innerWidth < 640 ? 16 : 24;
+                  container.scrollTo({
+                    left: i * (cardWidth + gap),
+                    behavior: "smooth",
+                  });
+                }}
+                className={`h-2 w-2 rounded-full transition-all duration-300 ${
+                  i === activeIndex ? "w-6 sm:w-8 bg-accent" : "bg-accent/30"
+                }`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* ===================== DESKTOP: Stacked Card List ===================== */}
+        <div className="hidden lg:flex flex-col gap-6">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <ScrollReveal key={s.label} delay={i * 0.06}>
+                <div className="group relative flex flex-row items-center gap-6 rounded-2xl bg-section p-8 transition-all duration-300 hover:shadow-lg hover:bg-white border border-transparent hover:border-line/50">
+                  {/* Icon - left */}
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent">
+                    <Icon className="h-6 w-6 text-white" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-display text-xl font-semibold text-heading">
+                      {s.title}
+                    </h3>
+                    <p className="mt-1 text-[15px] leading-relaxed text-body line-clamp-2">
+                      {s.text}
+                    </p>
+                  </div>
+
+                  {/* Button */}
+                  <button
+                    aria-label={`Learn more about ${s.title}`}
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-navy text-white transition-transform duration-300 hover:scale-105"
+                  >
+                    <ArrowRight className="h-4 w-4 -rotate-45" />
                   </button>
                 </div>
               </ScrollReveal>
             );
           })}
-        </div>
-
-        {/* ===================== DESKTOP: original hover accordion ===================== */}
-        <div className="relative rounded-3xl bg-section overflow-hidden min-h-[550px] hidden md:block">
-          <div className="flex flex-row divide-x divide-line h-full">
-            {steps.map((s, i) => {
-              const isActive = i === activeIndex;
-              const Icon = s.icon;
-              return (
-                <div
-                  key={s.label}
-                  onMouseEnter={() => setActiveIndex(i)}
-                  className={`
-                    relative flex flex-col items-center justify-center text-center px-3 py-10 cursor-pointer
-                    transition-all duration-500 ease-in-out h-full
-                    ${isActive ? "bg-white flex-[3]" : "bg-transparent flex-[1] hover:bg-white/50"}
-                  `}
-                  style={{
-                    minWidth: isActive ? "240px" : "50px",
-                  }}
-                >
-                  <div
-                    className={`
-                      absolute inset-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none
-                      ${isActive ? "opacity-0" : "opacity-100"}
-                    `}
-                  >
-                    <span
-                      className="font-display text-sm font-medium text-heading whitespace-nowrap tracking-wider"
-                      style={{
-                        writingMode: "vertical-rl",
-                        transform: "rotate(180deg)",
-                      }}
-                    >
-                      {s.label}
-                    </span>
-                  </div>
-
-                  <div
-                    className={`
-                      relative z-10 flex flex-col items-center transition-all duration-500 delay-100
-                      ${isActive ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"}
-                    `}
-                  >
-                    <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent">
-                      <Icon className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="mt-3 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-accent/40">
-                      <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-                    </span>
-                    <div className="mt-4 px-4">
-                      <h3 className="font-display text-xl font-semibold text-heading">
-                        {s.title}
-                      </h3>
-                      <p className="mt-2 text-[13px] leading-relaxed text-body max-w-[200px] mx-auto">
-                        {s.text}
-                      </p>
-                    </div>
-                    <button
-                      aria-label={`Learn more about ${s.title}`}
-                      className="mt-5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-navy text-white transition-transform duration-300 hover:scale-105"
-                    >
-                      <ArrowRight className="h-3.5 w-3.5 -rotate-45" />
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </div>
     </section>
