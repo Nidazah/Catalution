@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { blogPosts } from "@/app/data/blog"; 
 import { Calendar, User, ArrowRight } from "lucide-react";
-import Button from "@/components/Button"; // ✅ Import Button
 
 export default function BlogPage() {
   // State for pagination
@@ -86,6 +85,7 @@ export default function BlogPage() {
             {/* Grid Posts below Featured (Paginated) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
               {currentPosts.map((post) => (
+                // ✅ OUTER WRAPPER: This is the only navigational link needed for the entire card.
                 <Link key={post.id} href={`/blog/${post.id}`} className="group block">
                   <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-100 h-full flex flex-col">
                     <div className="relative h-48 w-full">
@@ -95,15 +95,17 @@ export default function BlogPage() {
                       <span className="text-[10px] font-bold tracking-widest uppercase text-accent mb-1.5 block">{post.category}</span>
                       <h4 className="text-lg font-bold text-navy group-hover:text-accent transition-colors mb-2 line-clamp-2">{post.title}</h4>
                       
-                      {/* ✅ Replaced manual Read More link with Button */}
+                      {/* 
+                        ✅ FIX: NESTED LINK REMOVED. 
+                        Replaced with a <span> acting as a styled button.
+                        Because the parent <Link> covers the whole card, this "Read more" 
+                        will still trigger the navigation perfectly, but won't throw an 
+                        "a inside a" React hydration error.
+                      */}
                       <div className="mt-auto pt-2">
-                        <Button
-                          href={`/blog/${post.id}`}
-                          size="sm"
-                          className="bg-transparent !text-navy hover:text-accent p-0 h-auto font-bold"
-                        >
+                        <span className="btn btn-ghost text-sm font-bold p-0 h-auto cursor-pointer">
                           Read more
-                        </Button>
+                        </span>
                       </div>
                       
                       <div className="flex items-center justify-between text-xs text-gray-500 mt-3">
@@ -234,7 +236,8 @@ export default function BlogPage() {
             <div className="bg-navy rounded-2xl p-8 text-center border border-gray-800">
               <h4 className="text-xl font-bold text-white mb-2">Need Expert Advice?</h4>
               <p className="text-orange-100/70 text-sm mb-6">Let's discuss your business goals over a coffee.</p>
-              <Link href="/contact" className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-orange-700 text-white text-sm font-semibold py-3 px-6 rounded-full transition-colors w-full">
+              
+              <Link href="/contact" className="btn btn-primary w-full justify-center">
                 Contact Us <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

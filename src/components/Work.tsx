@@ -50,10 +50,6 @@ export default function HowItWorks() {
     <section className="bg-[#F1EDFF] py-12 md:py-16">
       <div className="mx-auto max-w-7xl px-6 w-full">
         
-        {/* 
-          ✅ FIX: CSS Grid on desktop enforces equal heights.
-          Completely eliminates the empty white gap without changing the text.
-        */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-stretch">
           
           {/* --- LEFT: IMAGE --- */}

@@ -94,7 +94,7 @@ export default async function TeamDetailPage({
       <PageHero title="Team details" />
 
       {/* --- 2. THE PROFILE CONTENT --- */}
-      <section className="container mx-auto px-6 py-20 max-w-6xl">
+      <section className="container mx-auto px-6 py-8 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           
           <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-sm">
@@ -107,7 +107,7 @@ export default async function TeamDetailPage({
             />
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-5">
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-navy mb-2">
                 Hello, I am {member.name}
@@ -115,13 +115,13 @@ export default async function TeamDetailPage({
               <p className="text-base text-gray-600 font-medium">
                 {member.role}
               </p>
-              <p className="mt-4 text-gray-600 leading-relaxed text-[15px] max-w-xl">
+              <p className="mt-3 text-gray-600 leading-relaxed text-[15px] max-w-xl">
                 {member.bio}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 border border-gray-200 rounded-xl overflow-hidden divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
-              <div className="p-6 flex flex-col gap-1">
+              <div className="p-5 flex flex-col gap-1">
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                   Email address
                 </span>
@@ -129,7 +129,7 @@ export default async function TeamDetailPage({
                   {member.email}
                 </span>
               </div>
-              <div className="p-6 flex flex-col gap-1">
+              <div className="p-5 flex flex-col gap-1">
                 <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                   Phone number
                 </span>
@@ -143,38 +143,38 @@ export default async function TeamDetailPage({
               <Link
                 href={member.socials.facebook}
                 target="_blank"
-                className="h-10 w-10 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
+                className="h-9 w-9 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
               >
-                <FaFacebookF className="h-4 w-4" />
+                <FaFacebookF className="h-3.5 w-3.5" />
               </Link>
               <Link
                 href={member.socials.instagram}
                 target="_blank"
-                className="h-10 w-10 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
+                className="h-9 w-9 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
               >
-                <FaInstagram className="h-5 w-5" />
+                <FaInstagram className="h-4 w-4" />
               </Link>
               <Link
                 href={member.socials.twitter}
                 target="_blank"
-                className="h-10 w-10 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
+                className="h-9 w-9 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
               >
-                <FaTwitter className="h-4 w-4" />
+                <FaTwitter className="h-3.5 w-3.5" />
               </Link>
               <Link
                 href={member.socials.linkedin}
                 target="_blank"
-                className="h-10 w-10 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
+                className="h-9 w-9 rounded-full bg-[#AAB2C0] flex items-center justify-center text-white hover:bg-accent transition-colors"
               >
-                <FaLinkedinIn className="h-4 w-4" />
+                <FaLinkedinIn className="h-3.5 w-3.5" />
               </Link>
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-navy mb-4">
+              <h2 className="text-2xl font-bold text-navy mb-3">
                 Work experience
               </h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed text-[15px]">
+              <div className="space-y-3 text-gray-600 leading-relaxed text-[15px]">
                 {member.experience.map((text, idx) => (
                   <p key={idx}>{text}</p>
                 ))}
@@ -196,16 +196,16 @@ export default async function TeamDetailPage({
             </div>
 
             <div>
-              <h2 className="text-2xl font-bold text-navy mb-4">
+              <h2 className="text-2xl font-bold text-navy mb-3">
                 Professional skills
               </h2>
-              <p className="text-gray-600 text-[15px] mb-6 max-w-xl leading-relaxed">
+              <p className="text-gray-600 text-[15px] mb-4 max-w-xl leading-relaxed">
                 Our mission is to empower businesses also thrive in an
                 ever-changing marketplace. We are committed to delivering
                 exceptional value.
               </p>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {member.skills.map((skill, idx) => (
                   <div key={idx} className="space-y-1">
                     <div className="flex justify-between text-sm font-medium">
@@ -227,12 +227,12 @@ export default async function TeamDetailPage({
       </section>
 
       {/* --- 3. BOTTOM CONTACT SECTION --- */}
-      <section className="bg-section py-20 md:py-24">
+      <section className="bg-section py-10 md:py-12">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 items-start">
             
             {/* Left Text Column */}
-            <div className="space-y-6">
+            <div className="space-y-5">
               <span className="inline-flex items-center gap-2 text-[13px] font-bold tracking-widest uppercase text-accent">
                 <span className="h-px w-3 bg-accent" /> Contact Us
               </span>
@@ -254,30 +254,30 @@ export default async function TeamDetailPage({
                 <input
                   type="text"
                   placeholder="Full name*"
-                  className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
                 />
                 <input
                   type="email"
                   placeholder="Email address*"
-                  className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
                 />
                 <input
                   type="tel"
                   placeholder="Phone number*"
-                  className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
                 />
-                <select defaultValue="" className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent text-gray-400">
+                <select defaultValue="" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent text-gray-400">
                   <option value="" disabled>Choose a option</option>
                   <option value="1">Option 1</option>
                   <option value="2">Option 2</option>
                 </select>
                 <textarea
                   placeholder="Type message*"
-                  className="sm:col-span-2 w-full px-4 py-3.5 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy resize-none h-28"
+                  className="sm:col-span-2 w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy resize-none h-24"
                 />
               </form>
 
-              {/* Submit Button (Inside the column, below the form) */}
+              {/* Submit Button */}
               <button
                 type="button"
                 className="flex items-center gap-3 rounded-full bg-navy hover:bg-navy-ink text-white pl-2 pr-7 py-2.5 text-[15px] font-semibold transition-all w-fit mt-2"

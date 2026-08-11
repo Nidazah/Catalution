@@ -6,7 +6,6 @@ import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
 import { blogPosts } from "@/app/data/blog";
-import Button from "@/components/Button";
 
 export default function BlogGridPage() {
   const itemsPerPage = 6;
@@ -89,15 +88,17 @@ export default function BlogGridPage() {
                       {post.excerpt}
                     </p>
 
-                    {/* ✅ Replaced manual Read More link with Button */}
+                    {/* 
+                      ✅ FIX: NESTED LINK REMOVED. 
+                      Replaced with a <span> acting as a styled button.
+                      Because the parent <Link> covers the whole card, this "Read more" 
+                      will still trigger the navigation perfectly, but won't throw an 
+                      "a inside a" React hydration error.
+                    */}
                     <div className="mt-auto pt-2">
-                      <Button
-                        href={`/blog/${post.id}`}
-                        size="sm"
-                        className="bg-transparent !text-navy hover:text-accent p-0 h-auto font-bold"
-                      >
+                      <span className="btn btn-ghost text-sm font-bold p-0 h-auto cursor-pointer">
                         Read more
-                      </Button>
+                      </span>
                     </div>
                   </div>
                 </Link>

@@ -96,22 +96,25 @@ export default function AboutSection() {
           animate="show"
           className="relative max-w-[460px]"
         >
-          {/* Label */}
-          <motion.span
-            variants={item}
-            className="caption inline-flex items-center gap-2 rounded bg-orange-100 px-3 py-1.5 font-bold uppercase tracking-[0.7px] text-accent"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-            <span className="font-extrabold">About Our Company</span>
-          </motion.span>
+          {/* Label - Updated to match your style */}
+          {/* --- HEADING --- */}
+              <div className="mb-6 md:mb-8">
+                <span className="inline-flex items-center gap-2 rounded bg-orange-100 px-2.5 py-1 text-[10px] font-bold tracking-wider text-accent">
+                  <span className="h-1 w-1 rounded-full bg-accent" />
+                  ABOUT OUR COMPANY
+                </span>
+              </div>
 
-          {/* Heading */}
-          <motion.h2 variants={item} className="h2 mt-4 text-navy">
+          {/* Heading - Updated to match your style */}
+          <motion.h2 
+            variants={item} 
+            className="mt-3 font-display text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.08] text-heading"
+          >
             Crafting success tailored
-            <br />
+            <br className="hidden sm:block" />
             solution for each &amp; every
-            <br />
-            challenges
+            <br className="hidden sm:block" />
+            <span className="text-accent">challenges</span>
           </motion.h2>
 
           {/* Description */}
@@ -160,7 +163,7 @@ export default function AboutSection() {
           ================================================== */}
           <motion.div variants={item} className="mt-4">
             <Link href="/about" className="btn btn-primary">
-              Know More
+              Learn About Us
             </Link>
           </motion.div>
         </motion.div>

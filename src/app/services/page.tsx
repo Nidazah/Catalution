@@ -116,7 +116,7 @@ const ServiceIcon = ({ type, isHovered }: { type: string; isHovered?: boolean })
         )}
         {type === "repeat" && (
           <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6s-2.7 6-6 6v2c4.4 0 8-3.6 8-8s-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6v3l4-4-4-4V1v3z" />
+            <path d="M12 4V1L8 5l4 4V6c3.3 0 6 2.7 6 6s-2.7 6 6 6v2c4.4 0 8-3.6 8-8s-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6v3l4-4-4-4V1v3z" />
           </svg>
         )}
       </div>
@@ -140,10 +140,10 @@ export default function ServicesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white pt-20 pb-24">
+    <main className="min-h-screen bg-white pt-20 pb-16">
       <PageHero title="Services" />
 
-      <div className="w-full max-w-6xl mx-auto px-6 py-20">
+      <div className="w-full max-w-6xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {currentServices.map((s, idx) => {
             const globalIndex = allServices.findIndex(item => item.id === s.id) + 1;
@@ -151,9 +151,9 @@ export default function ServicesPage() {
               <Link
                 key={s.id}
                 href={s.href}
-                className="group relative block bg-white border border-gray-300 aspect-[4/5] overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="group relative block bg-white border border-gray-300 aspect-[3/4] overflow-hidden hover:shadow-xl transition-all duration-300"
               >
-                {/* BACKGROUND IMAGE (Hidden by default, shows on hover) */}
+                {/* BACKGROUND IMAGE */}
                 <div className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out z-0">
                   <Image
                     src={s.image}
@@ -165,21 +165,19 @@ export default function ServicesPage() {
                   <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/70 to-transparent" />
                 </div>
 
-                {/* CONTENT WRAPPER (Always visible) */}
+                {/* CONTENT WRAPPER */}
                 <div className="relative z-10 flex flex-col h-full p-8 transition-colors duration-300 group-hover:text-white">
                   
                   <div className="mb-4 text-[14px] font-bold text-[#9CA3AF] group-hover:text-white/70">
                     {globalIndex.toString().padStart(2, "0")}
                   </div>
 
-                  {/* The Icon Box and Icon Change Colors on Hover */}
                   <ServiceIcon type={s.icon} isHovered={true} />
 
                   <h3 className="text-2xl font-bold text-navy group-hover:text-white mb-3 transition-colors">
                     {s.title}
                   </h3>
                   
-                  {/* flex-1 ensures this pushes the bottom link to the very end, keeping cards equal height */}
                   <p className="flex-1 text-[15px] text-[#4B5563] group-hover:text-gray-200 leading-relaxed transition-colors">
                     {s.desc}
                   </p>
@@ -193,11 +191,9 @@ export default function ServicesPage() {
           })}
         </div>
 
-        {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
+        {/* --- PAGINATION --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-16">
-            
-            {/* Previous Arrow (←) */}
+          <div className="flex justify-center items-center gap-2 mt-12">
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -213,7 +209,6 @@ export default function ServicesPage() {
               </svg>
             </button>
 
-            {/* Page Numbers */}
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
               <button
                 key={number}
@@ -229,7 +224,6 @@ export default function ServicesPage() {
               </button>
             ))}
 
-            {/* Next Arrow (→) */}
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
@@ -244,7 +238,6 @@ export default function ServicesPage() {
                 <polyline points="9 18 15 12 9 6" />
               </svg>
             </button>
-
           </div>
         )}
       </div>

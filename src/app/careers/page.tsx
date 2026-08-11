@@ -4,12 +4,11 @@ import { useState } from "react";
 import PageHero from "@/components/PageHero";
 import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
-import Button from "@/components/Button"; // ✅ Import Button
 
 // --- DATA ---
 const allJobs = [
   {
-    id: "1", // Switched to Numeric ID
+    id: "1", 
     icon: "swirl",
     tags: ["Full time job/on site", "Urgent"],
     title: "Business Development Manager",
@@ -145,7 +144,7 @@ export default function CareersPage() {
           {currentJobs.map((job) => (
             <Link
               key={job.id}
-              href={`/careers/${job.id}`} // <--- Links to /careers/1, /careers/2, etc.
+              href={`/careers/${job.id}`} 
               className="group bg-white border border-gray-200 p-8 flex flex-col items-start hover:shadow-lg transition-all duration-300 cursor-pointer"
             >
               <JobIcon type={job.icon} />
@@ -174,7 +173,7 @@ export default function CareersPage() {
                   <span>{job.location}</span>
                 </div>
                 
-                {/* ✅ "Apply now" as a span — card is already a Link, so no nested interactive element */}
+                {/* ✅ SAFE: Card is wrapped in Link, so inner span prevents invalid nested HTML */}
                 <span
                   data-cursor-hover
                   className="group/btn inline-flex items-center gap-1.5 text-[13px] font-bold text-navy transition-colors group-hover:text-accent"

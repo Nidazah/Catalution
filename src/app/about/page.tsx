@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
-import { Play } from "lucide-react";
+import { Play, LayoutGrid, Layers, Circle, Hexagon } from "lucide-react";
 import { motion } from "framer-motion";
-import Button from "@/components/Button";
+import Link from "next/link";
 
 // --- Team Data ---
 const teamMembers = [
@@ -91,14 +91,12 @@ export default function AboutPage() {
   const goToPrevious = () => {
     setIsAutoPlaying(false);
     setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-    // Resume auto-play after 10 seconds of inactivity
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
   const goToNext = () => {
     setIsAutoPlaying(false);
     setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    // Resume auto-play after 10 seconds of inactivity
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
@@ -124,13 +122,10 @@ export default function AboutPage() {
               Crafting success tailored solution for each & every challenges
             </h1>
             
-            <Button
-              href="/contact"
-              size="md"
-              className="mt-8 bg-navy text-white transition-transform hover:scale-[1.03]"
-            >
+            {/* ✅ FIXED: Uses the global primary variant, no manual overrides */}
+            <Link href="/contact" className="btn btn-primary mt-8">
               Learn more
-            </Button>
+            </Link>
           </div>
 
           {/* Right Column */}
@@ -155,13 +150,7 @@ export default function AboutPage() {
           {/* Card 1 */}
           <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
             <div className="mb-6 text-navy">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <rect x="7" y="7" width="4" height="4" />
-                <rect x="13" y="7" width="4" height="4" />
-                <rect x="7" y="13" width="4" height="4" />
-                <rect x="13" y="13" width="4" height="4" />
-              </svg>
+              <LayoutGrid className="w-12 h-12 stroke-1" />
             </div>
             <h3 className="text-lg font-bold text-navy mb-2">Quick solutions</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
@@ -172,12 +161,7 @@ export default function AboutPage() {
           {/* Card 2 */}
           <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
             <div className="mb-6 text-navy">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                <polyline points="2 17 12 22 22 17" />
-                <polyline points="2 12 12 17 22 12" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
+              <Layers className="w-12 h-12 stroke-1" />
             </div>
             <h3 className="text-lg font-bold text-navy mb-2">Expert advice</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
@@ -188,11 +172,7 @@ export default function AboutPage() {
           {/* Card 3 */}
           <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
             <div className="mb-6 text-navy">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <circle cx="12" cy="12" r="6" />
-                <circle cx="12" cy="12" r="2" />
-              </svg>
+              <Circle className="w-12 h-12 stroke-1" />
             </div>
             <h3 className="text-lg font-bold text-navy mb-2">Strategic planning</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
@@ -203,10 +183,7 @@ export default function AboutPage() {
           {/* Card 4 */}
           <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
             <div className="mb-6 text-navy">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                <polygon points="12 12 2 17 12 22 22 17 12 12" />
-              </svg>
+              <Hexagon className="w-12 h-12 stroke-1" />
             </div>
             <h3 className="text-lg font-bold text-navy mb-2">Efficient operations</h3>
             <p className="text-sm text-gray-500 leading-relaxed">
@@ -350,7 +327,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* --- 4. TESTIMONIALS SECTION (UPDATED WITH FUNCTIONAL ARROWS & AUTO-ROTATE) --- */}
+      {/* --- 4. TESTIMONIALS SECTION --- */}
       <section className="container mx-auto px-6 py-20 max-w-7xl">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-accent before:mr-2 before:h-1 before:w-1 before:rounded-full before:bg-accent after:ml-2 after:h-1 after:w-1 after:rounded-full after:bg-accent">

@@ -61,8 +61,15 @@ export default function PortfoliosPage() {
     <main className="min-h-screen bg-white pt-20">
       <PageHero title="Portfolios" />
 
-      <section className="container mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* 
+        ✅ SINGLE EYE VIEW OPTIMIZATIONS:
+        - Reduced `py-20` to `py-12`
+        - Reduced image height from `h-[280px]` to `h-[220px]`
+        - Reduced inner card padding from `p-6` to `p-5`
+        - Grid remains `lg:grid-cols-3` to fit exactly 2 rows of 3
+      */}
+      <section className="container mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {portfoliosData.map((portfolio) => (
             <Link
@@ -72,7 +79,7 @@ export default function PortfoliosPage() {
             >
               <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col">
                 
-                <div className="relative w-full h-[280px] bg-gray-50 overflow-hidden">
+                <div className="relative w-full h-[220px] bg-gray-50 overflow-hidden">
                   <Image
                     src={portfolio.image}
                     alt={portfolio.title}
@@ -85,7 +92,7 @@ export default function PortfoliosPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
 
-                <div className="p-6 flex flex-col flex-grow">
+                <div className="p-5 flex flex-col flex-grow">
                   <span className="text-xs font-bold tracking-widest uppercase text-accent mb-2">
                     {portfolio.category}
                   </span>
@@ -105,7 +112,7 @@ export default function PortfoliosPage() {
 
         {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-16">
+          <div className="flex justify-center items-center gap-2 mt-12">
             {/* Previous Arrow (←) */}
             <button
               onClick={() => paginate(currentPage - 1)}

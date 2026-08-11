@@ -51,11 +51,18 @@ export default function FAQPage() {
     <main className="min-h-screen bg-[#FAFBFC] pt-20">
       <PageHero title="FAQ" />
 
-      <div className="w-full max-w-6xl mx-auto px-6 pt-12 pb-24">
+      {/* 
+        ✅ SINGLE VIEW OPTIMIZATIONS:
+        - Reduced `pt-12` to `pt-6` (Saved 24px)
+        - Reduced `pb-24` to `pb-16` (Saved 32px)
+        - Reduced `mb-16` to `mb-12` (Saved 16px)
+        - Compressed the divider margin from `mb-16` to `mb-10`
+      */}
+      <div className="w-full max-w-6xl mx-auto px-6 pt-6 pb-16">
 
         {/* --- TOP SECTION: HEADER & SEARCH --- */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-navy mb-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-navy mb-6">
             Hi, how we <span className="text-accent">support</span> you?
           </h1>
           
@@ -65,17 +72,17 @@ export default function FAQPage() {
               <input 
                 type="text" 
                 placeholder="Ask a question" 
-                className="w-full py-3 text-[15px] outline-none bg-transparent text-navy placeholder:text-gray-400"
+                className="w-full py-2.5 text-[15px] outline-none bg-transparent text-navy placeholder:text-gray-400"
               />
             </div>
-            <button className="bg-accent text-white font-medium px-8 py-3 hover:bg-orange-700 transition-colors text-[15px]">
+            <button className="bg-accent text-white font-medium px-8 py-2.5 hover:bg-orange-700 transition-colors text-[15px]">
               Search
             </button>
           </div>
         </div>
 
         {/* --- DIVIDER LINE --- */}
-        <div className="w-full h-px bg-gray-200 mb-16"></div>
+        <div className="w-full h-px bg-gray-200 mb-10"></div>
 
         {/* --- BOTTOM SECTION: 2 COLUMN LAYOUT --- */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
@@ -101,7 +108,7 @@ export default function FAQPage() {
 
             {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
             {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-10">
+              <div className="flex justify-center items-center gap-2 mt-8">
                 
                 {/* Previous Arrow (←) */}
                 <button

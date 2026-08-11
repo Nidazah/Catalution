@@ -4,7 +4,6 @@ import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import Button from "@/components/Button"; // ✅ Import Button
 
 const timelineData = [
   {
@@ -81,13 +80,13 @@ export default function HistoryPage() {
       <PageHero title="Our History" />
 
       {/* --- HERO & INTRO (BELOW PAGEHERO) --- */}
-      <div className="w-full max-w-7xl mx-auto px-6 pt-16 pb-12">
+      <div className="w-full max-w-7xl mx-auto px-6 pt-8 pb-8">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10">
           <div className="max-w-xl">
             <span className="text-xs font-semibold tracking-widest text-navy uppercase">
               • Our Background
             </span>
-            <h1 className="text-4xl lg:text-5xl font-bold text-navy leading-[1.1] mt-4 mb-8">
+            <h1 className="text-4xl lg:text-5xl font-bold text-navy leading-[1.1] mt-4 mb-6">
               Discover how we have evolved our company's{" "}
               <span className="text-accent">on legacy.</span>
             </h1>
@@ -104,23 +103,18 @@ export default function HistoryPage() {
               insights, innovative approaches empower.
             </p>
 
-            {/* ✅ REPLACED WITH THE EXACT "GET A QUOTE" BUTTON */}
+            {/* ✅ REPLACED CUSTOM BUTTON WITH GLOBAL PRIMARY */}
             <div className="pt-2">
-              <Button
-                href="/contact"
-                variant="primary"
-                size="md"
-                className="shadow-md hover:shadow-lg bg-navy text-white border-0"
-              >
+              <Link href="/contact" className="btn btn-primary shadow-md">
                 Learn More
-              </Button>
+              </Link>
             </div>
           </div>
         </div>
       </div>
 
       {/* --- TIMELINE --- */}
-      <div className="relative w-full max-w-6xl mx-auto px-6 pb-24">
+      <div className="relative w-full max-w-6xl mx-auto px-6 pb-16">
         {/* Vertical Center Line (Hidden on Mobile) */}
         <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[1px] bg-gray-300 transform -translate-x-1/2 hidden lg:block" />
 
@@ -129,7 +123,7 @@ export default function HistoryPage() {
           return (
             <div
               key={index}
-              className={`relative flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-0 mb-24 lg:mb-20 last:mb-0 ${
+              className={`relative flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-0 mb-12 lg:mb-12 last:mb-0 ${
                 isLeft ? "lg:flex-row" : "lg:flex-row-reverse"
               }`}
             >
@@ -189,7 +183,7 @@ export default function HistoryPage() {
 
         {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-16">
+          <div className="flex justify-center items-center gap-2 mt-12">
             {/* Previous Arrow (←) */}
             <button
               onClick={() => paginate(currentPage - 1)}

@@ -1,16 +1,15 @@
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
-import Button from "@/components/Button"; // ✅ Import your Button component
 
 export default function Custom404() {
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <div className="min-h-screen bg-white flex flex-col">
       
       <PageHero title="404" />
 
       {/* --- SECTION 2: WHITE ERROR CONTENT (Illustration & Text) --- */}
-      <section className="bg-white py-16 md:py-24 flex flex-col items-center justify-center px-6">
+      <section className="bg-white py-16 md:py-24 flex flex-col items-center justify-center px-6 flex-1">
         
         {/* Big 404 Illustration with Clouds (Using CSS/SVG to mimic your screenshot) */}
         <div className="relative w-full max-w-md mx-auto text-accent mb-8">
@@ -38,15 +37,14 @@ export default function Custom404() {
           Page does not exist or some other error occurred. Go to our Home Page
         </p>
 
-        {/* ✅ Replaced <Link> with Button */}
-        <Button
+        {/* ✅ Replaced Button component with native Next.js Link + CSS classes */}
+        <Link
           href="/"
-          size="md"
-          className="mt-8 bg-navy text-white shadow-md transition-transform hover:scale-[1.03]"
+          className="btn btn-primary shadow-md transition-transform hover:scale-[1.03]"
         >
           Go back to home page
-        </Button>
+        </Link>
       </section>
-    </main>
+    </div>
   );
 }

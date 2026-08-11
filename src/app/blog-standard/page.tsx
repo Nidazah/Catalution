@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { blogPosts } from "@/app/data/blog";
 import { Search, Calendar, User } from "lucide-react";
-import Button from "@/components/Button";
 
 export default function BlogStandardPage() {
   const itemsPerPage = 4; // Shows 2 rows of posts
@@ -33,7 +32,6 @@ export default function BlogStandardPage() {
 
   return (
     <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
-      {/* ✅ PageHero renders right below the transparent navbar */}
       <PageHero title="Blog Standard" />
 
       {/* --- MAIN LAYOUT: LEFT CONTENT + RIGHT SIDEBAR --- */}
@@ -74,16 +72,19 @@ export default function BlogStandardPage() {
                     
                     <p className="text-[15px] text-[#4B5563] leading-relaxed mb-5 line-clamp-3">{post.excerpt}</p>
                     
-                    {/* Read more Button */}
+                    {/* 
+                      ✅ FIX: Replaced custom Button with global Link.
+                      Since there is no outer <Link> on this card (it's a <div>), 
+                      an inner <Link> is perfectly valid and safe.
+                    */}
                     <div className="mt-auto pt-1">
-                      <Button
-                        href={`/blog/${post.id}`}
-                        size="sm"
-                        className="bg-transparent !text-navy hover:text-accent p-0 h-auto font-semibold"
-                        icon={true}
-                      >
+                      <Link href={`/blog/${post.id}`} className="btn btn-ghost text-sm font-semibold p-0 h-auto inline-flex items-center gap-2">
                         Read more
-                      </Button>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M7 17L17 7" />
+                          <path d="M7 7h10v10" />
+                        </svg>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -207,13 +208,10 @@ export default function BlogStandardPage() {
                 <p className="text-sm text-orange-100/80 leading-relaxed max-w-[200px]">Our mission is to empowers businesses off all size in an businesses.</p>
               </div>
               <div className="relative z-10">
-                <Button
-                  href="/contact"
-                  size="md"
-                  className="bg-white hover:bg-gray-100 !text-navy shadow-lg"
-                >
+                {/* ✅ Global btn-outline replacing custom Button override */}
+                <Link href="/contact" className="btn btn-outline shadow-lg w-full justify-center">
                   Get in touch
-                </Button>
+                </Link>
               </div>
             </div>
           </div>

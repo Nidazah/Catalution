@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { blogPosts } from "@/app/data/blog";
 import { Search } from "lucide-react";
-import Button from "@/components/Button";
 
 export default function BlogSidebarPage() {
   const itemsPerPage = 8;
@@ -85,14 +84,12 @@ export default function BlogSidebarPage() {
                         In today's dynamic business environment, the key to
                         success lies in strategic planning.
                       </p>
+                      
+                      {/* ✅ FIX: NESTED LINK REMOVED. Safe <span> inheriting group-hover */}
                       <div className="mt-auto pt-2">
-                        <Button
-                          href={`/blog/${post.id}`}
-                          size="sm"
-                          className="bg-transparent !text-navy hover:text-accent p-0 h-auto font-bold"
-                        >
+                        <span className="btn btn-ghost text-sm font-bold p-0 h-auto cursor-pointer">
                           Read more
-                        </Button>
+                        </span>
                       </div>
                     </div>
                   </Link>
@@ -288,13 +285,10 @@ export default function BlogSidebarPage() {
               </div>
 
               <div className="relative z-10">
-                <Button
-                  href="/contact"
-                  size="md"
-                  className="bg-white hover:bg-gray-100 !text-navy shadow-lg"
-                >
+                {/* ✅ Global btn-outline replacing custom Button override */}
+                <Link href="/contact" className="btn btn-outline shadow-lg w-full justify-center">
                   Get in touch
-                </Button>
+                </Link>
               </div>
             </div>
 

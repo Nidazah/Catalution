@@ -63,7 +63,7 @@ export default function PricingPage() {
     },
   ];
 
-  // Pagination state (ready if you want to paginate pricing cards)
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3; // Shows all cards on one page
   const totalPages = Math.ceil(plans.length / itemsPerPage);
@@ -84,11 +84,11 @@ export default function PricingPage() {
       />
 
       {/* --- LOWER SECTION: PRICING TIERS --- */}
-      <section className="bg-[#F5F7FA] py-16 md:py-24">
+      <section className="bg-[#F5F7FA] py-12 md:py-16">
         <div className="container mx-auto max-w-7xl px-6">
           
           {/* HEADER ROW: Left Text + Right Checkmarks */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start mb-12 md:mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start mb-8 md:mb-12">
             
             {/* Left Column */}
             <motion.div 
@@ -108,7 +108,7 @@ export default function PricingPage() {
               </p>
 
               {/* Toggle Button - Exact Bright Blue Style */}
-              <div className="mt-6 inline-flex items-center rounded-full bg-navy p-1.5">
+              <div className="mt-4 inline-flex items-center rounded-full bg-navy p-1.5">
                 <button
                   onClick={() => setBillingCycle("monthly")}
                   className={`px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
@@ -168,7 +168,7 @@ export default function PricingPage() {
                 transition: { staggerChildren: 0.1, delayChildren: 0.2 },
               },
             }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto"
           >
             {plans.map((plan, index) => (
               <motion.div
@@ -178,7 +178,7 @@ export default function PricingPage() {
                   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
                 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className={`relative rounded-2xl p-8 flex flex-col ${
+                className={`relative rounded-2xl p-6 flex flex-col ${
                   plan.isPopular
                     ? "bg-accent text-white shadow-xl shadow-accent/20"
                     : "bg-orange-100 text-navy"
@@ -226,7 +226,7 @@ export default function PricingPage() {
                 <motion.div whileTap={{ scale: 0.97 }}>
                   <Link
                     href="/contact"
-                    className={`w-full flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-semibold transition-colors ${
+                    className={`w-full flex items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition-colors ${
                       plan.isPopular
                         ? "bg-white text-accent hover:bg-gray-100"
                         : "bg-navy text-white hover:bg-navy-ink"
@@ -241,7 +241,7 @@ export default function PricingPage() {
 
           {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-16">
+            <div className="flex justify-center items-center gap-2 mt-10">
               {/* Previous Arrow (←) */}
               <button
                 onClick={() => paginate(currentPage - 1)}

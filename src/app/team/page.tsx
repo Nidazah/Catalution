@@ -127,7 +127,7 @@ export default function TeamPage() {
       <PageHero title="Our Team" />
 
       {/* --- TEAM GRID SECTION --- */}
-      <div className="w-full max-w-[1280px] mx-auto px-6 py-20">
+      <div className="w-full max-w-[1280px] mx-auto px-6 py-10">
         {/* If no members found (edge case) */}
         {currentTeamMembers.length === 0 && (
           <p className="text-center text-gray-500">No team members found.</p>
@@ -137,7 +137,7 @@ export default function TeamPage() {
           {currentTeamMembers.map((member, idx) => (
             <div
               key={idx}
-              className="relative aspect-[3/4] w-full bg-gray-100 overflow-hidden group"
+              className="relative aspect-[4/5] w-full bg-gray-100 overflow-hidden group"
             >
               <Image
                 src={member.image}
@@ -165,7 +165,7 @@ export default function TeamPage() {
 
         {/* --- CLEAN PAGINATION WITH ARROWS ON BOTH SIDES --- */}
         {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-3 mt-16">
+          <div className="flex justify-center items-center gap-2 mt-10">
             
             {/* Previous Arrow (<) */}
             <button

@@ -181,7 +181,7 @@ export default async function PortfolioDetailPage({
       <PageHero title={portfolio.title} imageSrc="/images/portfolios/porofolio.webp" />
 
       {/* --- LAYOUT 1: IMAGE LEFT, INFO RIGHT --- */}
-      <section className="container mx-auto px-6 pt-20 pb-12">
+      <section className="container mx-auto px-6 pt-10 pb-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           
           {/* LEFT COLUMN: LARGE LANDSCAPE IMAGE */}
@@ -199,13 +199,13 @@ export default async function PortfolioDetailPage({
 
           {/* RIGHT COLUMN: PORTFOLIO INFORMATION SIDEBAR */}
           <div className="lg:col-span-5">
-            <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm">
+            <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
               <h3 className="text-xl font-bold text-navy mb-6 inline-block relative">
                 Portfolio Information
                 <span className="absolute -bottom-2 left-0 w-8 h-1 bg-accent rounded-full"></span>
               </h3>
 
-              <div className="mt-8 space-y-4 text-[15px]">
+              <div className="mt-6 space-y-4 text-[15px]">
                 
                 <div className="grid grid-cols-[100px_20px_1fr] py-4 border-b border-gray-100">
                   <span className="text-navy font-medium">Clients</span>
@@ -246,11 +246,11 @@ export default async function PortfolioDetailPage({
       </section>
 
       {/* --- LAYOUT 2: TEXT CONTENT & HIGHLIGHTS --- */}
-      <section className="container mx-auto px-6 pb-20">
-        <div className="max-w-4xl mx-auto border-t pt-12 border-gray-100">
+      <section className="container mx-auto px-6 pb-16">
+        <div className="max-w-4xl mx-auto border-t pt-10 border-gray-100">
           
           {/* 1. Overview, Challenge, Solution */}
-          <div className="space-y-12 mb-16">
+          <div className="space-y-10 mb-12">
             <div>
               <h2 className="text-2xl font-bold text-navy mb-4">Project Overview</h2>
               <p className="text-gray-600 leading-relaxed text-lg">{portfolio.overview}</p>
@@ -266,13 +266,13 @@ export default async function PortfolioDetailPage({
           </div>
 
           {/* 2. Project Highlight Stat */}
-          <div className="bg-gray-50 rounded-2xl p-10 text-center border border-gray-100 mb-16">
+          <div className="bg-gray-50 rounded-2xl p-8 text-center border border-gray-100 mb-12">
             <span className="text-6xl md:text-7xl font-bold text-accent">{portfolio.highlightStats.value}</span>
             <p className="text-lg font-medium text-navy mt-2">{portfolio.highlightStats.label}</p>
           </div>
 
           {/* 3. Key Results, Tech Stack, Awards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
               <h4 className="font-bold text-navy mb-4 flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" /> Key Results
@@ -308,7 +308,7 @@ export default async function PortfolioDetailPage({
           </div>
 
           {/* 4. Testimonial */}
-          <div className="bg-navy rounded-2xl p-10 mb-16 text-center relative overflow-hidden">
+          <div className="bg-navy rounded-2xl p-8 mb-12 text-center relative overflow-hidden">
             <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-accent/10 rounded-full blur-2xl" />
             <svg className="h-10 w-10 text-white/20 mx-auto mb-4" fill="currentColor" viewBox="0 0 32 32"><path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"/></svg>
             <p className="text-white text-xl md:text-2xl leading-relaxed italic max-w-2xl mx-auto relative z-10">
@@ -320,9 +320,9 @@ export default async function PortfolioDetailPage({
       </section>
 
       {/* --- LAYOUT 3: GALLERY IMAGES --- */}
-      <section className="container mx-auto px-6 pb-20">
-        <div className="max-w-4xl mx-auto border-t pt-12 border-gray-100">
-          <h2 className="text-2xl font-bold text-navy mb-8">Project Gallery</h2>
+      <section className="container mx-auto px-6 pb-16">
+        <div className="max-w-4xl mx-auto border-t pt-10 border-gray-100">
+          <h2 className="text-2xl font-bold text-navy mb-6">Project Gallery</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {portfolio.gallery.map((img, idx) => (
               <div key={idx} className="relative h-72 md:h-80 rounded-xl overflow-hidden shadow-sm">
@@ -340,7 +340,7 @@ export default async function PortfolioDetailPage({
       </section>
 
       {/* --- NAVIGATION BOTTOM BAR --- */}
-      <section className="bg-white py-8">
+      <section className="bg-white py-6">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between bg-gray-50/50 rounded-xl border border-gray-100 p-4 md:p-5 shadow-sm">
             <Link href="/portfolios" className="group flex items-center gap-3 text-sm font-semibold text-navy transition-colors hover:text-accent">

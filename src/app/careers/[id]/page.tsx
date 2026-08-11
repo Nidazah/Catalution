@@ -7,7 +7,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapPin, Check } from "lucide-react";
 import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa6";
-import Button from "@/components/Button";
 
 // --- DATA CENTRALIZED HERE ---
 const jobDetails: Record<string, any> = {
@@ -127,12 +126,9 @@ export default function CareerDetailPage({
     notFound();
   }
 
-  // ✅ FIXED: Added -mt-20 to pull the PageHero behind the transparent Navbar
-    return (
+  return (
     <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
-      {/* ✅ DYNAMIC PAGE HERO: uses the actual job title */}
       <PageHero title={job.title} />
-      
       <CareerContent job={job} currentId={id} allIds={allIds} />
     </main>
   );
@@ -145,8 +141,6 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
   const currentIndex = allIds.indexOf(currentId);
   const nextId = currentIndex < allIds.length - 1 ? allIds[currentIndex + 1] : allIds[0];
   const prevId = currentIndex > 0 ? allIds[currentIndex - 1] : allIds[allIds.length - 1];
-
-  // ❌ AUTO-ROTATE REMOVED
 
   const handleNext = () => {
     router.push(`/careers/${nextId}`);
@@ -387,13 +381,13 @@ function CareerContent({ job, currentId, allIds }: { job: any, currentId: string
                 </div>
               </div>
 
-              <Button
-                type="button"
-                size="md"
-                className="mt-2 bg-navy hover:bg-navy-ink text-white"
+              {/* ✅ FIX: Replaced custom Button with native HTML button + Global Primary Class */}
+              <button
+                type="submit"
+                className="btn btn-primary mt-2 w-full justify-center"
               >
                 Submit now
-              </Button>
+              </button>
             </form>
           </div>
 
