@@ -228,7 +228,7 @@ model ContentSection {
 }
 
 model ContactInfo {
-  id             String   @id
+  id             String   @id @default(cuid())
   emailPrimary   String
   emailSecondary String?
   phone          String
@@ -237,11 +237,11 @@ model ContactInfo {
   mapEmbedUrl    String?
   rating         Float?
   reviewCount    Int?
-  updatedAt      DateTime
+  updatedAt      DateTime @updatedAt
 }
 
 model ContactSubmission {
-  id        String   @id
+  id        String   @id @default(cuid())
   firstName String
   lastName  String
   email     String
