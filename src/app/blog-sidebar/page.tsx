@@ -32,7 +32,7 @@ export default function BlogSidebarPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white pt-20 pb-24">
+    <main className="min-h-screen bg-white pb-24">
       <PageHero title="Blog Sidebar" />
 
       <section className="container mx-auto px-6 py-20 max-w-[1280px]">
@@ -58,7 +58,7 @@ export default function BlogSidebarPage() {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                         sizes="(max-width: 768px) 100vw, 50vw"
                       />
-                      <div className="absolute top-4 right-4 bg-[#374151]/80 text-white flex flex-col items-center justify-center p-2 min-w-[50px] backdrop-blur-sm shadow-sm">
+                      <div className="media-card__badge media-card__badge--right bg-[#374151]/80 text-white flex flex-col items-center justify-center p-2 min-w-[50px] backdrop-blur-sm shadow-sm">
                         <span className="text-[20px] font-bold leading-none">
                           {day}
                         </span>

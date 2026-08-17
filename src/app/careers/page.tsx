@@ -136,7 +136,7 @@ export default function CareersPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
+    <main className="min-h-screen bg-[#F9FAFB] pb-24">
       <PageHero title="Careers" />
 
       <div className="w-full max-w-7xl mx-auto px-6 py-20">

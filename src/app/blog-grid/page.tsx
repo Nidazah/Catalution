@@ -32,7 +32,7 @@ export default function BlogGridPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
+    <main className="min-h-screen bg-[#F9FAFB] pb-24">
       <PageHero title="Blog Grid" />
 
       <section className="container mx-auto px-6 py-20 max-w-7xl">

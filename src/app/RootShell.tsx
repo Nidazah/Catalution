@@ -1,14 +1,19 @@
 "use client";
 
-import CustomCursor from "@/components/CustomCursor";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ConsultantBanner from "@/components/ConsultantBanner";
+import CustomCursor from "../components/CustomCursor";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ConsultantBanner from "../components/ConsultantBanner";
 
 import { usePathname } from "next/navigation";
 
 export default function RootShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+
+  // Admin panel has its own layout/chrome — skip the public site's navbar/footer entirely
+  if (pathname.startsWith("/admin")) {
+    return <>{children}</>;
+  }
 
   // List of pages where you want the transparent navbar
   // Add new routes here as you build more pages
@@ -27,7 +32,6 @@ export default function RootShell({ children }: { children: React.ReactNode }) {
     "/history",
     "/404",
     "/team/1",
-    "/services/1",
     "/portfolios/1",
     "/blog/1",
   ];
@@ -44,9 +48,11 @@ export default function RootShell({ children }: { children: React.ReactNode }) {
     <>
       <CustomCursor />
 
-      <Navbar transparent={isTransparent} />
+      <Navbar transparent={isTransparent} lightText={isTransparent} />
 
-      {children}
+      <div className={isTransparent ? "" : "pt-20"}>
+        {children}
+      </div>
 
       {pathname !== "/" && <ConsultantBanner />}
 

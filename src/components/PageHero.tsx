@@ -6,17 +6,25 @@ import { motion } from "framer-motion";
 
 interface PageHeroProps {
   title: string;
+  subtitle?: string;
   imageSrc?: string;
+  className?: string;
+  children?: React.ReactNode;
+  showBreadcrumbs?: boolean;
 }
 
 export default function PageHero({
   title,
+  subtitle,
   imageSrc = "/images/portfolios/porofolio.webp",
+  className = "",
+  children,
+  showBreadcrumbs = true,
 }: PageHeroProps) {
   return (
-    // Background still bleeds up behind the transparent/fixed navbar (-mt-20),
-    // but text content gets its OWN top offset so it clears the navbar height.
-    <section className="relative -mt-20 h-[500px] flex justify-center overflow-hidden bg-navy">
+    <section
+      className={`relative min-h-[380px] sm:min-h-[420px] lg:min-h-[500px] flex items-center justify-center overflow-hidden bg-navy ${className}`}
+    >
       <div className="absolute inset-0 z-0">
         <Image
           src={imageSrc}
@@ -25,28 +33,37 @@ export default function PageHero({
           className="object-cover"
           priority
         />
-        {/* --- CHANGED FROM /85 TO /50 FOR A LIGHTER PURPLE OVERLAY --- */}
-        <div className="absolute inset-0 bg-navy/50" /> 
+        <div className="absolute inset-0 bg-navy/50" />
       </div>
 
-      {/* pt-40/44 instead of pt-24 — clears the ~100px navbar + the -mt-20 offset */}
-      <div className="relative z-10 container mx-auto px-6 text-center pt-40 md:pt-44">
+      <div className="relative z-10 container mx-auto px-4 md:px-6 lg:px-8 py-28 sm:py-32 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="flex flex-col items-center"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 tracking-tight">
             {title}
           </h1>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white/80">
-            <Link href="/" className="hover:text-white transition-colors">
-              Home
-            </Link>
-            <span className="text-white/40">/</span>
-            <span className="text-white">{title}</span>
-          </div>
+
+          {subtitle && (
+            <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-6">
+              {subtitle}
+            </p>
+          )}
+
+          {showBreadcrumbs && (
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/10 text-sm text-white/80">
+              <Link href="/" className="hover:text-white transition-colors">
+                Home
+              </Link>
+              <span className="text-white/40">/</span>
+              <span className="text-white">{title}</span>
+            </div>
+          )}
+
+          {children}
         </motion.div>
       </div>
     </section>

@@ -76,7 +76,7 @@ export default function HistoryPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <main className="min-h-screen bg-white">
       <PageHero title="Our History" />
 
       {/* --- HERO & INTRO (BELOW PAGEHERO) --- */}

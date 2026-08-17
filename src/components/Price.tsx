@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -9,44 +9,34 @@ export default function PricingHeader() {
     "monthly"
   );
 
-  const plans = [
-    {
-      name: "Starter",
-      monthly: "$29",
-      yearly: "$290",
-      features: [
-        { text: "1 User", included: true },
-        { text: "5 Gb Disk Space", included: true },
-        { text: "Email Support", included: true },
-        { text: "24/7 Tech Support", included: false },
-        { text: "Free Upgrades", included: false },
-      ],
-    },
-    {
-      name: "Pro",
-      monthly: "$79",
-      yearly: "$790",
-      features: [
-        { text: "5 Users", included: true },
-        { text: "10 Gb Disk Space", included: true },
-        { text: "Email Support", included: true },
-        { text: "24/7 Tech Support", included: true },
-        { text: "Free Upgrades", included: false },
-      ],
-    },
-    {
-      name: "Enterprise",
-      monthly: "$199",
-      yearly: "$1990",
-      features: [
-        { text: "10 Users", included: true },
-        { text: "100 Gb Disk Space", included: true },
-        { text: "Email Support", included: true },
-        { text: "24/7 Tech Support", included: true },
-        { text: "Free Upgrades", included: true },
-      ],
-    },
+  const fallbackPlans = [
+    { name: "Starter", monthly: "$29", yearly: "$290", features: ["1 User", "5 Gb Disk Space", "Email Support"] },
+    { name: "Pro", monthly: "$79", yearly: "$790", features: ["5 Users", "10 Gb Disk Space", "Email Support", "24/7 Tech Support"] },
+    { name: "Enterprise", monthly: "$199", yearly: "$1990", features: ["10 Users", "100 Gb Disk Space", "Email Support", "24/7 Tech Support", "Free Upgrades"] },
   ];
+  const [plans, setPlans] = useState<Array<{
+    name: string;
+    monthly: string;
+    yearly: string;
+    features: Array<string | { text?: string }>;
+  }>>(fallbackPlans);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/pricing", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to load pricing"))))
+      .then((data) => {
+        if (cancelled || !Array.isArray(data) || data.length === 0) return;
+        setPlans(data.map((plan) => ({
+          name: plan.name,
+          monthly: plan.monthly,
+          yearly: plan.yearly,
+          features: Array.isArray(plan.features) ? plan.features : [],
+        })));
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <section id="pricing" className="bg-white py-16 md:py-20 overflow-hidden">
@@ -149,14 +139,12 @@ export default function PricingHeader() {
 
                   {/* Features */}
                   <ul className="flex-1">
-                    {plan.features.map((f) => (
+                    {plan.features.map((feature, index) => (
                       <li
-                        key={f.text}
-                        className={`border-b border-white/10 px-4 py-3 text-center font-inter text-xs ${
-                          f.included ? "text-white/90" : "text-white/30 line-through"
-                        }`}
+                        key={`${plan.name}-${index}`}
+                        className="border-b border-white/10 px-4 py-3 text-center font-inter text-xs text-white/90"
                       >
-                        {f.text}
+                        {typeof feature === "string" ? feature : feature.text || ""}
                       </li>
                     ))}
                   </ul>

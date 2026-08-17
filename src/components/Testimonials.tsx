@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import ScrollReveal from "./ScrollReveal";
 
-const quotes = [
+const fallbackQuotes = [
   {
     text: "Solvior didn't just take a ticket queue — they asked why the queue existed in the first place. Our infra bill dropped and our on-call rotation got quiet.",
     name: "Amara Reyes",
@@ -42,9 +42,23 @@ const CARDS_PER_VIEW_DESKTOP = 3;
 const ROTATE_INTERVAL_MS = 5000;
 
 export default function Testimonials() {
+  const [quotes, setQuotes] = useState(fallbackQuotes);
   const [index, setIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/testimonials", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to load testimonials"))))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data) && data.length > 0) {
+          setQuotes(data.map((item) => ({ text: item.quote, name: item.name, role: item.role })));
+        }
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     const check = () => setIsDesktop(window.innerWidth >= 768);

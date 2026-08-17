@@ -58,9 +58,9 @@ function VideoLink({ image, href }: { image: string; href: string }) {
       target="_blank"
       rel="noopener noreferrer"
       data-cursor-hover
-      className="group relative block overflow-hidden rounded-2xl"
+      className="media-card media-card--video group rounded-2xl"
     >
-      <div className="relative aspect-video">
+      <div className="media-card media-card--video">
         <Image
           src={image}
           alt="Project video preview"
@@ -68,8 +68,8 @@ function VideoLink({ image, href }: { image: string; href: string }) {
           sizes="(max-width: 1024px) 100vw, 66vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-black/30 transition-colors duration-300 group-hover:bg-black/40" />
-        <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[var(--color-navy)] transition-transform duration-300 group-hover:scale-110">
+        <div className="media-card__overlay bg-black/30 transition-colors duration-300 group-hover:bg-black/40" />
+        <span className="media-card__center flex h-16 w-16 items-center justify-center rounded-full bg-white text-[var(--color-navy)] transition-transform duration-300 group-hover:scale-110">
           <svg viewBox="0 0 24 24" className="ml-1 h-5 w-5" fill="currentColor">
             <polygon points="6,4 20,12 6,20" />
           </svg>

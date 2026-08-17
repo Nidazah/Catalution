@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Poppins, Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 
 import RootShell from "./RootShell";
-import CustomCursor from "../components/CustomCursor"; 
 
 import "./globals.css";
 
@@ -11,13 +10,6 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-poppins",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-inter",
   display: "swap",
 });
 
@@ -39,12 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased ${poppins.variable} ${inter.variable}`}>
-      <body className="min-h-full flex flex-col relative cursor-none">
-        
-        {/* ✅ Inject the Client-Side Cursor Provider here */}
-        <CustomCursor />
-
+    <html lang="en" className={`antialiased ${poppins.variable}`}>
+      <body className="relative cursor-none">
         <RootShell>{children}</RootShell>
       </body>
     </html>

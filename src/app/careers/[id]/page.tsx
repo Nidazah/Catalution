@@ -127,7 +127,7 @@ export default function CareerDetailPage({
   }
 
   return (
-    <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
+    <main className="min-h-screen bg-[#F9FAFB] pb-24">
       <PageHero title={job.title} />
       <CareerContent job={job} currentId={id} allIds={allIds} />
     </main>

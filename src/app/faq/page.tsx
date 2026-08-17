@@ -1,11 +1,11 @@
 "use client";
 
 import PageHero from "@/components/PageHero";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search } from "lucide-react";
 
-const faqs = [
+const fallbackFaqs = [
   {
     question: "How do consultants add value to a business?",
     answer: "Consultants bring deep expertise, fresh perspectives, and data-driven strategies to identify inefficiencies and implement tailored solutions that drive sustainable growth.",
@@ -29,8 +29,28 @@ const faqs = [
 ];
 
 export default function FAQPage() {
-  // State to track which index is open. Null means none are open.
+  const [faqs, setFaqs] = useState(fallbackFaqs);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/faq", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to load FAQs"))))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data?.faqs) && data.faqs.length > 0) setFaqs(data.faqs);
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
+
+  const filteredFaqs = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    if (!query) return faqs;
+    return faqs.filter((faq) =>
+      faq.question.toLowerCase().includes(query) || faq.answer.toLowerCase().includes(query)
+    );
+  }, [faqs, searchTerm]);
 
   const toggleFAQ = (index: number) => {
     setActiveIndex(activeIndex === index ? null : index);
@@ -39,7 +59,7 @@ export default function FAQPage() {
   // Pagination state (added for future scalability)
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Placeholder: shows all FAQs for now
-  const totalPages = Math.ceil(faqs.length / itemsPerPage);
+  const totalPages = Math.max(1, Math.ceil(filteredFaqs.length / itemsPerPage));
 
   const paginate = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -48,7 +68,7 @@ export default function FAQPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#FAFBFC] pt-20">
+    <main className="min-h-screen bg-[#FAFBFC]">
       <PageHero title="FAQ" />
 
       {/* 
@@ -69,9 +89,11 @@ export default function FAQPage() {
           <div className="flex max-w-3xl mx-auto bg-white border border-gray-300">
             <div className="flex-1 flex items-center px-4">
               <Search className="h-5 w-5 text-gray-400 mr-3" />
-              <input 
-                type="text" 
-                placeholder="Ask a question" 
+              <input
+                type="text"
+                placeholder="Ask a question"
+                value={searchTerm}
+                onChange={(event) => { setSearchTerm(event.target.value); setActiveIndex(null); }}
                 className="w-full py-2.5 text-[15px] outline-none bg-transparent text-navy placeholder:text-gray-400"
               />
             </div>
@@ -97,7 +119,7 @@ export default function FAQPage() {
 
           {/* RIGHT COLUMN: FAQ LIST */}
           <div className="lg:col-span-7 flex flex-col gap-3">
-            {faqs.map((faq, index) => (
+            {filteredFaqs.map((faq, index) => (
               <FAQItem 
                 key={index} 
                 faq={faq} 

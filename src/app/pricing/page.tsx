@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -13,10 +13,20 @@ export default function PricingPage() {
     "monthly"
   );
 
-  const plans = [
+  const fallbackPlans: Array<{
+    name: string;
+    price: number;
+    yearlyPrice: number;
+    description: string;
+    features: string[];
+    disabledFeatures: string[];
+    buttonText: string;
+    isPopular: boolean;
+  }> = [
     {
       name: "Basic",
       price: 19,
+      yearlyPrice: 190,
       description: "Save 20% offer of consulting 93K clients.",
       features: [
         "In-Depth consultation",
@@ -32,6 +42,7 @@ export default function PricingPage() {
     {
       name: "Business",
       price: 49,
+      yearlyPrice: 490,
       description: "Save 20% offer of consulting 93K clients.",
       features: [
         "In-Depth consultation",
@@ -49,6 +60,7 @@ export default function PricingPage() {
     {
       name: "Enterprise",
       price: 99,
+      yearlyPrice: 990,
       description: "Save 20% offer of consulting 93K clients.",
       features: [
         "In-Depth consultation",
@@ -63,7 +75,40 @@ export default function PricingPage() {
     },
   ];
 
-  // Pagination state
+  type BackendPlan = {
+    id: string;
+    name: string;
+    monthly: string;
+    yearly: string;
+    features: string[];
+    active: boolean;
+    published: boolean;
+    sortOrder: number;
+  };
+
+  const [plans, setPlans] = useState(fallbackPlans);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/pricing", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to load pricing"))))
+      .then((data: BackendPlan[]) => {
+        if (cancelled || !Array.isArray(data) || data.length === 0) return;
+        setPlans(data.map((plan, index) => ({
+          name: plan.name,
+          price: Number.parseFloat(String(plan.monthly).replace(/[^0-9.]/g, "")) || 0,
+          yearlyPrice: Number.parseFloat(String(plan.yearly).replace(/[^0-9.]/g, "")) || 0,
+          description: "Flexible consulting support tailored to your business goals.",
+          features: Array.isArray(plan.features) ? plan.features : [],
+          disabledFeatures: [],
+          buttonText: "Choose package",
+          isPopular: index === 1,
+        })));
+      })
+      .catch(() => undefined);
+    return () => { cancelled = true; };
+  }, []);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3; // Shows all cards on one page
   const totalPages = Math.ceil(plans.length / itemsPerPage);
@@ -75,7 +120,7 @@ export default function PricingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <main className="min-h-screen bg-white">
       
       {/* --- TOP HERO SECTION --- */}
       <PageHero 
@@ -198,8 +243,8 @@ export default function PricingPage() {
                 <h3 className="text-lg font-bold mb-1">{plan.name}</h3>
                 
                 <div className="flex items-baseline gap-1 mt-2 mb-4">
-                  <span className="text-5xl font-bold">${plan.price}</span>
-                  <span className={`text-sm ${plan.isPopular ? "text-orange-100" : "text-gray-500"}`}>/month</span>
+                  <span className="text-5xl font-bold">${billingCycle === "monthly" ? plan.price : plan.yearlyPrice}</span>
+                  <span className={`text-sm ${plan.isPopular ? "text-orange-100" : "text-gray-500"}`}>{billingCycle === "monthly" ? "/month" : "/year"}</span>
                 </div>
 
                 <p className={`text-sm mb-6 ${plan.isPopular ? "text-orange-100" : "text-gray-500"}`}>

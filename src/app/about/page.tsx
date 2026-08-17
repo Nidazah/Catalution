@@ -107,7 +107,7 @@ export default function AboutPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <main className="min-h-screen bg-white">
       <PageHero title="About Us" />
 
       {/* --- 1. TOP HEADER SECTION --- */}
@@ -269,12 +269,12 @@ export default function AboutPage() {
           {/* Team Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {teamMembers.map((member, index) => (
-              <div key={index} className="relative group overflow-hidden rounded-xl bg-navy shadow-lg hover:shadow-xl transition-shadow">
-                <div className="relative aspect-[3/4] w-full">
+              <div key={index} className="media-card group rounded-xl bg-navy shadow-lg hover:shadow-xl transition-shadow">
+                <div className="media-card media-card--3-4 w-full">
                   <Image src={member.image} alt={member.name} fill className="object-cover object-top" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/40 to-transparent" />
+                  <div className="media-card__overlay bg-gradient-to-t from-navy/95 via-navy/40 to-transparent" />
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-left z-10">
+                <div className="media-card__caption--full">
                   <h3 className="text-xl font-bold text-white leading-tight">{member.name}</h3>
                   <p className="text-sm text-gray-300 mt-1 font-medium">{member.role}</p>
                 </div>

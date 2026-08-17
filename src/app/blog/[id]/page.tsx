@@ -1,246 +1,218 @@
 "use client";
 
-import { useState } from "react";
-import PageHero from "@/components/PageHero";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { blogPosts } from "@/app/data/blog"; 
-import { Calendar, User, ArrowRight } from "lucide-react";
+import { ArrowLeft, Calendar, MessageCircle } from "lucide-react";
 
-export default function BlogPage() {
-  // State for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 4; // Show 4 posts per page
-  
-  // Get the first post as the featured one (always visible)
-  const featuredPost = blogPosts[0];
-  // Get the rest for pagination (exclude featured post)
-  const allOtherPosts = blogPosts.slice(1);
-  
-  // Pagination logic
-  const totalPages = Math.ceil(allOtherPosts.length / postsPerPage);
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = allOtherPosts.slice(indexOfFirstPost, indexOfLastPost);
+type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string | null;
+  image: string;
+  author: string;
+  authorAvatar: string | null;
+  date: string;
+  comments: number;
+  category: string;
+  tags: string[];
+  sortOrder: number;
+  active: boolean;
+  published: boolean;
+};
 
-  const paginate = (pageNumber: number) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
+export default function BlogDetailsPage() {
+  const params = useParams();
+  const id = params.id as string;
+
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const postRes = await fetch(`/api/blog/${id}`, { cache: "no-store" });
+
+        if (!postRes.ok) {
+          throw new Error("Blog post not found");
+        }
+
+        const postData = (await postRes.json()) as BlogPost;
+        setPost(postData);
+
+        const allPostsRes = await fetch("/api/blog", { cache: "no-store" });
+        if (allPostsRes.ok) {
+          const allPosts = (await allPostsRes.json()) as BlogPost[];
+          setPosts(allPosts);
+        }
+
+        setError(null);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Unable to load this blog post.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchPost();
     }
-  };
+  }, [id]);
 
-  // Get recent posts for sidebar
-  const recentPosts = blogPosts.slice(1, 4);
-  // Get categories
-  const categories = ["Business Strategy", "Leadership", "Design", "Strategy", "Technology"];
+  const relatedPosts = useMemo(() => {
+    if (!post) {
+      return [];
+    }
+
+    const sameCategory = posts.filter(
+      (item) => item.id !== post.id && item.category === post.category,
+    );
+
+    const otherPosts = posts.filter(
+      (item) => item.id !== post.id && item.category !== post.category,
+    );
+
+    return [...sameCategory, ...otherPosts].slice(0, 3);
+  }, [post, posts]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-white">
+        <div className="flex min-h-[300px] items-center justify-center">
+          <p className="text-sm text-gray-500">Loading blog post...</p>
+        </div>
+      </main>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <main className="min-h-screen bg-white">
+        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
+          <p className="text-sm text-red-600">{error ?? "Blog post not found."}</p>
+          <Link href="/blog" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#481d96]">
+            <ArrowLeft className="h-4 w-4" /> Back to blog
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
-    <main className="min-h-screen bg-white pt-20">
-      <PageHero title="Blog" />
+    <main className="min-h-screen bg-white">
+      <section className="relative overflow-hidden bg-navy text-white">
+        <div className="absolute inset-0">
+          <Image
+            src={post.image}
+            alt={post.title}
+            fill
+            className="object-cover opacity-70"
+            priority
+          />
+          <div className="absolute inset-0 bg-navy/80" />
+        </div>
 
-      {/* --- MAIN CONTENT SECTION --- */}
-      <section className="container mx-auto px-6 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
-          {/* --- LEFT COLUMN: FEATURED POST + GRID (Spans 2 columns) --- */}
-          <div className="lg:col-span-2 space-y-10">
-            <h2 className="text-2xl font-bold text-navy mb-6">Featured Post</h2>
-            
-            <Link href={`/blog/${featuredPost.id}`} className="group block">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
-                <div className="relative w-full aspect-[16/9]">
-                  <Image 
-                    src={featuredPost.image} 
-                    alt={featuredPost.title} 
-                    fill 
-                    className="object-cover" 
-                    sizes="(max-width: 1200px) 100vw, 66vw"
-                  />
-                </div>
-                <div className="p-8">
-                  <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
-                    <span className="flex items-center gap-1.5">
-                      <User className="h-4 w-4" /> {featuredPost.author}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      <Calendar className="h-4 w-4" /> {featuredPost.date}
-                    </span>
-                  </div>
-                  <span className="text-xs font-bold tracking-widest uppercase text-accent mb-2 block">
-                    {featuredPost.category}
-                  </span>
-                  <h3 className="text-2xl md:text-3xl font-bold text-navy group-hover:text-accent transition-colors mb-4">
-                    {featuredPost.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed mb-6">
-                    {featuredPost.excerpt}
-                  </p>
-                  <div className="flex items-center text-sm font-semibold text-accent group-hover:translate-x-1 transition-transform">
-                    Read More <ArrowRight className="h-4 w-4 ml-1.5" />
-                  </div>
-                </div>
-              </div>
-            </Link>
+        <div className="relative mx-auto max-w-6xl px-6 py-20 lg:px-16">
+          <Link href="/blog" className="mb-6 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white">
+            <ArrowLeft className="h-4 w-4" /> Back to blog
+          </Link>
 
-            {/* Grid Posts below Featured (Paginated) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
-              {currentPosts.map((post) => (
-                // ✅ FIXED: Replaced outer <Link> with <div> to prevent "a inside a" hydration error
-                <div key={post.id} className="group block">
-                  <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-100 h-full flex flex-col">
-                    <div className="relative h-48 w-full">
-                      <Image src={post.image} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
-                    </div>
-                    <div className="p-5 flex-grow">
-                      <span className="text-[10px] font-bold tracking-widest uppercase text-accent mb-1.5 block">{post.category}</span>
-                      <h4 className="text-lg font-bold text-navy group-hover:text-accent transition-colors mb-2 line-clamp-2">{post.title}</h4>
-                      
-                      {/* ✅ Global btn-ghost applied, no nested <a> errors anymore */}
-                      <div className="mt-auto pt-2">
-                        <Link href={`/blog/${post.id}`} className="btn btn-ghost text-sm font-bold p-0 h-auto">
-                          Read more
-                        </Link>
-                      </div>
-                      
-                      <div className="flex items-center justify-between text-xs text-gray-500 mt-3">
-                        <span className="flex items-center gap-1"><User className="h-3 w-3" /> {post.author}</span>
-                        <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {post.date}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-[#d5c9ff]">
+            {post.category}
+          </p>
+          <h1 className="max-w-4xl text-4xl font-bold leading-tight md:text-5xl">
+            {post.title}
+          </h1>
 
-            {/* --- PAGINATION WITH ARROWS ON BOTH SIDES --- */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-10">
-                
-                {/* Previous Arrow (←) */}
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                    currentPage === 1
-                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                      : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
-                  }`}
-                  aria-label="Previous page"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-
-                {/* Page Numbers */}
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                  <button
-                    key={number}
-                    onClick={() => paginate(number)}
-                    className={`relative flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
-                      currentPage === number
-                        ? "bg-accent text-white border-2 border-black shadow-md scale-105"
-                        : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent hover:bg-accent/5"
-                    }`}
-                    aria-label={`Go to page ${number}`}
-                  >
-                    {number.toString().padStart(2, "0")}
-                  </button>
-                ))}
-
-                {/* Next Arrow (→) */}
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                    currentPage === totalPages
-                      ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                      : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5"
-                  }`}
-                  aria-label="Next page"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
-
-              </div>
-            )}
-
+          <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-white/75">
+            <span className="flex items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-xs font-semibold">
+                {post.author.slice(0, 1)}
+              </span>
+              {post.author}
+            </span>
+            <span className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" /> {post.date}
+            </span>
+            <span className="flex items-center gap-2">
+              <MessageCircle className="h-4 w-4" /> {post.comments} comments
+            </span>
           </div>
-
-          {/* --- RIGHT COLUMN: SIDEBAR (Spans 1 column) --- */}
-          <div className="space-y-10">
-            
-            {/* 1. Search Widget */}
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-              <h3 className="font-bold text-navy mb-4">Search</h3>
-              <div className="relative">
-                <input 
-                  type="text" 
-                  placeholder="Search articles..." 
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-accent outline-none text-sm"
-                />
-                <div className="absolute right-3 top-3 text-gray-400 text-xs font-medium cursor-pointer hover:text-accent transition-colors">
-                  Search
-                </div>
-              </div>
-            </div>
-
-            {/* 2. Categories Widget */}
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-              <h3 className="font-bold text-navy mb-4">Categories</h3>
-              <ul className="space-y-2 text-sm">
-                {categories.map((cat, idx) => (
-                  <li key={cat}>
-                    <Link href="#" className="flex justify-between items-center text-gray-600 hover:text-accent transition-colors py-2 border-b border-gray-200 last:border-0">
-                      <span>{cat}</span>
-                      <span className="text-xs font-medium bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full">
-                        {Math.floor(Math.random() * 8) + 3}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* 3. Recent Posts Widget */}
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-              <h3 className="font-bold text-navy mb-4">Recent Posts</h3>
-              <div className="space-y-5">
-                {recentPosts.map((post) => (
-                  <Link key={post.id} href={`/blog/${post.id}`} className="flex items-center gap-4 group">
-                    <div className="relative h-16 w-16 shrink-0 rounded-lg overflow-hidden bg-gray-200">
-                      <Image src={post.image} alt={post.title} fill className="object-cover" sizes="64px" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-navy group-hover:text-accent transition-colors line-clamp-2">{post.title}</h4>
-                      <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                        <span className="flex items-center gap-1"><User className="h-3 w-3" /> {post.author}</span>
-                        <span>•</span>
-                        <span>{post.date}</span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {/* 4. Call to Action Widget */}
-            <div className="bg-navy rounded-2xl p-8 text-center border border-gray-800">
-              <h4 className="text-xl font-bold text-white mb-2">Need Expert Advice?</h4>
-              <p className="text-orange-100/70 text-sm mb-6">Let's discuss your business goals over a coffee.</p>
-              
-              {/* ✅ Global primary button */}
-              <Link href="/contact" className="btn btn-primary w-full justify-center">
-                Contact Us <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-
-          </div>
-
         </div>
       </section>
+
+      <article className="mx-auto max-w-5xl px-6 py-16 lg:px-16">
+        <div className="prose prose-lg max-w-none text-gray-700 prose-headings:text-navy prose-a:text-[#481d96]">
+          {post.content ? (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: post.content,
+              }}
+            />
+          ) : (
+            <p>{post.excerpt}</p>
+          )}
+        </div>
+
+        {post.tags && post.tags.length > 0 && (
+          <div className="mt-10 flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full bg-[#f1edff] px-3 py-1 text-xs font-medium text-[#481d96]"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </article>
+
+      {relatedPosts.length > 0 && (
+        <section className="mx-auto max-w-6xl px-6 pb-20 lg:px-16">
+          <div className="mb-8 flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-navy">Related posts</h2>
+            <Link href="/blog" className="text-sm font-semibold text-[#481d96]">
+              View all posts
+            </Link>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {relatedPosts.map((item) => (
+              <article key={item.id} className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md">
+                <Link href={`/blog/${item.id}`} className="block">
+                  <div className="relative aspect-[16/10]">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
+                  <div className="p-5">
+                    <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-accent">
+                      {item.category}
+                    </p>
+                    <h3 className="mb-3 text-lg font-bold text-navy">
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">{item.excerpt}</p>
+                  </div>
+                </Link>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   );
 }

@@ -17,12 +17,41 @@ const item: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
 };
 
-export default function Hero() {
+type HeroProps = {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  image?: string;
+  primaryButtonLabel?: string;
+  primaryButtonUrl?: string;
+};
+
+export default function Hero({
+  eyebrow,
+  title,
+  description,
+  image,
+  primaryButtonLabel,
+  primaryButtonUrl,
+}: HeroProps) {
   const avatars = [
     "/images/about/thumb-1.png",
     "/images/about/thumb-2.png",
     "/images/about/thumb-3.png",
   ];
+
+  const heroImage = image && image.trim() !== "" ? image : "/images/hero/h5-hero.png";
+  const heroEyebrow = eyebrow && eyebrow.trim() !== "" ? eyebrow : "SOLVER AGENCY";
+  const heroDescription =
+    description && description.trim() !== ""
+      ? description
+      : "Transform your business with expert consultancy services — our team of seasoned consultants unparalleled.";
+  const btnLabel =
+    primaryButtonLabel && primaryButtonLabel.trim() !== ""
+      ? primaryButtonLabel
+      : "Free consultation";
+  const btnUrl =
+    primaryButtonUrl && primaryButtonUrl.trim() !== "" ? primaryButtonUrl : "#contact";
 
   return (
     <>
@@ -54,12 +83,12 @@ export default function Hero() {
           letter-spacing: -0.02em;
         }
         .hero-reel-text {
-          font-size: 13px; /* Slightly reduced from 14px */
+          font-size: 13px;
           line-height: 1.6;
           font-weight: 600;
         }
         .hero-avatar-count {
-          font-size: 22px; /* Reduced from 24px */
+          font-size: 22px;
           line-height: 1.3;
           font-weight: 700;
         }
@@ -78,7 +107,7 @@ export default function Hero() {
           line-height: 1.6;
         }
         .hero-avatar-label {
-          font-size: 13px; /* Slightly reduced from 14px */
+          font-size: 13px;
           line-height: 1.5;
         }
 
@@ -152,29 +181,31 @@ export default function Hero() {
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-accent)] text-white text-[10px] font-bold">
                 #1
               </span>
-              SOLVER AGENCY
+              {heroEyebrow}
             </motion.span>
 
             <motion.h1
               variants={item}
               className="hero-title mt-2 sm:mt-4 text-[var(--color-heading)]"
             >
-              Proven{" "}
-              <span className="text-[var(--color-accent)]">
-                consulting
-              </span>
-              <br />
-              for modern global
-              <br />
-              enterprises
+              {title && title.trim() !== "" ? (
+                title
+              ) : (
+                <>
+                  Proven <span className="text-[var(--color-accent)]">consulting</span>
+                  <br />
+                  for modern global
+                  <br />
+                  enterprises
+                </>
+              )}
             </motion.h1>
 
             <motion.p
               variants={item}
               className="hero-desc mt-2 sm:mt-4 max-w-lg text-[var(--color-body)]"
             >
-              Transform your business with expert consultancy services — our
-              team of seasoned consultants unparalleled.
+              {heroDescription}
             </motion.p>
 
             <motion.div
@@ -182,14 +213,14 @@ export default function Hero() {
               className="mt-4 sm:mt-6 flex flex-wrap items-center gap-4"
             >
               <span className="sm:hidden">
-                <Link href="#contact" className="btn btn-primary text-sm">
-                  Free consultation
+                <Link href={btnUrl} className="btn btn-primary text-sm">
+                  {btnLabel}
                 </Link>
               </span>
 
               <span className="hidden sm:inline-block">
-                <Link href="#contact" className="btn btn-primary">
-                  Free consultation
+                <Link href={btnUrl} className="btn btn-primary">
+                  {btnLabel}
                 </Link>
               </span>
             </motion.div>
@@ -204,7 +235,7 @@ export default function Hero() {
               className="relative w-[80%] sm:w-full max-w-sm aspect-[3.5/4.5] overflow-hidden rounded-2xl z-0 mt-6 sm:mt-10"
             >
               <Image
-                src="/images/hero/h5-hero.png"
+                src={heroImage}
                 alt="Consultant"
                 fill
                 priority
@@ -218,7 +249,6 @@ export default function Hero() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.7 }}
-              // 👇 CHANGED: Adjusted top and right coordinates
               className="absolute top-24 right-8 sm:top-20 sm:right-2 z-20"
             >
               <Link
@@ -259,16 +289,12 @@ export default function Hero() {
                   </div>
                 ))}
                 <div className="relative -ml-2.5 h-7 w-7 sm:h-9 sm:w-9 rounded-full bg-[#1D65FF] flex items-center justify-center border-2 border-white shadow-sm">
-                  <span className="text-white text-sm sm:text-lg font-light">
-                    +
-                  </span>
+                  <span className="text-white text-sm sm:text-lg font-light">+</span>
                 </div>
               </div>
 
               <div className="mt-2">
-                <span className="hero-avatar-count text-[var(--color-heading)]">
-                  39K+
-                </span>
+                <span className="hero-avatar-count text-[var(--color-heading)]">39K+</span>
                 <p className="hero-avatar-label text-[var(--color-body)]">
                   Happy clients all over world.
                 </p>

@@ -1,536 +1,253 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import {
-  Radar,
-  Layers,
-  UserRoundCog,
-  Snowflake,
-  PieChart,
-  ArrowRightLeft,
-  ArrowRight,
-  Check,
-  Play,
-} from "lucide-react";
-import PageHero from "@/components/PageHero";
-import ServiceFAQ from "@/components/ServiceFAQ";
-import ServicesSidebar, { services } from "@/components/ServicesSidebar"; // Import sidebar & data
+import { notFound } from "next/navigation"
+import Link from "next/link"
+import Image from "next/image"
+import { ArrowRight, Boxes, Check, CircleDot, Play, Repeat2, Sparkles, Users, Waves } from "lucide-react"
+import PageHero from "@/components/PageHero"
+import ServiceFAQ from "@/components/ServiceFAQ"
+import ServicesSidebar from "@/components/ServicesSidebar"
+import { prisma } from "@/lib/prisma"
 
-// --- DATA FOR ALL YOUR SERVICE PAGES (ALL 6 INCLUDED) ---
-const servicesData = {
-  "1": {
-    id: "1",
-    title: "Business Process Optimization",
-    subtitle: "Streamline operations for maximum efficiency",
-    description:
-      "We analyze your current workflows to identify bottlenecks and implement cutting-edge automation strategies. Our data-driven approach ensures your business runs smoother, faster, and more cost-effectively.",
-    fullDesc:
-      "Our service guides you through the entire strategic planning process, from initial goal formulation to precise execution. Start with a thorough assessment of your current position and market landscape, then help you define clear, actionable objectives aligned with your vision. Our approach includes developing detailed action plans, setting key performance indicators (KPIs), and implementing strategies to ensure seamless execution. Formulating and implementing business goals. We begin with an in-depth analysis of your business and market to identify opportunities and challenges.",
-    icon: Radar,
-    overviewItems: [
-      "Clear vision and direction for your business for consultings.",
-      "Enhanced ability to anticipate and respond to market changes.",
-      "Data-driven decision-making for strategic planning execution.",
-      "Structured approach to achieving your business goals.",
-    ],
-    keyFeatures: [
-      {
-        icon: "quicksolutions",
-        title: "Quick solutions",
-        desc: "Provide hands-on guidance and support during the execution strategic",
-      },
-      {
-        icon: "provenresults",
-        title: "Proven Results",
-        desc: "Benefit from the expertise of seasoned consultants who offer strategic",
-      },
-      {
-        icon: "personalization",
-        title: "Personalization",
-        desc: "Ensure that strategies are effectively implemented and objectives",
-      },
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1600&q=85",
-    heroImage2:
-      "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1200&q=85",
-  },
-  "2": {
-    id: "2",
-    title: "Strategic Planning & Execution",
-    subtitle: "Turn ambitious goals into measurable reality",
-    description:
-      "We partner with leadership teams to define clear, actionable strategic roadmaps. From market analysis to execution frameworks, we ensure your vision translates into tangible business outcomes.",
-    fullDesc:
-      "Our service guides you through the entire strategic planning process, from initial goal formulation to precise execution. Start with a thorough assessment of your current position and market landscape, then help you define clear, actionable objectives aligned with your vision. Our approach includes developing detailed action plans, setting key performance indicators (KPIs), and implementing strategies to ensure seamless execution. Our Strategic Planning and Execution service offers a thorough approach to formulating and implementing business goals. We begin with an in-depth analysis of your business and market to identify opportunities and challenges.",
-    icon: Layers,
-    overviewItems: [
-      "Clear vision and direction for your business for consultings.",
-      "Enhanced ability to anticipate and respond to market changes.",
-      "Data-driven decision-making for strategic planning execution.",
-      "Structured approach to achieving your business goals.",
-    ],
-    keyFeatures: [
-      {
-        icon: "quicksolutions",
-        title: "Quick solutions",
-        desc: "Provide hands-on guidance and support during the execution strategic",
-      },
-      {
-        icon: "provenresults",
-        title: "Proven Results",
-        desc: "Benefit from the expertise of seasoned consultants who offer strategic",
-      },
-      {
-        icon: "personalization",
-        title: "Personalization",
-        desc: "Ensure that strategies are effectively implemented and objectives",
-      },
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1556761175-4b46a572b786?w=1600&q=85",
-    heroImage2:
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1200&q=85",
-  },
-  "3": {
-    id: "3",
-    title: "Leadership Executive Coaching",
-    subtitle: "Empower your leaders to inspire greatness",
-    description:
-      "Our one-on-one coaching programs are designed for C-suite executives and high-potential managers. We focus on emotional intelligence, decision-making under pressure, and building high-performance teams.",
-    fullDesc:
-      "Our Leadership Executive Coaching service transforms your top talent into visionary leaders. We begin with a comprehensive 360-degree assessment to identify individual strengths and growth areas. From there, we craft a personalized coaching roadmap that includes regular one-on-one sessions, practical leadership challenges, and actionable feedback loops. Our coaches work alongside your executives to refine their communication skills, strategic thinking, and emotional intelligence.",
-    icon: UserRoundCog,
-    overviewItems: [
-      "Personalized one-on-one executive coaching sessions.",
-      "Enhanced emotional intelligence and decision-making skills.",
-      "High-performance team building and conflict resolution.",
-      "Strategic succession planning and mentorship.",
-    ],
-    keyFeatures: [
-      {
-        icon: "quicksolutions",
-        title: "Tailored Coaching",
-        desc: "Custom coaching plans designed for your specific executive leadership needs and goals.",
-      },
-      {
-        icon: "provenresults",
-        title: "Proven Results",
-        desc: "Benefit from the expertise of seasoned executive coaches who have transformed Fortune 500 leaders.",
-      },
-      {
-        icon: "personalization",
-        title: "Holistic Growth",
-        desc: "Ensure that emotional, strategic, and operational leadership skills are effectively developed.",
-      },
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1600&q=85",
-    heroImage2:
-      "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&q=85",
-  },
-  "4": {
-    id: "4",
-    title: "Legacy Leadership Institute",
-    subtitle: "Build a lasting organizational culture",
-    description:
-      "Our institute program is tailored for organizations looking to embed sustainable leadership values. We transform company culture from the ground up, ensuring your legacy endures through future generations of leaders.",
-    fullDesc:
-      "The Legacy Leadership Institute is our flagship program dedicated to building an enduring culture of leadership. We start by identifying the core values and behaviors that define your organization. Through immersive workshops, cross-departmental collaboration, and community-driven initiatives, we embed these principles into the fabric of your company. Our approach ensures that leadership is not just a title, but a shared responsibility at every level.",
-    icon: Snowflake,
-    overviewItems: [
-      "Transformational company culture workshops.",
-      "Core values alignment and organizational buy-in.",
-      "Multi-generational leadership talent pipeline.",
-      "Corporate social responsibility and community integration.",
-    ],
-    keyFeatures: [
-      {
-        icon: "quicksolutions",
-        title: "Cultural Transformation",
-        desc: "A holistic approach to shifting your organizational mindset and company culture.",
-      },
-      {
-        icon: "provenresults",
-        title: "Enduring Impact",
-        desc: "Build a leadership pipeline that ensures your legacy lasts for future generations.",
-      },
-      {
-        icon: "personalization",
-        title: "Values-Driven",
-        desc: "Ensure that your unique core values are deeply embedded into everyday business practices.",
-      },
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&q=85",
-    heroImage2:
-      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1200&q=85",
-  },
-  "5": {
-    id: "5",
-    title: "Executive Growth Solutions",
-    subtitle: "Unlock the full potential of your workforce",
-    description:
-      "We provide comprehensive growth solutions that bridge the gap between individual performance and organizational success. Through advanced assessment tools and targeted development plans, we elevate your entire executive team.",
-    fullDesc:
-      "Executive Growth Solutions focuses on accelerating the performance of your top-tier talent. Our process begins with advanced psychometric and performance assessments to baseline current capabilities. We then introduce tailored development plans featuring strategic retreats, peer networking groups, and advanced leadership bootcamps. This comprehensive growth framework ensures that your executives are equipped to tackle the most complex market challenges with confidence.",
-    icon: PieChart,
-    overviewItems: [
-      "Advanced performance and psychometric assessments.",
-      "Exclusive executive peer networking and roundtables.",
-      "High-intensity leadership bootcamps and retreats.",
-      "Comprehensive 360-degree feedback and growth systems.",
-    ],
-    keyFeatures: [
-      {
-        icon: "quicksolutions",
-        title: "Targeted Growth",
-        desc: "Accelerated development plans built specifically for high-potential executive talent.",
-      },
-      {
-        icon: "provenresults",
-        title: "Measurable Metrics",
-        desc: "Track real growth through advanced performance benchmarks and 360-degree reviews.",
-      },
-      {
-        icon: "personalization",
-        title: "Peer Collaboration",
-        desc: "Leverage the power of networking with fellow C-suite leaders across industries.",
-      },
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1600&q=85",
-    heroImage2:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=1200&q=85",
-  },
-  "6": {
-    id: "6",
-    title: "Empowered Leadership Journey",
-    subtitle: "Transform managers into visionary leaders",
-    description:
-      "Our Empowered Leadership Journey is a comprehensive development program designed to accelerate the growth of emerging leaders. We combine immersive workshops, real-world project leadership, and personalized mentorship to build the confidence and strategic mindset required to lead high-performing teams.",
-    fullDesc:
-      "The Empowered Leadership Journey takes emerging managers and accelerates their transition into confident, visionary leaders. We combine immersive leadership workshops with real-world project command experiences. Participants are paired with seasoned executive mentors who provide hands-on guidance and constructive feedback. This unique blend of theoretical learning and practical application ensures that new leaders are ready to step up and drive business success from day one.",
-    icon: ArrowRightLeft,
-    overviewItems: [
-      "Immersive leadership and management workshops.",
-      "Real-world project command and ownership.",
-      "Personalized one-on-one executive mentorship.",
-      "Strategic mindset development and confidence building.",
-    ],
-    keyFeatures: [
-      {
-        icon: "quicksolutions",
-        title: "Practical Application",
-        desc: "Learn by doing through real-world projects and leadership responsibilities.",
-      },
-      {
-        icon: "provenresults",
-        title: "Mentorship Focus",
-        desc: "Benefit from the expertise of top-tier executive mentors dedicated to your growth.",
-      },
-      {
-        icon: "personalization",
-        title: "Confidence Building",
-        desc: "Develop the strategic mindset and self-assurance needed to lead high-performance teams.",
-      },
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1600&q=85",
-    heroImage2:
-      "https://images.unsplash.com/photo-1515169067868-5387ec356754?w=1200&q=85",
-  },
-};
+type Feature = { title: string; description: string; icon: string }
+const iconMap = { waves: Waves, boxes: Boxes, users: Users, sparkles: Sparkles, circledot: CircleDot, repeat: Repeat2 }
 
-// --- KEY FEATURES ICON HELPER ---
-const FeatureIcon = ({ type }: { type: string }) => {
-  return (
-    <div className="w-12 h-12 text-accent mb-4">
-      {type === "quicksolutions" && (
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M4 4h6v6H4V4zm10 0h6v6h-6V-4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z" />
-        </svg>
-      )}
-      {type === "provenresults" && (
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
-        </svg>
-      )}
-      {type === "personalization" && (
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
-        </svg>
-      )}
-    </div>
-  );
-};
+function readStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : []
+}
 
-export default async function ServicePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
-  const service = servicesData[id as keyof typeof servicesData];
+function readFeatures(value: unknown): Feature[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item): item is Feature => 
+      typeof item === "object" && 
+      item !== null && 
+      typeof (item as Feature).title === "string" && 
+      typeof (item as Feature).description === "string"
+    )
+    .map(item => ({ 
+      title: (item as Feature).title, 
+      description: (item as Feature).description, 
+      icon: (item as Feature).icon || "sparkles" 
+    }))
+}
+
+type FAQItem = { q: string; a: string }
+
+export default async function ServicePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+
+  const service = await prisma.service.findFirst({
+    where: {
+      slug: id,
+      active: true,
+      published: true,
+    },
+  })
 
   if (!service) {
-    notFound();
+    notFound()
   }
 
-  // Get service IDs for pagination
-  const serviceIds = Object.keys(servicesData);
-  const currentIndex = serviceIds.indexOf(id);
-  const prevId = currentIndex > 0 ? serviceIds[currentIndex - 1] : null;
-  const nextId = currentIndex < serviceIds.length - 1 ? serviceIds[currentIndex + 1] : null;
+  const [services, features, overviewItems, faqSection] = await Promise.all([
+    prisma.service.findMany({ 
+      where: { active: true, published: true }, 
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }], 
+      select: { id: true, slug: true, title: true } 
+    }),
+    Promise.resolve(readFeatures(service.features)),
+    Promise.resolve(readStringArray(service.overviewItems)),
+    prisma.contentSection.findFirst({ 
+      where: { sectionKey: "FAQ", published: true } 
+    }),
+  ])
+
+  const faqItems: FAQItem[] = Array.isArray(faqSection?.items)
+    ? (faqSection.items as unknown as { title: string; description: string }[])
+        .filter((item) => item && typeof item.title === "string" && typeof item.description === "string")
+        .map((item) => ({ q: item.title, a: item.description }))
+    : []
+
+  const currentIndex = services.findIndex(item => item.id === service.id)
+  const previous = currentIndex > 0 ? services[currentIndex - 1] : null
+  const next = currentIndex >= 0 && currentIndex < services.length - 1 ? services[currentIndex + 1] : null
+  const heroImage2 = service.heroImage2 || service.image
+  const fullDescription = service.fullDescription || service.description
 
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <main className="min-h-screen bg-white">
       <PageHero title={service.title} />
-
-      {/* --- MAIN WRAPPER --- */}
-      <div className="w-full max-w-6xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* ================= LEFT COLUMN (8/12) ================= */}
-          <div className="lg:col-span-8 space-y-12">
-            
-            {/* TOP NAVIGATION: PAGINATION ARROWS ON BOTH SIDES */}
-            <div className="flex items-center justify-between mb-4">
-              {/* Previous Arrow (←) */}
-              {prevId ? (
-                <Link
-                  href={`/services/${prevId}`}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 transition-all duration-300 hover:border-accent hover:text-accent hover:bg-accent/5"
-                  aria-label="Previous service"
+      <div className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          <div className="space-y-12 lg:col-span-8">
+            <div className="flex items-center justify-between">
+              <div>
+                {previous ? (
+                  <Link 
+                    href={`/services/${previous.slug}`} 
+                    aria-label="Previous service" 
+                    className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 hover:border-accent hover:text-accent"
+                  >
+                    <span aria-hidden>←</span>
+                  </Link>
+                ) : (
+                  <div className="h-11 w-11" />
+                )}
+              </div>
+              {next ? (
+                <Link 
+                  href={`/services/${next.slug}`} 
+                  aria-label="Next service" 
+                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 hover:border-accent hover:text-accent"
                 >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </Link>
-              ) : (
-                <div className="h-11 w-11" />
-              )}
-
-              {/* Next Arrow (→) */}
-              {nextId ? (
-                <Link
-                  href={`/services/${nextId}`}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gray-300 text-gray-600 transition-all duration-300 hover:border-accent hover:text-accent hover:bg-accent/5"
-                  aria-label="Next service"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
+                  <span aria-hidden>→</span>
                 </Link>
               ) : (
                 <div className="h-11 w-11" />
               )}
             </div>
 
-            {/* 1. Large Hero Image */}
-            <div className="relative aspect-[16/9] w-full bg-gray-100 overflow-hidden">
-              <Image
-                src={service.heroImage}
-                alt={service.title}
-                fill
-                className="object-cover"
+            <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100">
+              <Image 
+                src={service.image} 
+                alt={service.title} 
+                fill 
+                priority 
+                className="object-cover" 
+                sizes="(max-width: 1024px) 100vw, 66vw" 
               />
             </div>
 
-            {/* 2. Main Title & Description */}
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4 leading-tight">
-                {service.title} in the comprehensive process of formulating
-                goals
+              <h1 className="mb-4 text-3xl font-bold leading-tight text-navy md:text-4xl">
+                {service.title}
               </h1>
-              <div className="space-y-4 text-gray-600 leading-relaxed text-[15px]">
-                <p>{service.fullDesc}</p>
-                <p>
-                  Our {service.title} service offers a thorough approach to
-                  formulating and implementing business goals. We begin with an
-                  in-depth analysis of your business and market to identify
-                  opportunities and challenges. From there, we work with you to
-                  define clear, actionable objectives and develop a detailed
-                  roadmap.
+              <div className="space-y-4 text-[15px] leading-relaxed text-gray-600">
+                <p>{fullDescription}</p>
+                {service.shortDescription && <p>{service.shortDescription}</p>}
+              </div>
+            </div>
+
+            {overviewItems.length > 0 && (
+              <div>
+                <h2 className="mb-3 text-2xl font-bold text-navy">Service overview</h2>
+                <p className="mb-6 text-[15px] leading-relaxed text-gray-600">
+                  Key outcomes and benefits of {service.title}.
                 </p>
+                <div className="grid grid-cols-1 border-l border-t border-gray-300 md:grid-cols-2">
+                  {overviewItems.map((item, index) => (
+                    <div 
+                      key={`${item}-${index}`} 
+                      className="flex items-start gap-3 border-b border-r border-gray-300 bg-white p-5"
+                    >
+                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+                      <p className="text-[14px] font-medium leading-relaxed text-navy">{item}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* 3. Service Overview & 2x2 Grid */}
-            <div>
-              <h2 className="text-2xl font-bold text-navy mb-3">
-                Service overview
-              </h2>
-              <p className="text-gray-600 leading-relaxed text-[15px] mb-6">
-                Our mission is to empowers businesses size to thrive in an
-                businesses ever changing marketplace. We are committed to the
-                delivering exceptionals the value through strategic inset.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 border-t border-l border-gray-300">
-                {service.overviewItems.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="p-5 border-b border-r border-gray-300 bg-white flex items-start gap-3"
-                  >
-                    <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                    <p className="text-[14px] text-navy leading-relaxed font-medium">
-                      {item}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 4. Two Images Side by Side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="relative aspect-[4/3] w-full bg-gray-100 overflow-hidden">
-                <Image
-                  src={service.heroImage}
-                  alt="Service detail 1"
-                  fill
-                  className="object-cover"
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                <Image 
+                  src={service.image} 
+                  alt={`${service.title} detail`} 
+                  fill 
+                  className="object-cover" 
+                  sizes="(max-width: 768px) 100vw, 50vw" 
                 />
               </div>
-              <div className="relative aspect-[4/3] w-full bg-gray-100 overflow-hidden">
-                <Image
-                  src={service.heroImage2}
-                  alt="Service detail 2"
-                  fill
-                  className="object-cover"
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+                <Image 
+                  src={heroImage2} 
+                  alt={`${service.title} secondary`} 
+                  fill 
+                  className="object-cover" 
+                  sizes="(max-width: 768px) 100vw, 50vw" 
                 />
               </div>
             </div>
 
-            {/* 5. Key Features (3 Columns) */}
-            <div>
-              <h2 className="text-2xl font-bold text-navy mb-3">
-                Key features
-              </h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed text-[15px] mb-6">
-                <p>
-                  Our service guides you through the entire strategic planning
-                  process, from initial goal formulation to precise execution.
-                  Start with a thorough assessment of your current position and
-                  market landscape, then help you define clear, actionable
-                  objectives aligned with your vision.
+            {features.length > 0 && (
+              <div>
+                <h2 className="mb-3 text-2xl font-bold text-navy">Key features</h2>
+                <p className="mb-6 text-[15px] leading-relaxed text-gray-600">
+                  Explore the capabilities included in our {service.title} engagement.
                 </p>
-                <p>
-                  Formulating and implementing business goals. We begin with an
-                  in-depth analysis of your business and market to identify
-                  opportunities and challenges.
-                </p>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  {features.map((feature, index) => {
+                    const Icon = iconMap[feature.icon as keyof typeof iconMap] ?? Sparkles
+                    return (
+                      <div key={`${feature.title}-${index}`} className="rounded-sm bg-orange-100 p-6">
+                        <Icon className="mb-4 h-7 w-7 text-accent" />
+                        <h4 className="mb-2 text-[17px] font-bold text-navy">{feature.title}</h4>
+                        <p className="text-[14px] leading-relaxed text-[#4B5563]">{feature.description}</p>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {service.keyFeatures.map((feature, idx) => (
-                  <div key={idx} className="bg-orange-100 p-6 rounded-sm">
-                    <FeatureIcon type={feature.icon} />
-                    <h4 className="text-[17px] font-bold text-navy mb-2">
-                      {feature.title}
-                    </h4>
-                    <p className="text-[14px] text-[#4B5563] leading-relaxed">
-                      {feature.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 6. Video Section (Dark Background with Play Button) */}
-            <div className="relative aspect-[21/9] w-full bg-navy overflow-hidden mt-4">
-              <Image
-                src={service.heroImage}
-                alt="Video Placeholder"
-                fill
-                className="object-cover opacity-60"
+            <div className="relative mt-4 aspect-[21/9] w-full overflow-hidden bg-navy">
+              <Image 
+                src={heroImage2} 
+                alt="" 
+                fill 
+                className="object-cover opacity-60" 
+                sizes="(max-width: 1024px) 100vw, 66vw" 
               />
               <div className="absolute inset-0 flex items-center justify-center">
-                <button className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition-transform">
-                  <Play className="h-8 w-8 text-navy fill-navy ml-1" />
-                </button>
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-xl">
+                  <Play className="ml-1 h-8 w-8 fill-navy text-navy" />
+                </div>
               </div>
             </div>
 
-            {/* 7. General Questions FAQ (Client Component imported) */}
             <div className="mt-12">
-              <h2 className="text-2xl font-bold text-navy mb-6">
-                General questions
-              </h2>
-              <ServiceFAQ />
+              <h2 className="mb-6 text-2xl font-bold text-navy">General questions</h2>
+              <ServiceFAQ items={faqItems} />
             </div>
           </div>
 
-          {/* ================= RIGHT COLUMN (4/12) ================= */}
-          <div className="lg:col-span-4 space-y-10">
-            {/* 1. Related Service Sidebar - CONNECTED */}
-            <ServicesSidebar activeId={id} />
-
-            {/* 2. Need Help? CTA Box */}
-            <div className="relative border border-gray-300 p-6 bg-white overflow-hidden h-[420px] flex flex-col justify-between">
+          <div className="space-y-10 lg:col-span-4">
+            <ServicesSidebar activeId={service.id} />
+            <div className="relative flex h-[420px] flex-col justify-between overflow-hidden border border-gray-300 bg-white p-6">
               <div className="absolute inset-0 z-0">
-                <Image
-                  src={service.heroImage}
-                  alt="Need help background"
-                  fill
-                  className="object-cover opacity-20 grayscale"
+                <Image 
+                  src={service.image} 
+                  alt="" 
+                  fill 
+                  className="object-cover opacity-20 grayscale" 
+                  sizes="(max-width: 1024px) 100vw, 33vw" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-navy/80 via-navy/60 to-navy/90" />
               </div>
-
               <div className="relative z-10 pt-2">
-                <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center text-white mb-6">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-7 h-7"
-                  >
-                    <path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
-                  </svg>
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-accent text-white">
+                  <Waves className="h-7 w-7" />
                 </div>
-                <h3 className="text-2xl font-bold text-white leading-tight mb-3">
-                  Need help?
-                  <br />
-                  Feel free contact us
+                <h3 className="mb-3 text-2xl font-bold leading-tight text-white">
+                  Need help?<br />Feel free to contact us
                 </h3>
-                <p className="text-sm text-orange-100/80 leading-relaxed max-w-[200px]">
-                  Our mission is to empowers businesses off all size in an
-                  businesses.
+                <p className="max-w-[220px] text-sm leading-relaxed text-orange-100/80">
+                  Talk to our team about how {service.title} can support your business.
                 </p>
               </div>
-
               <div className="relative z-10">
-                <Link
-                  href="/contact"
-                  className="inline-flex items-center gap-3 rounded-full bg-white hover:bg-gray-100 pl-2 pr-6 py-2 text-[14px] font-semibold text-navy transition-all shadow-lg"
+                <Link 
+                  href={service.ctaUrl || "/contact"} 
+                  className="inline-flex items-center gap-3 rounded-full bg-white py-2 pl-2 pr-6 text-[14px] font-semibold text-navy shadow-lg hover:bg-gray-100"
                 >
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-white">
                     <ArrowRight className="h-4 w-4" />
                   </span>
-                  Get in touch
+                  {service.ctaLabel}
                 </Link>
-              </div>
-
-              {/* Curly Arrow SVG decoration */}
-              <div className="absolute bottom-20 right-4 z-10 text-white/30">
-                <svg
-                  width="60"
-                  height="60"
-                  viewBox="0 0 100 100"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    d="M10,50 C10,20 90,20 90,50 C90,80 10,80 10,50"
-                    fill="none"
-                  />
-                  <path d="M80,40 L90,50 L80,60" fill="none" strokeWidth="2" />
-                </svg>
               </div>
             </div>
           </div>
         </div>
       </div>
     </main>
-  );
+  )
 }

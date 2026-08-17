@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 
-const faqs = [
+type FAQ = { q: string; a: string };
+
+// Fallback used if no items are passed in (or the DB fetch upstream failed).
+const fallbackFaqs: FAQ[] = [
   { q: "How do consultants add value to a business?", a: "Consultants bring deep expertise, fresh perspectives, and data-driven strategies to identify inefficiencies and implement tailored solutions that drive sustainable growth." },
   { q: "How do I know if my business needs a consultant?", a: "If your business is facing growth plateaus, operational bottlenecks, or needs a new strategic direction, a consultant can provide the objective insights and specialized skills necessary to overcome these challenges." },
   { q: "How do business consultants charge for their services?", a: "Consultants typically charge based on project scope, hourly rates, or long-term retainers. We offer flexible pricing models designed to align with your specific project goals and budget." },
@@ -10,7 +13,8 @@ const faqs = [
   { q: "How can I measure the success of a consulting engagement?", a: "Success is measured through pre-defined KPIs, ROI analysis, and post-engagement performance reviews. We establish clear metrics at the start of every project to track our progress." },
 ];
 
-export default function ServiceFAQ() {
+export default function ServiceFAQ({ items }: { items?: FAQ[] }) {
+  const faqs = items && items.length > 0 ? items : fallbackFaqs;
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (

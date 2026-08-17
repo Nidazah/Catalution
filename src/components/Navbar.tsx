@@ -19,15 +19,31 @@ import {
   Hexagon,
 } from "lucide-react";
 
-// --- SERVICES DROPDOWN ---
-const servicesLinks = [
-  { icon: Waves, label: "Business process optimization", href: "/services/1" },
-  { icon: Boxes, label: "Strategic planning & execution", href: "/services/2" },
-  { icon: Users, label: "Leadership executive coaching", href: "/services/3" },
-  { icon: Sparkles, label: "Legacy leadership institute", href: "/services/4" },
-  { icon: CircleDot, label: "Executive growth solutions", href: "/services/5" },
-  { icon: Repeat, label: "Empowered leadership journey", href: "/services/6" },
+// --- SERVICES DROPDOWN (fallback, used until live data loads) ---
+const fallbackServicesLinks = [
+  { icon: Waves, label: "Business process optimization", href: "/services/business-process-optimization" },
+  { icon: Boxes, label: "Strategic planning & execution", href: "/services/strategic-planning-execution" },
+  { icon: Users, label: "Leadership executive coaching", href: "/services/leadership-executive-coaching" },
+  { icon: Sparkles, label: "Legacy leadership institute", href: "/services/legacy-leadership-institute" },
+  { icon: CircleDot, label: "Executive growth solutions", href: "/services/executive-growth-solutions" },
+  { icon: Repeat, label: "Empowered leadership journey", href: "/services/empowered-leadership-journey" },
 ];
+
+type ApiService = {
+  id: string;
+  title: string;
+  slug: string;
+  icon: string;
+};
+
+const serviceIconMap: Record<string, ComponentType<{ className?: string }>> = {
+  waves: Waves,
+  boxes: Boxes,
+  users: Users,
+  sparkles: Sparkles,
+  circledot: CircleDot,
+  repeat: Repeat,
+};
 
 // --- PORTFOLIOS DROPDOWN ---
 const portfolioLinks = [
@@ -49,7 +65,7 @@ const pagesLinks = {
     { label: "About us", href: "/about", badge: null },
     { label: "Our history", href: "/history", badge: "HOT" },
     { label: "Team", href: "/team", badge: null },
-    { label: "Team details", href: "/team/1", badge: null },
+    { label: "Team details", href: "/team/savanah-nguyen", badge: null },
     { label: "Careers", href: "/careers", badge: null },
     { label: "Careers details", href: "/careers/1", badge: "New" },
     { label: "Pricing Plan", href: "/pricing", badge: null },
@@ -59,7 +75,7 @@ const pagesLinks = {
   ],
   other: [
     { label: "Services", href: "/services", badge: null },
-    { label: "Service details", href: "/services/1", badge: null },
+    { label: "Service details", href: "/services/business-process-optimization", badge: null },
     { label: "Portfolios", href: "/portfolios", badge: null },
     { label: "Portfolio details", href: "/portfolios/1", badge: null },
     { label: "Error 404", href: "/404", badge: null },
@@ -72,31 +88,38 @@ const pagesLinks = {
 };
 
 // --- MAIN NAV DATA ---
-const links = [
-  { label: "Home", href: "/" },
-  { label: "Pages", href: "#", isMegaMenu: true, width: "w-[900px]" },
-  {
-    label: "Services",
-    href: "/services",
-    dropdown: servicesLinks,
-    width: "w-56",
-  },
-  {
-    label: "Portfolios",
-    href: "/portfolios",
-    dropdown: portfolioLinks,
-    width: "w-48",
-    hasSimpleDropdown: true,
-  },
-  {
-    label: "Blog",
-    href: "/blog",
-    dropdown: blogLinks,
-    width: "w-48",
-    hasSimpleDropdown: true,
-  },
-  { label: "Contact", href: "/contact" },
-];
+function buildLinks(servicesDropdown: NavLink["dropdown"]): NavLink[] {
+  return [
+    { label: "Home", href: "/" },
+    { label: "Pages", href: "#", isMegaMenu: true, width: "w-[900px]" },
+    {
+      label: "Services",
+      href: "/services",
+      dropdown: servicesDropdown,
+      width: "w-56",
+    },
+    {
+      label: "Portfolios",
+      href: "/portfolios",
+      dropdown: portfolioLinks,
+      width: "w-48",
+      hasSimpleDropdown: true,
+    },
+    {
+      label: "Blog",
+      href: "/blog",
+      dropdown: blogLinks,
+      width: "w-48",
+      hasSimpleDropdown: true,
+    },
+    { label: "Contact", href: "/contact" },
+  ];
+}
+
+interface NavbarProps {
+  transparent?: boolean;
+  lightText?: boolean;
+}
 
 interface NavLink {
   label: string;
@@ -125,7 +148,7 @@ function PagesMegaMenu({
   if (!open) return null;
 
   return (
-    <div className="absolute left-0 top-full z-50 mt-0 w-[900px] rounded-xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-[var(--color-line)] overflow-hidden">
+    <div className="absolute left-0 top-full z-50 mt-0 w-[min(900px,calc(100vw-2rem))] max-w-[calc(100vw-2rem)] rounded-xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.15)] border border-[var(--color-line)] overflow-hidden">
       <div className="grid grid-cols-12 gap-0">
         <div className="col-span-3 p-6 border-r border-[var(--color-line)]">
           <h4 className="nav-mega-menu-title">Main pages</h4>
@@ -138,13 +161,13 @@ function PagesMegaMenu({
                   className={`flex items-center justify-between py-1.5 hover:text-[var(--color-accent)] ${
                     pathname === link.href
                       ? "text-[var(--color-accent)] font-semibold"
-                      : "text-[var(--color-purple-900)]"
+                      : "!text-[var(--color-purple-900)]"
                   }`}
                 >
                   <span className="nav-link-menu-item">{link.label}</span>
                   {link.badge && (
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full !text-white ${
                         link.badge === "HOT"
                           ? "bg-red-500"
                           : "bg-[var(--color-accent)]"
@@ -175,7 +198,7 @@ function PagesMegaMenu({
                   <span className="nav-link-menu-item">{link.label}</span>
                   {link.badge && (
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full text-white ${
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full !text-white ${
                         link.badge === "HOT"
                           ? "bg-red-500"
                           : "bg-[var(--color-accent)]"
@@ -234,14 +257,9 @@ function NavItem({
     link.href === pathname ||
     (link.dropdown && link.dropdown.some((item) => item.href === pathname));
 
-  // Conditional Colors based on Hero Mode
   const textColorClass = isHero
-    ? isActive
-      ? "text-[var(--color-accent)]"
-      : "text-white hover:text-[var(--color-accent)]"
-    : isActive
-      ? "text-[var(--color-accent)]"
-      : "text-[var(--color-purple-900)] hover:text-[var(--color-accent)]";
+    ? "text-white hover:text-[var(--color-accent)]"
+    : "text-[var(--color-purple-900)] hover:text-[var(--color-accent)]";
 
   if (link.isMegaMenu) {
     return (
@@ -467,9 +485,8 @@ function MobileSection({
 // --- MAIN NAVBAR COMPONENT ---
 export default function Navbar({
   transparent = false,
-}: {
-  transparent?: boolean;
-}) {
+  lightText = false,
+}: NavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -483,14 +500,42 @@ export default function Navbar({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // --- UPDATED LOGIC: Transparent everywhere EXCEPT the Home Page ---
-  const isHomePage = pathname === "/";
-  // If it's NOT the home page, it starts transparent, 
-  // BUT turns solid white if the user has scrolled down.
-  const isHeroMode = !isHomePage && !scrolled;
+  const [servicesDropdown, setServicesDropdown] = useState<NavLink["dropdown"]>(
+    fallbackServicesLinks,
+  );
 
-  // Logo selection based on mode
-  const logoSrc = isHeroMode
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/services", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : { services: [] }))
+      .then((data: { services: ApiService[] }) => {
+        const services = data?.services;
+        if (cancelled || !Array.isArray(services) || services.length === 0)
+          return;
+        setServicesDropdown(
+          services.map((service) => ({
+            icon: serviceIconMap[service.icon] ?? Waves,
+            label: service.title,
+            href: `/services/${service.slug}`,
+          })),
+        );
+      })
+      .catch(() => {
+        // keep fallbackServicesLinks on any error
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const links = buildLinks(servicesDropdown);
+
+  // The parent decides whether this page has a transparent hero navbar.
+  // The navbar becomes solid after scrolling.
+  const isHeroMode = transparent && !scrolled;
+  const useLightText = isHeroMode && lightText;
+
+  const logoSrc = useLightText
     ? "/images/Logo/primary-logo.webp"
     : "/images/Logo/secondary-logo.webp";
 
@@ -525,7 +570,7 @@ export default function Navbar({
               key={l.label}
               link={l}
               pathname={pathname}
-              isHero={isHeroMode}
+              isHero={useLightText}
             />
           ))}
         </nav>
@@ -534,7 +579,7 @@ export default function Navbar({
         <div className="hidden md:flex items-center gap-6">
           <button
             className={`inline-flex items-center gap-2 text-[13px] font-medium transition-colors ${
-              isHeroMode
+              useLightText
                 ? "text-white hover:text-[var(--color-accent)]"
                 : "text-[var(--color-purple-900)] hover:text-[var(--color-accent)]"
             }`}
@@ -553,7 +598,7 @@ export default function Navbar({
         {/* --- MOBILE MENU BUTTON --- */}
         <button
           onClick={() => setMobileOpen((v) => !v)}
-          className={`btn-nav-menu ${isHeroMode ? "text-white" : "text-[var(--color-purple-900)]"}`}
+          className={`btn-nav-menu ${useLightText ? "!text-white" : "!text-[var(--color-purple-900)]"} hover:text-[var(--color-accent)]`}
           aria-label="Toggle menu"
         >
           {mobileOpen ? (

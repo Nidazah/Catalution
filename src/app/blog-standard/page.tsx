@@ -31,7 +31,7 @@ export default function BlogStandardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F9FAFB] pt-20 pb-24">
+    <main className="min-h-screen bg-[#F9FAFB] pb-24">
       <PageHero title="Blog Standard" />
 
       {/* --- MAIN LAYOUT: LEFT CONTENT + RIGHT SIDEBAR --- */}
@@ -47,11 +47,11 @@ export default function BlogStandardPage() {
                 <div key={post.id} className="flex flex-col md:flex-row border border-gray-200 bg-white overflow-hidden hover:shadow-md transition-shadow duration-300">
                   
                   {/* Image Area */}
-                  <div className="relative w-full md:w-[40%] aspect-[4/3] md:aspect-[4/3] bg-gray-50 overflow-hidden shrink-0">
+                  <div className="media-card media-card--4-3 w-full md:w-[40%] bg-gray-50 shrink-0">
                     <Link href={`/blog/${post.id}`}>
                       <Image src={post.image} alt={post.title} fill className="object-cover hover:scale-105 transition-transform duration-500" />
                     </Link>
-                    <div className="absolute top-4 left-4 bg-[#374151]/80 text-white flex flex-col items-center justify-center p-2 min-w-[50px] backdrop-blur-sm shadow-sm">
+                    <div className="media-card__badge media-card__badge--left bg-[#374151]/80 text-white flex flex-col items-center justify-center p-2 min-w-[50px] backdrop-blur-sm shadow-sm">
                       <span className="text-[18px] font-bold leading-none">{day}</span>
                       <span className="text-[10px] font-semibold uppercase tracking-wide mt-0.5">{month}</span>
                     </div>
@@ -195,19 +195,19 @@ export default function BlogStandardPage() {
             </div>
 
             {/* CTA Box */}
-            <div className="relative border border-gray-200 p-6 bg-white overflow-hidden h-[400px] flex flex-col justify-between shadow-sm">
-              <div className="absolute inset-0 z-0">
+            <div className="media-card--fixed border border-gray-200 p-6 bg-white h-[400px] flex flex-col justify-between shadow-sm">
+              <div className="media-card__layer">
                 <Image src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80" alt="Need help background" fill className="object-cover opacity-20 grayscale" />
-                <div className="absolute inset-0 bg-gradient-to-b from-navy/80 via-navy/60 to-navy/90" />
+                <div className="media-card__overlay bg-gradient-to-b from-navy/80 via-navy/60 to-navy/90" />
               </div>
-              <div className="relative z-10 pt-2">
+              <div className="media-card__content pt-2">
                 <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center text-white mb-6">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7"><path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" /></svg>
                 </div>
                 <h3 className="text-2xl font-bold text-white leading-tight mb-3">Need help?<br />Feel free contact us</h3>
                 <p className="text-sm text-orange-100/80 leading-relaxed max-w-[200px]">Our mission is to empowers businesses off all size in an businesses.</p>
               </div>
-              <div className="relative z-10">
+              <div className="media-card__content">
                 {/* ✅ Global btn-outline replacing custom Button override */}
                 <Link href="/contact" className="btn btn-outline shadow-lg w-full justify-center">
                   Get in touch
