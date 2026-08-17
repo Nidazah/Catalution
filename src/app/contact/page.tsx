@@ -16,7 +16,6 @@ type ContactInfo = {
   reviewCount: number | null;
 };
 
-// --- FALLBACK CONTACT INFO (used until live data loads / if the API is unreachable) ---
 const fallbackInfo: ContactInfo = {
   emailPrimary: "support@catalution.com",
   emailSecondary: "accounts@catalution.com",
@@ -30,12 +29,30 @@ const fallbackInfo: ContactInfo = {
 };
 
 const serviceOptions = [
-  { value: "business", label: "Business Process Optimization" },
-  { value: "strategy", label: "Strategic Planning & Execution" },
-  { value: "coaching", label: "Leadership Executive Coaching" },
-  { value: "legacy", label: "Legacy Leadership Institute" },
-  { value: "growth", label: "Executive Growth Solutions" },
-  { value: "empowered", label: "Empowered Leadership Journey" },
+  {
+    value: "business",
+    label: "Business Process Optimization",
+  },
+  {
+    value: "strategy",
+    label: "Strategic Planning & Execution",
+  },
+  {
+    value: "coaching",
+    label: "Leadership Executive Coaching",
+  },
+  {
+    value: "legacy",
+    label: "Legacy Leadership Institute",
+  },
+  {
+    value: "growth",
+    label: "Executive Growth Solutions",
+  },
+  {
+    value: "empowered",
+    label: "Empowered Leadership Journey",
+  },
 ];
 
 type FormState = {
@@ -59,100 +76,155 @@ const emptyForm: FormState = {
 export default function ContactPage() {
   const [info, setInfo] = useState<ContactInfo>(fallbackInfo);
 
-  useEffect(() => {
-    fetch("/api/contact-info", { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: ContactInfo | null) => {
-        if (data) setInfo(data);
-      })
-      .catch(() => {
-        // keep fallbackInfo on any error
-      });
-  }, []);
-
   const [form, setForm] = useState<FormState>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSubmit(e: FormEvent) {
+  useEffect(() => {
+    fetch("/api/contact-info", {
+      cache: "no-store",
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data: ContactInfo | null) => {
+        if (data) {
+          setInfo(data);
+        }
+      })
+      .catch(() => {
+        // Keep fallback information if API is unavailable.
+      });
+  }, []);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     setSubmitting(true);
     setError("");
+
     try {
+      const selectedService =
+        serviceOptions.find((s) => s.value === form.service)?.label ||
+        form.service ||
+        undefined;
+
       const res = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
-          ...form,
-          service:
-            serviceOptions.find((s) => s.value === form.service)?.label ||
-            form.service ||
-            undefined,
+          firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim() || undefined,
+          service: selectedService,
+          message: form.message.trim(),
         }),
       });
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Could not send your message");
+
+      if (!res.ok) {
+        throw new Error(
+          data?.error || "Could not submit your message"
+        );
+      }
+
       setSubmitted(true);
       setForm(emptyForm);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not send your message");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not submit your message"
+      );
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <main className="min-h-screen bg-white pt-20">
+    <main className="min-h-screen bg-white">
       <PageHero title="Contact" />
 
-      {/* --- Main Content Section --- */}
+      {/* Main Content */}
       <section className="container mx-auto px-6 py-12 lg:py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-          
-          {/* Left Column: Contact Info */}
+
+          {/* =========================
+              LEFT COLUMN
+          ========================== */}
           <div>
-            <h2 className="text-3xl font-bold text-navy mb-3">Contact Information</h2>
+            <h2 className="text-3xl font-bold text-[#ff6800] mb-3">
+              Contact Information
+            </h2>
+
             <p className="text-gray-600 mb-8">
-              Fill out the form and our team will get back to you shortly. 
+              Fill out the form and our team will get back to you shortly.
               Or, use the contact details below to reach us directly.
             </p>
 
             <div className="space-y-6">
-              {/* Info Card 1 */}
+
+              {/* Email */}
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-accent">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-[#ff6800]">
                   <Mail className="h-5 w-5" />
                 </div>
+
                 <div>
-                  <h3 className="font-semibold text-navy text-[15px]">Email Us</h3>
-                  <p className="text-gray-600 mt-0.5 text-[14px]">{info.emailPrimary}</p>
+                  <h3 className="font-semibold text-navy text-[15px]">
+                    Email Us
+                  </h3>
+
+                  <p className="text-gray-600 mt-0.5 text-[14px]">
+                    {info.emailPrimary}
+                  </p>
+
                   {info.emailSecondary && (
-                    <p className="text-gray-600 text-[14px]">{info.emailSecondary}</p>
+                    <p className="text-gray-600 text-[14px]">
+                      {info.emailSecondary}
+                    </p>
                   )}
                 </div>
               </div>
 
-              {/* Info Card 2 */}
+              {/* Phone */}
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-accent">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-[#ff6800]">
                   <Phone className="h-5 w-5" />
                 </div>
+
                 <div>
-                  <h3 className="font-semibold text-navy text-[15px]">Call Us</h3>
-                  <p className="text-gray-600 mt-0.5 text-[14px]">{info.phone}</p>
+                  <h3 className="font-semibold text-navy text-[15px]">
+                    Call Us
+                  </h3>
+
+                  <p className="text-gray-600 mt-0.5 text-[14px]">
+                    {info.phone}
+                  </p>
                 </div>
               </div>
 
-              {/* Info Card 3 */}
+              {/* Address */}
               <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-accent">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-orange-100 text-[#ff6800]">
                   <MapPin className="h-5 w-5" />
                 </div>
+
                 <div>
-                  <h3 className="font-semibold text-navy text-[15px]">Visit Us</h3>
-                  <p className="text-gray-600 mt-0.5 text-[14px]">{info.addressLine1}</p>
-                  <p className="text-gray-600 text-[14px]">{info.addressLine2}</p>
+                  <h3 className="font-semibold text-navy text-[15px]">
+                    Visit Us
+                  </h3>
+
+                  <p className="text-gray-600 mt-0.5 text-[14px]">
+                    {info.addressLine1}
+                  </p>
+
+                  <p className="text-gray-600 text-[14px]">
+                    {info.addressLine2}
+                  </p>
                 </div>
               </div>
             </div>
@@ -161,25 +233,47 @@ export default function ContactPage() {
             {(info.rating || info.reviewCount) && (
               <div className="mt-10 pt-8 border-t border-gray-100">
                 <div className="flex items-center gap-3">
+
                   <div className="flex -space-x-3">
                     <div className="relative h-10 w-10 shrink-0 rounded-full border-2 border-white overflow-hidden bg-gray-200 grayscale">
-                      <Image src="/images/contact/thumb-1.png" alt="Client 1" fill className="object-cover" />
+                      <Image
+                        src="/images/contact/thumb-1.png"
+                        alt="Client 1"
+                        fill
+                        className="object-cover"
+                      />
                     </div>
+
                     <div className="relative h-10 w-10 shrink-0 rounded-full border-2 border-white overflow-hidden bg-gray-200 grayscale">
-                      <Image src="/images/contact/thumb-2.png" alt="Client 2" fill className="object-cover" />
+                      <Image
+                        src="/images/contact/thumb-2.png"
+                        alt="Client 2"
+                        fill
+                        className="object-cover"
+                      />
                     </div>
+
                     <div className="relative h-10 w-10 shrink-0 rounded-full border-2 border-white overflow-hidden bg-gray-200 grayscale">
-                      <Image src="/images/contact/thumb-2.png" alt="Client 3" fill className="object-cover" />
+                      <Image
+                        src="/images/contact/thumb-2.png"
+                        alt="Client 3"
+                        fill
+                        className="object-cover"
+                      />
                     </div>
                   </div>
+
                   <div>
                     {info.rating != null && (
-                      <p className="text-[15px] font-semibold text-navy">
+                      <p className="text-[15px] font-semibold text-[#ff6800]">
                         {info.rating.toFixed(1)}/5.0 Client Satisfaction
                       </p>
                     )}
+
                     {info.reviewCount != null && (
-                      <p className="text-[13px] text-gray-500">Based on {info.reviewCount}+ reviews</p>
+                      <p className="text-[13px] text-gray-500">
+                        Based on {info.reviewCount}+ reviews
+                      </p>
                     )}
                   </div>
                 </div>
@@ -187,73 +281,228 @@ export default function ContactPage() {
             )}
           </div>
 
-          {/* Right Column: Contact Form */}
+          {/* =========================
+              RIGHT COLUMN - FORM
+          ========================== */}
           <div className="bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-100 shadow-sm">
-            <h2 className="text-2xl font-bold text-navy mb-1">Send us a message</h2>
-            <p className="text-gray-600 mb-5">Fill out the form below and we&apos;ll get back to you promptly.</p>
+
+            <h2 className="text-2xl font-bold text-[#ff6800] mb-1">
+              Send us a message
+            </h2>
+
+            <p className="text-gray-600 mb-5">
+              Fill out the form below and we&apos;ll get back to you promptly.
+            </p>
 
             {submitted ? (
               <div className="flex flex-col items-center justify-center text-center py-12">
+
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 text-green-600 mb-4">
                   <Check className="h-7 w-7" />
                 </div>
-                <h3 className="text-xl font-bold text-navy mb-1">Message sent</h3>
-                <p className="text-gray-600 text-[14px] mb-5">Thanks for reaching out &mdash; our team will get back to you shortly.</p>
+
+                <h3 className="text-xl font-bold text-navy mb-1">
+                  Message sent
+                </h3>
+
+                <p className="text-gray-600 text-[14px] mb-5">
+                  Thanks for reaching out &mdash; our team will get back to
+                  you shortly.
+                </p>
+
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="text-accent font-semibold text-[14px] hover:underline"
+                  className="text-[#ff6800] font-semibold text-[14px] hover:underline"
                 >
                   Send another message
                 </button>
               </div>
             ) : (
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              <form
+                className="space-y-4"
+                onSubmit={handleSubmit}
+              >
+
+                {/* First / Last Name */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-navy mb-1">First Name</label>
-                    <input required type="text" id="firstName" placeholder="John" value={form.firstName} onChange={(e) => setForm((f) => ({ ...f, firstName: e.target.value }))} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-[14px]" />
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium text-navy mb-1"
+                    >
+                      First Name
+                    </label>
+
+                    <input
+                      required
+                      type="text"
+                      id="firstName"
+                      placeholder="John"
+                      value={form.firstName}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          firstName: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6800] focus:border-[#ff6800] outline-none transition-all text-[14px]"
+                    />
                   </div>
+
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-navy mb-1">Last Name</label>
-                    <input required type="text" id="lastName" placeholder="Doe" value={form.lastName} onChange={(e) => setForm((f) => ({ ...f, lastName: e.target.value }))} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-[14px]" />
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium text-navy mb-1"
+                    >
+                      Last Name
+                    </label>
+
+                    <input
+                      required
+                      type="text"
+                      id="lastName"
+                      placeholder="Doe"
+                      value={form.lastName}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          lastName: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6800] focus:border-[#ff6800] outline-none transition-all text-[14px]"
+                    />
                   </div>
                 </div>
 
+                {/* Email */}
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-navy mb-1">Email Address</label>
-                  <input required type="email" id="email" placeholder="john@example.com" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-[14px]" />
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-navy mb-1"
+                  >
+                    Email Address
+                  </label>
+
+                  <input
+                    required
+                    type="email"
+                    id="email"
+                    placeholder="john@example.com"
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        email: e.target.value,
+                      }))
+                    }
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6800] focus:border-[#ff6800] outline-none transition-all text-[14px]"
+                  />
                 </div>
 
+                {/* Phone */}
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-navy mb-1">Phone Number (optional)</label>
-                  <input type="tel" id="phone" placeholder="+92 (555) 000-0000" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-[14px]" />
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-navy mb-1"
+                  >
+                    Phone Number (optional)
+                  </label>
+
+                  <input
+                    type="tel"
+                    id="phone"
+                    placeholder="+92 (555) 000-0000"
+                    value={form.phone}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        phone: e.target.value,
+                      }))
+                    }
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6800] focus:border-[#ff6800] outline-none transition-all text-[14px]"
+                  />
                 </div>
 
+                {/* Service */}
                 <div>
-                  <label htmlFor="service" className="block text-sm font-medium text-navy mb-1">Service Interested In</label>
-                  <select id="service" value={form.service} onChange={(e) => setForm((f) => ({ ...f, service: e.target.value }))} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all appearance-none text-[14px]">
-                    <option value="">Select a service...</option>
+                  <label
+                    htmlFor="service"
+                    className="block text-sm font-medium text-navy mb-1"
+                  >
+                    Service Interested In
+                  </label>
+
+                  <select
+                    id="service"
+                    value={form.service}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        service: e.target.value,
+                      }))
+                    }
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6800] focus:border-[#ff6800] outline-none transition-all appearance-none text-[14px]"
+                  >
+                    <option value="">
+                      Select a service...
+                    </option>
+
                     {serviceOptions.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      <option
+                        key={opt.value}
+                        value={opt.value}
+                      >
+                        {opt.label}
+                      </option>
                     ))}
                   </select>
                 </div>
 
+                {/* Message */}
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-navy mb-1">Your Message</label>
-                  <textarea required id="message" rows={3} placeholder="Tell us about your project, goals, or any questions you have..." value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none text-[14px]" />
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-navy mb-1"
+                  >
+                    Your Message
+                  </label>
+
+                  <textarea
+                    required
+                    id="message"
+                    rows={3}
+                    placeholder="Tell us about your project, goals, or any questions you have..."
+                    value={form.message}
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        message: e.target.value,
+                      }))
+                    }
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#ff6800] focus:border-[#ff6800] outline-none transition-all resize-none text-[14px]"
+                  />
                 </div>
 
+                {/* Error */}
                 {error && (
                   <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-[13px] text-red-700">
                     {error}
                   </div>
                 )}
 
-                <button disabled={submitting} type="submit" className="w-full group bg-navy hover:bg-navy-ink text-white font-semibold py-3.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-[15px] mt-2 disabled:opacity-60">
+                {/* Submit */}
+                <button
+                  disabled={submitting}
+                  type="submit"
+                  className="w-full group bg-navy hover:bg-navy-ink text-white font-semibold py-3.5 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-[15px] mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
                   {submitting ? "Sending..." : "Send Message"}
-                  {!submitting && <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />}
+
+                  {!submitting && (
+                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  )}
                 </button>
               </form>
             )}
@@ -261,13 +510,22 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* --- Google Map Section --- */}
+      {/* =========================
+          GOOGLE MAP
+      ========================== */}
       {info.mapEmbedUrl && (
         <section className="bg-white border-t border-gray-100">
           <div className="container mx-auto px-6 py-12">
+
             <div className="text-center max-w-2xl mx-auto mb-8">
-              <h2 className="text-2xl font-bold text-navy">Our Location</h2>
-              <p className="text-gray-600 mt-1">Visit our headquarters in {info.addressLine2}.</p>
+
+              <h2 className="text-2xl font-bold text-[#ff6800]">
+                Our Location
+              </h2>
+
+              <p className="text-gray-600 mt-1">
+                Visit our headquarters in {info.addressLine2}.
+              </p>
             </div>
 
             <div className="rounded-2xl overflow-hidden shadow-md h-[300px] md:h-[350px] w-full relative bg-gray-100">
@@ -280,12 +538,12 @@ export default function ContactPage() {
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 className="w-full h-full"
+                title="Catalution office location"
               />
             </div>
           </div>
         </section>
       )}
-
     </main>
   );
 }
