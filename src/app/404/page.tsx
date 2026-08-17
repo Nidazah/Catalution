@@ -6,7 +6,7 @@ export default function Custom404() {
   return (
     <div className="min-h-screen bg-white">
       
-            <PageHero title="About Us" />
+            <PageHero title="404 Error" />
 
       {/* --- SECTION 2: WHITE ERROR CONTENT (Illustration & Text) --- */}
       <section className="bg-white py-16 md:py-24 flex flex-col items-center justify-center px-6 flex-1">

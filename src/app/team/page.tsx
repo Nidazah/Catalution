@@ -46,7 +46,7 @@ export default function TeamPage() {
             <Link
               key={member.slug}
               href={`/team/${member.slug}`}
-              className="team-card bg-gray-100 group"
+              className="media-card media-card--4-5 bg-gray-100 group rounded-xl"
             >
               <Image
                 src={member.image}
@@ -55,9 +55,9 @@ export default function TeamPage() {
                 className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, 25vw"
               />
-              <div className="team-card__overlay bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
-              <div className="team-card__caption">
-                <h3 className="text-xl font-bold text-white">{member.name}</h3>
+              <div className="media-card__overlay bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
+
+              <div className="media-card__caption">                <h3 className="text-xl font-bold text-white">{member.name}</h3>
                 <p className="text-sm text-gray-300 mt-1 font-medium">
                   {member.role}
                 </p>

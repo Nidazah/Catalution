@@ -133,7 +133,7 @@ export default function Hero({
 
       <section
         id="top"
-        className="relative overflow-hidden overflow-x-hidden pt-[80px] sm:pt-[80px] pb-0 bg-[#ECF1F7]"
+        className="relative overflow-hidden overflow-x-hidden pb-0 bg-[#ECF1F7]"
       >
         {/* Decorative rings */}
         <svg

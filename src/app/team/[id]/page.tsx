@@ -42,7 +42,8 @@ export default async function TeamDetailPage({
 
   const experience = (member.experience as string[] | null) ?? [];
   const coreBeliefs = (member.coreBeliefs as string[] | null) ?? [];
-  const skills = (member.skills as { name: string; percent: number }[] | null) ?? [];
+  const skills =
+    (member.skills as { name: string; percent: number }[] | null) ?? [];
 
   const socialLinks = [
     { href: member.facebook, Icon: FaFacebookF, label: "Facebook" },
@@ -189,7 +190,8 @@ export default async function TeamDetailPage({
                 Let's discuss further to get better results
               </h2>
               <p className="text-[#4B5563] text-[15px] leading-[1.7] max-w-md">
-                Our mission is to empower businesses of all size to thrive in an ever changing marketplace.
+                Our mission is to empower businesses of all size to thrive in an
+                ever changing marketplace.
               </p>
               <div className="flex items-center gap-2 text-[15px] font-medium text-navy pt-1">
                 <Mail className="h-5 w-5 text-accent" />
@@ -214,8 +216,13 @@ export default async function TeamDetailPage({
                   placeholder="Phone number*"
                   className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
                 />
-                <select defaultValue="" className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent text-gray-400">
-                  <option value="" disabled>Choose a option</option>
+                <select
+                  defaultValue=""
+                  className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-[14px] outline-none focus:border-accent text-gray-400"
+                >
+                  <option value="" disabled>
+                    Choose a option
+                  </option>
                   <option value="1">Option 1</option>
                   <option value="2">Option 2</option>
                 </select>
@@ -227,12 +234,10 @@ export default async function TeamDetailPage({
 
               <button
                 type="button"
-                className="flex items-center gap-3 rounded-full bg-navy hover:bg-navy-ink text-white pl-2 pr-7 py-2.5 text-[15px] font-semibold transition-all w-fit mt-2"
+                className="flex items-center gap-2.5 rounded-full bg-accent hover:bg-accent/90 text-white pl-5 pr-4 py-2.5 text-[15px] font-medium transition-all w-fit"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent">
-                  <ArrowRight className="h-4 w-4" />
-                </span>
-                Send message
+                Get Started
+                <ArrowRight className="h-4 w-4 stroke-[2.5]" />
               </button>
             </div>
           </div>
