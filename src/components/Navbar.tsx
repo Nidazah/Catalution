@@ -56,7 +56,6 @@ const blogLinks = [
   { label: "Blog", href: "/blog" },
   { label: "Blog grid", href: "/blog-grid" },
   { label: "Blog with sidebar", href: "/blog-sidebar" },
-  { label: "Blog details", href: "/blog/1" },
 ];
 
 // --- PAGES MEGA MENU ---
@@ -82,7 +81,7 @@ const pagesLinks = {
     { label: "Blog grid", href: "/blog-grid", badge: "NEW" },
     { label: "Blog standard", href: "/blog-standard", badge: null },
     { label: "Blog sidebar", href: "/blog-sidebar", badge: null },
-    { label: "Blog details", href: "/blog/1", badge: null },
+    { label: "Blog details", href: "/blog", badge: null },
     { label: "Term & Conditions", href: "/", badge: null },
   ],
 };

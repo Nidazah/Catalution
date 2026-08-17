@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, MessageCircle } from "lucide-react";
@@ -26,46 +26,64 @@ type BlogPost = {
 
 export default function BlogDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
 
   const [post, setPost] = useState<BlogPost | null>(null);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchPost = async () => {
       try {
         setLoading(true);
         const postRes = await fetch(`/api/blog/${id}`, { cache: "no-store" });
 
+        // A missing post is not an error condition — it's a genuine 404.
+        if (postRes.status === 404) {
+          if (!cancelled) setNotFound(true);
+          return;
+        }
+
         if (!postRes.ok) {
-          throw new Error("Blog post not found");
+          throw new Error("Unable to load this blog post.");
         }
 
         const postData = (await postRes.json()) as BlogPost;
+        if (cancelled) return;
         setPost(postData);
 
         const allPostsRes = await fetch("/api/blog", { cache: "no-store" });
-        if (allPostsRes.ok) {
+        if (allPostsRes.ok && !cancelled) {
           const allPosts = (await allPostsRes.json()) as BlogPost[];
           setPosts(allPosts);
         }
-
-        setError(null);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Unable to load this blog post.",
-        );
+      } catch {
+        if (!cancelled) setNotFound(true);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     if (id) {
       fetchPost();
     }
+
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
+
+  // Route genuinely missing posts to the site's branded 404 page instead of
+  // rendering an inline "not found" message on the blog detail route.
+  useEffect(() => {
+    if (notFound) {
+      router.replace("/404");
+    }
+  }, [notFound, router]);
 
   const relatedPosts = useMemo(() => {
     if (!post) {
@@ -83,24 +101,13 @@ export default function BlogDetailsPage() {
     return [...sameCategory, ...otherPosts].slice(0, 3);
   }, [post, posts]);
 
-  if (loading) {
+  // While loading, or while the redirect to /404 is in flight, show a
+  // lightweight loading state rather than flashing an inline error.
+  if (loading || notFound || !post) {
     return (
       <main className="min-h-screen bg-white">
         <div className="flex min-h-[300px] items-center justify-center">
           <p className="text-sm text-gray-500">Loading blog post...</p>
-        </div>
-      </main>
-    );
-  }
-
-  if (error || !post) {
-    return (
-      <main className="min-h-screen bg-white">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
-          <p className="text-sm text-red-600">{error ?? "Blog post not found."}</p>
-          <Link href="/blog" className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#481d96]">
-            <ArrowLeft className="h-4 w-4" /> Back to blog
-          </Link>
         </div>
       </main>
     );
