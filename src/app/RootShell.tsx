@@ -50,7 +50,7 @@ export default function RootShell({ children }: { children: React.ReactNode }) {
 
       <Navbar transparent={isTransparent} lightText={isTransparent} />
 
-      <div className={isTransparent ? "" : "pt-20"}>
+      <div className={isTransparent ? "" : "pt-[70px]"}>
         {children}
       </div>
 
