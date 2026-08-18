@@ -105,7 +105,7 @@ export default function BlogDetailsPage() {
   // lightweight loading state rather than flashing an inline error.
   if (loading || notFound || !post) {
     return (
-      <main className="min-h-screen bg-white">
+      <main className="blog-detail min-h-screen bg-white">
         <div className="flex min-h-[300px] items-center justify-center">
           <p className="text-sm text-gray-500">Loading blog post...</p>
         </div>
@@ -114,7 +114,7 @@ export default function BlogDetailsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="blog-detail min-h-screen bg-white">
       <section className="relative overflow-hidden bg-navy text-white">
         <div className="absolute inset-0">
           <Image

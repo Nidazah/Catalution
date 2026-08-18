@@ -69,6 +69,7 @@
   border-color: var(--color-line);
 }
 html {
+  font-size: 90%;
   scroll-behavior: smooth;
 }
 
@@ -846,4 +847,41 @@ h6 {
   h1, .h1 { font-size: 32px; }
   h2, .h2 { font-size: 27px; }
   h3, .h3 { font-size: 22px; }
+}
+
+/* ===================================================================
+   COMPACT DYNAMIC/DETAIL PAGES
+   Shared scale so every [id] detail page stays compact & consistent
+=================================================================== */
+.detail-page,
+.blog-detail,
+.service-detail,
+.portfolio-detail,
+.pricing-detail {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.detail-page section,
+.blog-detail section,
+.service-detail section,
+.portfolio-detail section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.detail-page h1,
+.blog-detail h1,
+.service-detail h1,
+.portfolio-detail h1 {
+  font-size: 2.7rem;
+  line-height: 1.15;
+}
+
+.detail-page h2,
+.blog-detail h2,
+.service-detail h2,
+.portfolio-detail h2 {
+  font-size: 2rem;
+  line-height: 1.2;
 }

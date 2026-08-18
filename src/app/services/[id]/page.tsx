@@ -73,7 +73,7 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
   const fullDescription = service.fullDescription || service.description
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="service-detail min-h-screen bg-white">
       <PageHero title={service.title} />
       <div className="mx-auto w-full max-w-6xl px-6 py-16">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
