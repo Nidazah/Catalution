@@ -4,6 +4,8 @@ import { Poppins } from "next/font/google";
 import RootShell from "./RootShell";
 
 import "./globals.css";
+import "./typography-readability-fix.css";
+
 
 const poppins = Poppins({
   subsets: ["latin"],

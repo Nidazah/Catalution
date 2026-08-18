@@ -97,7 +97,7 @@ export default function AboutSection({
             />
             <div className="absolute inset-x-0 bottom-0 h-[125px] bg-gradient-to-t from-navy/95 via-navy/40 to-transparent" />
             <div className="absolute bottom-7 left-4">
-              <p className="h4 text-white font-light">
+              <p className="h5 text-white font-light">
                 Reach <span className="font-bold text-white">20M</span>
               </p>
             </div>
@@ -119,7 +119,7 @@ export default function AboutSection({
 
           <motion.h2
             variants={item}
-            className="mt-3 font-display text-2xl md:text-3xl lg:text-4xl font-bold leading-[1.08] text-heading"
+            className="mt-3 font-display text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold leading-[1.1] text-heading"
           >
             {title && title.trim() !== "" ? (
               title
@@ -134,7 +134,7 @@ export default function AboutSection({
             )}
           </motion.h2>
 
-          <motion.p variants={item} className="body-lg mt-4 max-w-[420px] text-heading">
+          <motion.p variants={item} className="body-md mt-4 max-w-[420px] text-heading">
             {aboutDescription}
           </motion.p>
 
@@ -143,16 +143,16 @@ export default function AboutSection({
             className="mt-4 flex h-[79px] w-full max-w-[259px] bg-section transition-colors hover:bg-purple-100"
           >
             <div className="flex flex-1 flex-col justify-center px-[15px]">
-              <p className="h4 font-bold text-navy">8.5x</p>
-              <p className="ui-sm mt-[6px] font-medium text-heading">Faster growth</p>
+              <p className="h5 font-bold text-navy">8.5x</p>
+              <p className="ui-xs mt-[4px] font-medium text-heading">Faster growth</p>
             </div>
 
             <div className="my-[10px] w-px bg-white" />
 
             <div className="relative flex flex-1 flex-col justify-center px-[15px]">
               <span className="absolute -left-[3px] top-1/2 h-[5px] w-[5px] -translate-y-1/2 rounded-full border border-accent bg-white" />
-              <p className="h4 font-bold text-navy">20M</p>
-              <p className="ui-sm mt-[6px] font-medium text-heading">Reach worldwide</p>
+              <p className="h5 font-bold text-navy">20M</p>
+              <p className="ui-xs mt-[4px] font-medium text-heading">Reach worldwide</p>
             </div>
           </motion.div>
 
