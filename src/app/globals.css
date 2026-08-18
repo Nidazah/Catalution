@@ -69,14 +69,17 @@
   border-color: var(--color-line);
 }
 html {
-  scroll-behavior: smooth;
   font-size: 90%;
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--color-bg);
   color: var(--color-heading);
-  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Inter, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
 }
 
 /* ---------- Standard Utilities ---------- */
@@ -208,92 +211,92 @@ body {
 }
 
 /* ===================================================================
-   TYPOGRAPHY HIERARCHY
+   TYPOGRAPHY HIERARCHY — UPDATED (Shrunk sizes)
 =================================================================== */
 .h1,
 h1 {
   font-family: var(--font-poppins);
   font-weight: 700;
-  font-size: 43px;
+  font-size: 48px;
   line-height: 120%;
 }
 .h2,
 h2 {
   font-family: var(--font-poppins);
   font-weight: 600;
-  font-size: 32px;
+  font-size: 36px;
   line-height: 120%;
 }
 .h3,
 h3 {
   font-family: var(--font-poppins);
   font-weight: 600;
-  font-size: 25px;
+  font-size: 28px;
   line-height: 120%;
 }
 .h4,
 h4 {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 20px;
+  font-size: 22px;
   line-height: 130%;
 }
 .h5,
 h5 {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 140%;
 }
 .h6,
 h6 {
   font-family: var(--font-poppins);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 140%;
 }
 
 .ui-lg {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 140%;
 }
 .ui-md {
   font-family: var(--font-poppins);
   font-weight: 400;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 140%;
 }
 .ui-sm {
   font-family: var(--font-poppins);
   font-weight: 400;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 140%;
 }
 
 .body-lg {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 150%;
 }
 .body-md {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 160%;
 }
 .body-sm {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 160%;
 }
 .caption {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 150%;
 }
 
@@ -304,18 +307,19 @@ h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 13px;
-  padding: 10px 21px;
-  border-radius: 11px;
+  font-size: 14px;          /* unchanged */
+  padding: 12px 24px;
+  border-radius: var(--radius-btn);
   transition: all 0.2s ease;
   cursor: pointer;
   text-decoration: none;
   border: 1px solid transparent;
 }
 
+/* 1. PRIMARY (Purple 900 Fill) */
 .btn-primary {
   background: var(--color-purple-900);
   color: #ffffff;
@@ -326,6 +330,7 @@ h6 {
   border-color: var(--color-purple-700);
 }
 
+/* 2. SECONDARY (Orange 900 Fill - NOT USED YET, but ready) */
 .btn-secondary {
   background: var(--color-orange-900);
   color: #ffffff;
@@ -336,6 +341,7 @@ h6 {
   border-color: var(--color-orange-700);
 }
 
+/* 3. OUTLINE (White fill, Purple border/text) */
 .btn-outline {
   background: #ffffff;
   color: var(--color-purple-900);
@@ -345,6 +351,7 @@ h6 {
   background: var(--color-purple-100);
 }
 
+/* 4. GHOST (Transparent with Orange text, used for Read More / Links) */
 .btn-ghost {
   background: transparent;
   color: var(--color-orange-900);
@@ -358,17 +365,18 @@ h6 {
   text-decoration: underline;
 }
 
+/* 5. NAVBAR CTA (Specific to your screenshot's exact look) */
 .btn-nav-primary {
   background: var(--color-purple-900);
   color: #ffffff;
-  border-radius: 11px;
-  padding: 9px 18px;
+  border-radius: var(--radius-btn);
+  padding: 10px 20px;
   font-family: var(--font-poppins);
-  font-size: 12px;
+  font-size: 13px;          /* unchanged */
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   text-decoration: none;
   transition:
     background 0.2s ease,
@@ -391,18 +399,18 @@ h6 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.9rem 4%;
+  padding: 1rem 4%;
   font-family: var(--font-inter), sans-serif;
 }
 .navbar-logo img {
-  height: 36px;
+  height: 40px;
   width: auto;
   display: block;
 }
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 1.7rem;
+  gap: 2rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -410,7 +418,7 @@ h6 {
 .nav-link {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 12px;
+  font-size: 13px;          /* unchanged */
   line-height: 140%;
   color: inherit;
   text-decoration: none;
@@ -424,13 +432,13 @@ h6 {
   display: none;
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 12px;
+  font-size: 13px;          /* unchanged */
   color: var(--color-purple-900);
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 7px;
-  border-radius: 11px;
+  padding: 8px;
+  border-radius: var(--radius-btn);
   transition: color 0.2s ease;
 }
 .btn-nav-menu:hover {
@@ -443,7 +451,7 @@ h6 {
   .btn-nav-menu {
     display: flex;
     align-items: center;
-    gap: 7px;
+    gap: 8px;
   }
 }
 
@@ -454,21 +462,21 @@ h6 {
   left: 0;
   z-index: 50;
   background: var(--color-bg);
-  border-radius: 11px;
+  border-radius: var(--radius-btn);
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--color-line);
-  padding: 7px 0;
-  min-width: 180px;
+  padding: 8px 0;
+  min-width: 200px;
 }
 .nav-dropdown-item {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;          /* unchanged */
   color: var(--color-purple-900);
-  padding: 9px 18px;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -483,14 +491,14 @@ h6 {
   left: 0;
   z-index: 50;
   background: var(--color-bg);
-  border-radius: 11px;
+  border-radius: var(--radius-btn);
   box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--color-line);
   overflow: hidden;
-  min-width: 810px;
+  min-width: 900px;
 }
 .nav-mega-menu-column {
-  padding: 22px;
+  padding: 24px;
   border-right: 1px solid var(--color-line);
 }
 .nav-mega-menu-column:last-child {
@@ -499,19 +507,19 @@ h6 {
 .nav-mega-menu-title {
   font-family: var(--font-poppins);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;          /* unchanged */
   color: var(--color-purple-900);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   border-bottom: 2px solid var(--color-orange-900);
-  padding-bottom: 7px;
+  padding-bottom: 8px;
   display: inline-block;
 }
 .nav-mega-menu-link {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;          /* unchanged */
   color: var(--color-purple-900);
-  padding: 5px 0;
+  padding: 6px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -527,41 +535,353 @@ h6 {
   position: fixed;
   top: 0;
   right: 0;
-  bottom: 0;
-  z-index: 100;
-  width: min(360px, 88vw);
+  height: 100%;
+  width: 100%;
+  max-width: 340px;
   background: var(--color-bg);
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.12);
-  padding: 20px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+}
+.nav-mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--color-line);
+}
+.nav-mobile-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+.nav-mobile-drawer-brand span {
+  font-family: var(--font-poppins);
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--color-purple-900);
+}
+.nav-mobile-drawer-close {
+  color: var(--color-purple-900);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.nav-mobile-drawer-close:hover {
+  color: var(--color-orange-900);
+}
+
+.nav-mobile-drawer-search {
+  padding: 16px 24px;
+}
+.nav-mobile-drawer-search input {
+  width: 100%;
+  background: var(--color-purple-100);
+  color: var(--color-purple-900);
+  font-size: 14px;
+  padding: 12px 16px;
+  border-radius: var(--radius-btn);
+  outline: none;
+  border: 2px solid transparent;
+  font-family: var(--font-inter);
+}
+.nav-mobile-drawer-search input:focus {
+  border-color: var(--color-purple-900);
+}
+
+.nav-mobile-drawer-links {
+  flex: 1;
+  padding: 8px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-mobile-link {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-purple-900);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-mobile-link:hover {
+  color: var(--color-orange-900);
+}
+.nav-mobile-dropdown {
+  padding: 12px 0 12px 12px;
+  border-left: 1px solid var(--color-line);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.nav-mobile-dropdown-link {
+  font-family: var(--font-poppins);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--color-purple-900);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-mobile-dropdown-link:hover {
+  color: var(--color-orange-900);
+}
+
+.nav-mobile-drawer-footer {
+  background: var(--color-purple-900);
+  padding: 32px 24px;
+  color: white;
+}
+.nav-mobile-drawer-footer h4 {
+  font-family: var(--font-poppins);
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+.nav-mobile-drawer-footer-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.nav-mobile-drawer-footer-value {
+  font-size: 14px;
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-mobile-drawer-footer-value:hover {
+  color: var(--color-orange-900);
+}
+.nav-mobile-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+.nav-mobile-social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+.nav-mobile-social-link:hover {
+  background: var(--color-orange-900);
+}
+.nav-mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(72, 29, 150, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 40;
+}
+
+/* HIDE ORANGE BADGE IN EMPTY SPACE WITHOUT REMOVING ANYTHING */
+.cursor-ring.is-active ~ .cursor-text-badge {
+  display: none;
+}
+
+/* ---------- Custom cursor ---------- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--color-accent);
+}
+
+.cursor-ring {
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--color-accent-soft);
+  background: rgba(255, 104, 0, 0.06);
+  transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+}
+
+.cursor-ring.is-active {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 104, 0, 0.1);
+  border-color: var(--color-accent);
+}
+
+/* Hide cursor on touch devices */
+@media (hover: none), (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Bulletproof positioning for image/overlay/caption cards */
+.media-card {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  display: block;
+}
+.media-card--4-5 {
+  aspect-ratio: 4 / 5;
+}
+.media-card__overlay {
+  position: absolute;
+  inset: 0;
+}
+.media-card--3-4 {
+  aspect-ratio: 3 / 4;
+}
+.media-card--4-3 {
+  aspect-ratio: 4 / 3;
+}
+.media-card__overlay {
+  position: absolute;
+  inset: 0;
+}
+.media-card__badge {
+  position: absolute;
+  top: 1rem;
+}
+.media-card__badge--right {
+  right: 1rem;
+}
+.media-card__badge--left {
+  left: 1rem;
+}
+.media-card__caption {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  z-index: 10;
+}
+.media-card__caption--full {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem;
+  z-index: 10;
+  text-align: left;
+}
+.media-card--video {
+  aspect-ratio: 16 / 9;
+}
+.media-card__center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.media-card--fixed {
+  position: relative;
+  overflow: hidden;
+}
+.media-card__layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.media-card__hover-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+.media-card__content {
+  position: relative;
+  z-index: 10;
+}
+
+/* ---------- Global readable typography / responsive scale ---------- */
+@media (max-width: 768px) {
+  h1, .h1 { font-size: 36px; line-height: 1.2; }
+  h2, .h2 { font-size: 30px; line-height: 1.2; }
+  h3, .h3 { font-size: 24px; line-height: 1.25; }
+  h4, .h4 { font-size: 20px; line-height: 1.3; }
+  h5, .h5 { font-size: 17px; line-height: 1.4; }
+  h6, .h6 { font-size: 16px; line-height: 1.4; }
+
+  .body-lg { font-size: 16px; line-height: 1.6; }
+  .body-md { font-size: 15px; line-height: 1.6; }
+  .body-sm { font-size: 13px; line-height: 1.55; }
+  .caption { font-size: 12px; line-height: 1.5; }
+}
+
+@media (max-width: 480px) {
+  h1, .h1 { font-size: 32px; }
+  h2, .h2 { font-size: 27px; }
+  h3, .h3 { font-size: 22px; }
 }
 
 /* ===================================================================
-   GLOBAL PAGE SCALE
-   Keeps every route visually compact and consistent without using
-   transform/zoom, so fixed and sticky elements continue to behave.
+   COMPACT DYNAMIC/DETAIL PAGES
+   Shared scale so every [id] detail page stays compact & consistent
 =================================================================== */
-@media (min-width: 768px) {
-  section {
-    scroll-margin-top: 72px;
-  }
+.detail-page,
+.blog-detail,
+.service-detail,
+.portfolio-detail,
+.pricing-detail {
+  padding-top: 0;
+  padding-bottom: 3rem;
 }
 
-@media (max-width: 767px) {
-  html {
-    font-size: 88%;
-  }
+.detail-page section,
+.blog-detail section,
+.service-detail section,
+.portfolio-detail section {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
 
-  .h1,
-  h1 {
-    font-size: 34px;
-  }
-  .h2,
-  h2 {
-    font-size: 28px;
-  }
-  .h3,
-  h3 {
-    font-size: 22px;
-  }
+.detail-page h1,
+.blog-detail h1,
+.service-detail h1,
+.portfolio-detail h1 {
+  font-size: 2.7rem;
+  line-height: 1.15;
+}
+
+.detail-page h2,
+.blog-detail h2,
+.service-detail h2,
+.portfolio-detail h2 {
+  font-size: 2rem;
+  line-height: 1.2;
 }

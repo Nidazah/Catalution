@@ -99,7 +99,7 @@ export default function BlogDetailsPage() {
   if (loading || notFound || !post) {
     return (
       <main className="min-h-screen bg-white">
-        <div className="flex min-h-[240px] items-center justify-center">
+        <div className="flex min-h-[300px] items-center justify-center">
           <p className="text-sm text-gray-500">Loading blog post...</p>
         </div>
       </main>
@@ -108,7 +108,6 @@ export default function BlogDetailsPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Compact detail-page hero */}
       <section className="relative overflow-hidden bg-navy text-white">
         <div className="absolute inset-0">
           <Image

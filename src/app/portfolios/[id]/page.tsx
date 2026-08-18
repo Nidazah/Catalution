@@ -215,7 +215,7 @@ export default async function PortfolioDetailPage({
       : null;
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="portfolio-detail min-h-screen bg-white">
 
       {/* =====================================================
           HERO

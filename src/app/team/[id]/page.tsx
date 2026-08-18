@@ -53,7 +53,7 @@ export default async function TeamDetailPage({
   ].filter((s) => !!s.href);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="detail-page min-h-screen bg-white">
       <PageHero title="Team details" />
 
       <section className="container mx-auto px-6 py-8 max-w-6xl">
