@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Lock, Eye, EyeOff, Loader2, TriangleAlert } from "lucide-react";
+import { Eye, EyeOff, Loader2, TriangleAlert } from "lucide-react";
 import CustomCursor from "@/components/CustomCursor";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -16,17 +17,23 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ password }),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         setError(data.error || "Login failed");
         return;
       }
+
       router.push("/admin/pricing");
       router.refresh();
     } catch {
@@ -39,6 +46,7 @@ export default function AdminLoginPage() {
   return (
     <>
       <CustomCursor />
+
       <div className="login-screen">
         <svg
           className="login-wave"
@@ -47,11 +55,26 @@ export default function AdminLoginPage() {
           aria-hidden="true"
         >
           <defs>
-            <linearGradient id="waveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.55" />
-              <stop offset="100%" stopColor="#ff6800" stopOpacity="0.5" />
+            <linearGradient
+              id="waveGrad"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop
+                offset="0%"
+                stopColor="#8b5cf6"
+                stopOpacity="0.55"
+              />
+              <stop
+                offset="100%"
+                stopColor="#ff6800"
+                stopOpacity="0.5"
+              />
             </linearGradient>
           </defs>
+
           <path
             d="M0,180 C200,100 320,240 560,160 C800,80 900,220 1200,140 L1200,300 L0,300 Z"
             fill="url(#waveGrad)"
@@ -59,6 +82,7 @@ export default function AdminLoginPage() {
         </svg>
 
         <div className="login-card">
+          {/* BRAND */}
           <div className="login-brand">
             <span className="login-mark">
               C
@@ -66,15 +90,24 @@ export default function AdminLoginPage() {
               <i className="login-dot login-dot--b" />
               <i className="login-dot login-dot--c" />
             </span>
+
             <div>
               <div className="login-wordmark">Catalution</div>
-              <div className="login-tagline">Catalyst &middot; Solution &middot; Growth</div>
+
+              <div className="login-tagline">
+                Catalyst &middot; Solution &middot; Growth
+              </div>
             </div>
           </div>
 
+          {/* TITLE */}
           <h1 className="login-title">Admin sign in</h1>
-          <p className="login-subtitle">Sign in to manage your site content.</p>
 
+          <p className="login-subtitle">
+            Sign in to manage your site content.
+          </p>
+
+          {/* ERROR */}
           {error && (
             <div className="login-alert" role="alert">
               <TriangleAlert size={16} strokeWidth={2.2} />
@@ -82,10 +115,12 @@ export default function AdminLoginPage() {
             </div>
           )}
 
+          {/* LOGIN FORM */}
           <form onSubmit={handleSubmit} noValidate>
             <label htmlFor="password" className="login-label">
               Password
             </label>
+
             <div className="login-input-wrap">
               <input
                 id="password"
@@ -98,13 +133,45 @@ export default function AdminLoginPage() {
                 placeholder="Enter password"
                 className="login-input"
               />
-              {/* 👇 EYE ICON BUTTON IS REMOVED (and its closing tag) 👇 */}
+
+              {/* VIEW / HIDE PASSWORD BUTTON */}
+              <button
+                type="button"
+                className="login-password-toggle"
+                onClick={() =>
+                  setShowPassword((prev) => !prev)
+                }
+                aria-label={
+                  showPassword
+                    ? "Hide password"
+                    : "View password"
+                }
+                title={
+                  showPassword
+                    ? "Hide password"
+                    : "View password"
+                }
+              >
+                {showPassword ? (
+                  <EyeOff size={19} strokeWidth={2} />
+                ) : (
+                  <Eye size={19} strokeWidth={2} />
+                )}
+              </button>
             </div>
 
-            <button type="submit" className="login-submit" disabled={loading || !password}>
+            {/* SIGN IN BUTTON */}
+            <button
+              type="submit"
+              className="login-submit"
+              disabled={loading || !password}
+            >
               {loading ? (
                 <>
-                  <Loader2 size={17} className="login-spinner" />
+                  <Loader2
+                    size={17}
+                    className="login-spinner"
+                  />
                   Signing in…
                 </>
               ) : (
@@ -113,7 +180,10 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <p className="login-footer">Catalution CMS &middot; Protected admin area</p>
+          {/* FOOTER */}
+          <p className="login-footer">
+            Catalution CMS &middot; Protected admin area
+          </p>
         </div>
 
         <style jsx>{`
@@ -125,7 +195,12 @@ export default function AdminLoginPage() {
             align-items: center;
             justify-content: center;
             padding: 24px;
-            background: linear-gradient(160deg, var(--color-navy-ink) 0%, var(--color-purple-900) 55%, #2a1063 100%);
+            background: linear-gradient(
+              160deg,
+              var(--color-navy-ink) 0%,
+              var(--color-purple-900) 55%,
+              #2a1063 100%
+            );
             overflow: hidden;
           }
 
@@ -147,7 +222,9 @@ export default function AdminLoginPage() {
             background: #ffffff;
             border-radius: 22px;
             padding: 38px 34px 30px;
-            box-shadow: 0 30px 70px -16px rgba(30, 8, 70, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+            box-shadow:
+              0 30px 70px -16px rgba(30, 8, 70, 0.55),
+              0 0 0 1px rgba(255, 255, 255, 0.06);
           }
 
           .login-brand {
@@ -165,12 +242,17 @@ export default function AdminLoginPage() {
             width: 42px;
             height: 42px;
             border-radius: 12px;
-            background: linear-gradient(135deg, var(--color-purple-900), var(--color-orange-900));
+            background: linear-gradient(
+              135deg,
+              var(--color-purple-900),
+              var(--color-orange-900)
+            );
             color: #fff;
             font-family: var(--font-poppins);
             font-size: 20px;
             font-weight: 700;
-            box-shadow: 0 8px 18px -6px rgba(72, 29, 150, 0.5);
+            box-shadow:
+              0 8px 18px -6px rgba(72, 29, 150, 0.5);
             flex-shrink: 0;
           }
 
@@ -179,6 +261,7 @@ export default function AdminLoginPage() {
             border-radius: 3px;
             display: block;
           }
+
           .login-dot--a {
             width: 8px;
             height: 8px;
@@ -186,6 +269,7 @@ export default function AdminLoginPage() {
             right: -5px;
             background: var(--color-purple-500);
           }
+
           .login-dot--b {
             width: 6px;
             height: 6px;
@@ -193,6 +277,7 @@ export default function AdminLoginPage() {
             right: -11px;
             background: var(--color-orange-700);
           }
+
           .login-dot--c {
             width: 5px;
             height: 5px;
@@ -270,24 +355,19 @@ export default function AdminLoginPage() {
             margin-bottom: 20px;
           }
 
-          .login-input-icon {
-            position: absolute;
-            left: 13px;
-            color: var(--color-purple-500);
-            pointer-events: none;
-          }
-
           .login-input {
             width: 100%;
             height: 46px;
             background: var(--color-section);
             border: 1px solid var(--color-line);
             border-radius: var(--radius-btn);
-            padding: 0 42px; /* Left padding keeps the dots away from the edge */
+            padding: 0 48px 0 14px;
             color: var(--color-heading);
             font-family: var(--font-inter);
             font-size: 14.5px;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            transition:
+              border-color 0.15s ease,
+              box-shadow 0.15s ease;
           }
 
           .login-input::placeholder {
@@ -297,8 +377,42 @@ export default function AdminLoginPage() {
           .login-input:focus {
             outline: none;
             border-color: var(--color-purple-500);
-            /* 👇 This creates the orange ring you want to KEEP */
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.18);
+            box-shadow:
+              0 0 0 3px rgba(139, 92, 246, 0.18);
+          }
+
+          /* PASSWORD VISIBILITY BUTTON */
+          .login-password-toggle {
+            position: absolute;
+            right: 7px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: var(--color-purple-500);
+            cursor: pointer;
+            border-radius: 8px;
+            z-index: 2;
+          }
+
+          .login-password-toggle:hover {
+            color: var(--color-purple-700);
+            background: rgba(139, 92, 246, 0.08);
+          }
+
+          .login-password-toggle:active {
+            transform: translateY(-50%) scale(0.95);
+          }
+
+          .login-password-toggle:focus-visible {
+            outline: 2px solid var(--color-purple-500);
+            outline-offset: 2px;
           }
 
           .login-submit {
@@ -316,8 +430,12 @@ export default function AdminLoginPage() {
             font-size: 14.5px;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 10px 24px -8px rgba(72, 29, 150, 0.45);
-            transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+            box-shadow:
+              0 10px 24px -8px rgba(72, 29, 150, 0.45);
+            transition:
+              background 0.15s ease,
+              transform 0.1s ease,
+              opacity 0.15s ease;
           }
 
           .login-submit:hover:not(:disabled) {
@@ -343,6 +461,7 @@ export default function AdminLoginPage() {
             from {
               transform: rotate(0deg);
             }
+
             to {
               transform: rotate(360deg);
             }
@@ -354,6 +473,16 @@ export default function AdminLoginPage() {
             font-family: var(--font-inter);
             font-size: 11.5px;
             color: #a89ec2;
+          }
+
+          @media (max-width: 480px) {
+            .login-screen {
+              padding: 16px;
+            }
+
+            .login-card {
+              padding: 32px 24px 26px;
+            }
           }
         `}</style>
       </div>

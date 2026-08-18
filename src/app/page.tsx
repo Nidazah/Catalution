@@ -12,6 +12,7 @@ import Price from "../components/Price";
 import Testimonials from "../components/Testimonials";
 import CTA from "../components/CTA";
 
+
 function parseJsonArray<T = unknown>(
   value: Prisma.JsonValue | null | undefined,
 ): T[] {
