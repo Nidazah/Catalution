@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getSession as getUserSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -36,9 +36,9 @@ const teamMemberSchema = z.object({
 const idSchema = z.string().trim().min(1);
 
 async function getSession() {
-  const session = await auth();
-  const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user || !["ADMIN", "STAFF"].includes(role ?? "")) return null;
+  const session = await getUserSession();
+  const role = session?.role;
+  if (!session || !["ADMIN", "STAFF"].includes(role ?? "")) return null;
   return session;
 }
 

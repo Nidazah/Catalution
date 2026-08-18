@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 import { z } from "zod";
 
@@ -43,18 +43,18 @@ const sectionSchema = z.object({
 });
 
 async function requireAdmin() {
-  const session = await auth();
-  const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user || !["ADMIN", "STAFF"].includes(role ?? "")) return null;
+  const session = await getSession();
+  const role = session?.role;
+  if (!session || !["ADMIN", "STAFF"].includes(role ?? "")) return null;
   return session;
 }
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const key = url.searchParams.get("sectionKey");
-  const session = await auth();
+  const session = await getSession();
   const isAdmin = ["ADMIN", "STAFF"].includes(
-    (session?.user as { role?: string } | undefined)?.role ?? "",
+    session?.role ?? "",
   );
 
   const where = {

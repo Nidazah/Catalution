@@ -1,6 +1,6 @@
 // app/api/services/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
@@ -54,9 +54,9 @@ const idSchema = z.string().trim().min(1);
 // ============================================
 
 async function requireStaff() {
-  const session = await auth();
-  const role = (session?.user as { role?: string } | undefined)?.role;
-  return session?.user && ["ADMIN", "STAFF"].includes(role ?? "");
+  const session = await getSession();
+  const role = session?.role;
+  return session && ["ADMIN", "STAFF"].includes(role ?? "");
 }
 
 // ============================================

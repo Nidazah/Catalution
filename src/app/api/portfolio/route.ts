@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 function isAdmin(session: any) {
-  return session?.user?.role === "ADMIN";
+  return session?.role === "ADMIN";
 }
 
 function slugify(value: string) {
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
     const admin = request.nextUrl.searchParams.get("admin") === "true";
 
     if (admin) {
-      const session = await auth();
+      const session = await getSession();
 
       if (!isAdmin(session)) {
         return NextResponse.json(
@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
 // POST /api/portfolio
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!isAdmin(session)) {
       return NextResponse.json(

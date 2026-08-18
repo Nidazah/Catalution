@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 
 const idSchema = z.string().trim().min(1);
@@ -32,12 +32,12 @@ const faqSchema = z.object({
 const faqUpdateSchema = faqSchema.partial();
 
 async function requireStaff() {
-  const session = await auth();
+  const session = await getSession();
 
-  const role = (session?.user as { role?: string } | undefined)?.role;
+  const role = session?.role;
 
   return (
-    session?.user &&
+    session &&
     ["ADMIN", "STAFF"].includes(role ?? "")
   );
 }

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 
 function isAdmin(session: any) {
-  return session?.user?.role === "ADMIN";
+  return session?.role === "ADMIN";
 }
 
 export async function GET(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       searchParams.get("includeInactive") === "true";
 
     if (includeInactive) {
-      const session = await auth();
+      const session = await getSession();
       if (!isAdmin(session)) {
         return NextResponse.json(
           { error: "Unauthorized" },
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!isAdmin(session)) {
       return NextResponse.json(

@@ -1,6 +1,6 @@
 // app/api/services/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getSession as getUserSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
@@ -53,9 +53,9 @@ const serviceUpdateSchema = serviceSchema.partial().extend({
 // ============================================
 
 async function getSession() {
-  const session = await auth();
-  const role = (session?.user as { role?: string } | undefined)?.role;
-  if (!session?.user || !["ADMIN", "STAFF"].includes(role ?? "")) return null;
+  const session = await getUserSession();
+  const role = session?.role;
+  if (!session || !["ADMIN", "STAFF"].includes(role ?? "")) return null;
   return session;
 }
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 
 const faqSchema = z.object({
@@ -28,12 +28,12 @@ const faqSchema = z.object({
 });
 
 async function requireStaff() {
-  const session = await auth();
+  const session = await getSession();
 
-  const role = (session?.user as { role?: string } | undefined)?.role;
+  const role = session?.role;
 
   if (
-    !session?.user ||
+    !session ||
     !["ADMIN", "STAFF"].includes(role ?? "")
   ) {
     return null;

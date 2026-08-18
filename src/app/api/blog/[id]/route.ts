@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 function isAdmin(session: any) {
-  return session?.user?.role === "ADMIN";
+  return session?.role === "ADMIN";
 }
 
 type RouteContext = {
@@ -48,7 +48,7 @@ export async function PUT(
   { params }: RouteContext
 ) {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!isAdmin(session)) {
       return NextResponse.json(
@@ -148,7 +148,7 @@ export async function DELETE(
   { params }: RouteContext
 ) {
   try {
-    const session = await auth();
+    const session = await getSession();
 
     if (!isAdmin(session)) {
       return NextResponse.json(
