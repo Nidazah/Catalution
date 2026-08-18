@@ -70,6 +70,7 @@
 }
 html {
   scroll-behavior: smooth;
+  font-size: 90%;
 }
 
 body {
@@ -213,86 +214,86 @@ body {
 h1 {
   font-family: var(--font-poppins);
   font-weight: 700;
-  font-size: 48px;
+  font-size: 43px;
   line-height: 120%;
 }
 .h2,
 h2 {
   font-family: var(--font-poppins);
   font-weight: 600;
-  font-size: 36px;
+  font-size: 32px;
   line-height: 120%;
 }
 .h3,
 h3 {
   font-family: var(--font-poppins);
   font-weight: 600;
-  font-size: 28px;
+  font-size: 25px;
   line-height: 120%;
 }
 .h4,
 h4 {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 22px;
+  font-size: 20px;
   line-height: 130%;
 }
 .h5,
 h5 {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 140%;
 }
 .h6,
 h6 {
   font-family: var(--font-poppins);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 140%;
 }
 
 .ui-lg {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 140%;
 }
 .ui-md {
   font-family: var(--font-poppins);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 140%;
 }
 .ui-sm {
   font-family: var(--font-poppins);
   font-weight: 400;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 140%;
 }
 
 .body-lg {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 150%;
 }
 .body-md {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 160%;
 }
 .body-sm {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 160%;
 }
 .caption {
   font-family: var(--font-inter);
   font-weight: 400;
-  font-size: 11px;
+  font-size: 10px;
   line-height: 150%;
 }
 
@@ -303,19 +304,18 @@ h6 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 14px;
-  padding: 12px 24px;
-  border-radius: var(--radius-btn);
+  font-size: 13px;
+  padding: 10px 21px;
+  border-radius: 11px;
   transition: all 0.2s ease;
   cursor: pointer;
   text-decoration: none;
   border: 1px solid transparent;
 }
 
-/* 1. PRIMARY (Purple 900 Fill) */
 .btn-primary {
   background: var(--color-purple-900);
   color: #ffffff;
@@ -326,7 +326,6 @@ h6 {
   border-color: var(--color-purple-700);
 }
 
-/* 2. SECONDARY (Orange 900 Fill - NOT USED YET, but ready) */
 .btn-secondary {
   background: var(--color-orange-900);
   color: #ffffff;
@@ -337,7 +336,6 @@ h6 {
   border-color: var(--color-orange-700);
 }
 
-/* 3. OUTLINE (White fill, Purple border/text) */
 .btn-outline {
   background: #ffffff;
   color: var(--color-purple-900);
@@ -347,7 +345,6 @@ h6 {
   background: var(--color-purple-100);
 }
 
-/* 4. GHOST (Transparent with Orange text, used for Read More / Links) */
 .btn-ghost {
   background: transparent;
   color: var(--color-orange-900);
@@ -361,18 +358,17 @@ h6 {
   text-decoration: underline;
 }
 
-/* 5. NAVBAR CTA (Specific to your screenshot's exact look) */
 .btn-nav-primary {
   background: var(--color-purple-900);
   color: #ffffff;
-  border-radius: var(--radius-btn);
-  padding: 10px 20px;
+  border-radius: 11px;
+  padding: 9px 18px;
   font-family: var(--font-poppins);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   text-decoration: none;
   transition:
     background 0.2s ease,
@@ -395,18 +391,18 @@ h6 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 4%;
+  padding: 0.9rem 4%;
   font-family: var(--font-inter), sans-serif;
 }
 .navbar-logo img {
-  height: 40px;
+  height: 36px;
   width: auto;
   display: block;
 }
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.7rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -414,9 +410,9 @@ h6 {
 .nav-link {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 140%;
-  color: inherit; /* <--- This makes it take the parent's text color */
+  color: inherit;
   text-decoration: none;
   transition: color 0.2s ease;
 }
@@ -428,13 +424,13 @@ h6 {
   display: none;
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-purple-900);
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 8px;
-  border-radius: var(--radius-btn);
+  padding: 7px;
+  border-radius: 11px;
   transition: color 0.2s ease;
 }
 .btn-nav-menu:hover {
@@ -447,7 +443,7 @@ h6 {
   .btn-nav-menu {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
   }
 }
 
@@ -458,21 +454,21 @@ h6 {
   left: 0;
   z-index: 50;
   background: var(--color-bg);
-  border-radius: var(--radius-btn);
+  border-radius: 11px;
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--color-line);
-  padding: 8px 0;
-  min-width: 200px;
+  padding: 7px 0;
+  min-width: 180px;
 }
 .nav-dropdown-item {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-purple-900);
-  padding: 10px 20px;
+  padding: 9px 18px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -487,14 +483,14 @@ h6 {
   left: 0;
   z-index: 50;
   background: var(--color-bg);
-  border-radius: var(--radius-btn);
+  border-radius: 11px;
   box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--color-line);
   overflow: hidden;
-  min-width: 900px;
+  min-width: 810px;
 }
 .nav-mega-menu-column {
-  padding: 24px;
+  padding: 22px;
   border-right: 1px solid var(--color-line);
 }
 .nav-mega-menu-column:last-child {
@@ -503,19 +499,19 @@ h6 {
 .nav-mega-menu-title {
   font-family: var(--font-poppins);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   color: var(--color-purple-900);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   border-bottom: 2px solid var(--color-orange-900);
-  padding-bottom: 8px;
+  padding-bottom: 7px;
   display: inline-block;
 }
 .nav-mega-menu-link {
   font-family: var(--font-poppins);
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-purple-900);
-  padding: 6px 0;
+  padding: 5px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -531,300 +527,41 @@ h6 {
   position: fixed;
   top: 0;
   right: 0;
-  height: 100%;
-  width: 100%;
-  max-width: 340px;
-  background: var(--color-bg);
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
-}
-.nav-mobile-drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 24px;
-  border-bottom: 1px solid var(--color-line);
-}
-.nav-mobile-drawer-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-}
-.nav-mobile-drawer-brand span {
-  font-family: var(--font-poppins);
-  font-weight: 600;
-  font-size: 20px;
-  color: var(--color-purple-900);
-}
-.nav-mobile-drawer-close {
-  color: var(--color-purple-900);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-.nav-mobile-drawer-close:hover {
-  color: var(--color-orange-900);
-}
-
-.nav-mobile-drawer-search {
-  padding: 16px 24px;
-}
-.nav-mobile-drawer-search input {
-  width: 100%;
-  background: var(--color-purple-100);
-  color: var(--color-purple-900);
-  font-size: 14px;
-  padding: 12px 16px;
-  border-radius: var(--radius-btn);
-  outline: none;
-  border: 2px solid transparent;
-  font-family: var(--font-inter);
-}
-.nav-mobile-drawer-search input:focus {
-  border-color: var(--color-purple-900);
-}
-
-.nav-mobile-drawer-links {
-  flex: 1;
-  padding: 8px 24px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.nav-mobile-link {
-  padding: 16px 0;
-  border-bottom: 1px solid var(--color-line);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-poppins);
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--color-purple-900);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-.nav-mobile-link:hover {
-  color: var(--color-orange-900);
-}
-.nav-mobile-dropdown {
-  padding: 12px 0 12px 12px;
-  border-left: 1px solid var(--color-line);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.nav-mobile-dropdown-link {
-  font-family: var(--font-poppins);
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--color-purple-900);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-.nav-mobile-dropdown-link:hover {
-  color: var(--color-orange-900);
-}
-
-.nav-mobile-drawer-footer {
-  background: var(--color-purple-900);
-  padding: 32px 24px;
-  color: white;
-}
-.nav-mobile-drawer-footer h4 {
-  font-family: var(--font-poppins);
-  font-weight: 700;
-  font-size: 18px;
-  margin-bottom: 16px;
-}
-.nav-mobile-drawer-footer-label {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 12px;
-  font-weight: 500;
-  margin-bottom: 4px;
-}
-.nav-mobile-drawer-footer-value {
-  font-size: 14px;
-  color: white;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-.nav-mobile-drawer-footer-value:hover {
-  color: var(--color-orange-900);
-}
-.nav-mobile-social {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-.nav-mobile-social-link {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-.nav-mobile-social-link:hover {
-  background: var(--color-orange-900);
-}
-.nav-mobile-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(72, 29, 150, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 40;
-}
-
-/* HIDE ORANGE BADGE IN EMPTY SPACE WITHOUT REMOVING ANYTHING */
-.cursor-ring.is-active ~ .cursor-text-badge {
-  display: none;
-}
-
-/* ---------- Custom cursor ---------- */
-.cursor-dot,
-.cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  border-radius: 9999px;
-  will-change: transform;
-}
-
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--color-accent);
-}
-
-.cursor-ring {
-  width: 34px;
-  height: 34px;
-  border: 1.5px solid var(--color-accent-soft);
-  background: rgba(255, 104, 0, 0.06);
-  /* Replaced transition-all with specific properties for better performance */
-  transition: width 0.25s ease, height 0.25s ease, background 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
-}
-
-.cursor-ring.is-active {
-  width: 56px;
-  height: 56px;
-  background: rgba(255, 104, 0, 0.1);
-  border-color: var(--color-accent);
-}
-
-/* 
-  Hide cursor on touch devices (Tablets/Mobile)
-  Because custom cursors don't make sense on phones.
-*/
-@media (hover: none), (pointer: coarse) {
-  body {
-    cursor: auto;
-  }
-  .cursor-dot,
-  .cursor-ring {
-    display: none !important;
-  }
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;             /* Chrome, Safari, Opera */
-}
-
-/* Bulletproof positioning for image/overlay/caption cards.
-   Does not depend on Tailwind's relative/absolute utilities. */
-.media-card {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  display: block;
-}
-.media-card--4-5 {
-  aspect-ratio: 4 / 5;
-}
-.media-card__overlay {
-  position: absolute;
-  inset: 0;
-}
-.media-card--3-4 {
-  aspect-ratio: 3 / 4;
-}
-.media-card--4-3 {
-  aspect-ratio: 4 / 3;
-}
-.media-card__overlay {
-  position: absolute;
-  inset: 0;
-}
-.media-card__badge {
-  position: absolute;
-  top: 1rem;
-}
-.media-card__badge--right {
-  right: 1rem;
-}
-.media-card__badge--left {
-  left: 1rem;
-}
-.media-card__caption {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 1.5rem;
-  right: 1.5rem;
-  z-index: 10;
-}
-.media-card__caption--full {
-  position: absolute;
   bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 1.5rem;
-  z-index: 10;
-  text-align: left;
+  z-index: 100;
+  width: min(360px, 88vw);
+  background: var(--color-bg);
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.12);
+  padding: 20px;
+  overflow-y: auto;
 }
-.media-card--video {
-  aspect-ratio: 16 / 9;
+
+/* ===================================================================
+   GLOBAL PAGE SCALE
+   Keeps every route visually compact and consistent without using
+   transform/zoom, so fixed and sticky elements continue to behave.
+=================================================================== */
+@media (min-width: 768px) {
+  section {
+    scroll-margin-top: 72px;
+  }
 }
-.media-card__center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.media-card--fixed {
-  position: relative;
-  overflow: hidden;
-}
-.media-card__layer {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-.media-card__hover-layer {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-.media-card__content {
-  position: relative;
-  z-index: 10;
+
+@media (max-width: 767px) {
+  html {
+    font-size: 88%;
+  }
+
+  .h1,
+  h1 {
+    font-size: 34px;
+  }
+  .h2,
+  h2 {
+    font-size: 28px;
+  }
+  .h3,
+  h3 {
+    font-size: 22px;
+  }
 }
