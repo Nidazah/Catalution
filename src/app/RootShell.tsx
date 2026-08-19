@@ -24,6 +24,7 @@ export default function RootShell({ children }: { children: React.ReactNode }) {
     "/blog",
     "/blog-grid",
     "/blog-sidebar",
+    "/blog-standard",
     "/contact",
     "/about",
     "/team",
