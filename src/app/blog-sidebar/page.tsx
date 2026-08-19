@@ -32,7 +32,7 @@ export default function BlogSidebarPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white pb-24">
+    <main className="min-h-screen bg-white">
       <PageHero title="Blog Sidebar" />
 
       <section className="container mx-auto px-6 py-20 max-w-[1280px]">
