@@ -3,18 +3,87 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-model User {
-  id          String               @id @default(cuid())
-  email       String               @unique
-  password    String
-  name        String
-  role        Role                 @default(STAFF)
-  createdAt   DateTime             @default(now())
-  resetTokens PasswordResetToken[]
+model Blog {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  excerpt      String
+  content      String?
+  image        String
+  author       String
+  authorAvatar String?
+  date         String
+  category     String
+  tags         Json?
+  comments     Int      @default(0)
+  sortOrder    Int      @default(0)
+  active       Boolean  @default(true)
+  published    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active])
+  @@index([category])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  service   String?
+  message   String
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([email])
+  @@index([status])
+}
+
+model ContactInfo {
+  id              String   @id @default(cuid())
+  emailPrimary    String
+  emailSecondary  String?
+  phone           String
+  addressLine1    String
+  addressLine2    String
+  mapEmbedUrl     String?
+  rating          Float?
+  reviewCount     Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ContentSection {
+  id                   String            @id @default(cuid())
+  sectionKey           ContentSectionKey @unique
+  label                String
+  eyebrow              String?
+  title                String
+  description          String?
+  image                String?
+  primaryButtonLabel   String?
+  primaryButtonUrl     String?
+  secondaryButtonLabel String?
+  secondaryButtonUrl   String?
+  items                Json?
+  published            Boolean           @default(true)
+  sortOrder            Int               @default(0)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@index([published])
+  @@index([sortOrder])
 }
 
 model PasswordResetToken {
@@ -24,34 +93,9 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-}
-
-model Service {
-  id               String   @id @default(cuid())
-  title            String
-  slug             String   @unique
-  description      String
-  icon             String   @default("waves")
-  image            String
-  ctaLabel         String   @default("Get optimization")
-  sortOrder        Int      @default(0)
-  published        Boolean  @default(true)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  shortDescription String?
-  fullDescription  String?
-  heroImage2       String?
-  features         Json?
-  overviewItems    Json?
-  ctaUrl           String   @default("/contact")
-  active           Boolean  @default(true)
-
-  @@index([sortOrder])
-  @@index([published])
-  @@index([active])
 }
 
 model Portfolio {
@@ -84,35 +128,35 @@ model Portfolio {
   solution       String?
   testimonial    String?
 
-  @@index([sortOrder])
-  @@index([published])
   @@index([active])
   @@index([category])
+  @@index([published])
+  @@index([sortOrder])
 }
 
-model Blog {
-  id           String   @id @default(cuid())
-  title        String
-  slug         String   @unique
-  excerpt      String
-  content      String?
-  image        String
-  author       String
-  authorAvatar String?
-  date         String
-  category     String
-  tags         Json?
-  comments     Int      @default(0)
-  sortOrder    Int      @default(0)
-  active       Boolean  @default(true)
-  published    Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model Service {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  description      String
+  icon             String   @default("waves")
+  image            String
+  ctaLabel         String   @default("Get optimization")
+  sortOrder        Int      @default(0)
+  published        Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  shortDescription String?
+  fullDescription  String?
+  heroImage2       String?
+  features         Json?
+  overviewItems    Json?
+  ctaUrl           String   @default("/contact")
+  active           Boolean  @default(true)
 
-  @@index([sortOrder])
-  @@index([published])
   @@index([active])
-  @@index([category])
+  @@index([published])
+  @@index([sortOrder])
 }
 
 model TeamMember {
@@ -137,9 +181,9 @@ model TeamMember {
   phone       String?
   skills      Json?
 
-  @@index([sortOrder])
-  @@index([published])
   @@index([active])
+  @@index([published])
+  @@index([sortOrder])
 }
 
 model Testimonial {
@@ -155,37 +199,19 @@ model Testimonial {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([sortOrder])
-  @@index([published])
   @@index([active])
+  @@index([published])
+  @@index([sortOrder])
 }
 
-model FAQ {
-  id        String   @id @default(cuid())
-  question  String
-  answer    String
-  sortOrder Int      @default(0)
-  active    Boolean  @default(true)
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([sortOrder])
-  @@index([published])
-  @@index([active])
-}
-
-model Plan {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  monthly   String
-  yearly    String
-  features  String[]
-  active    Boolean  @default(true)
-  published Boolean  @default(false)
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model User {
+  id                 String               @id @default(cuid())
+  email              String               @unique
+  password           String
+  name               String
+  role               Role                 @default(STAFF)
+  createdAt          DateTime             @default(now())
+  PasswordResetToken PasswordResetToken[]
 }
 
 model PricingPlan {
@@ -205,68 +231,58 @@ model PricingPlan {
   @@map("pricing_plans")
 }
 
-model ContentSection {
-  id                   String            @id @default(cuid())
-  sectionKey           ContentSectionKey @unique
-  label                String
-  eyebrow              String?
+model Career {
+  id                   String              @id @default(cuid())
   title                String
-  description          String?
-  image                String?
-  primaryButtonLabel   String?
-  primaryButtonUrl     String?
-  secondaryButtonLabel String?
-  secondaryButtonUrl   String?
-  items                Json?
-  published            Boolean           @default(true)
-  sortOrder            Int               @default(0)
-  createdAt            DateTime          @default(now())
-  updatedAt            DateTime          @updatedAt
+  slug                 String              @unique
+  department           String
+  location             String
+  type                 String
+  urgency              String?
+  icon                 String              @default("swirl")
+  description          String
+  requirements         String
+  requirementsGrid     Json?
+  responsibilities     String
+  responsibilitiesList Json?
+  category             String
+  number               String
+  company              String              @default("Catalution")
+  website              String?
+  salary               String
+  vacancy              String
+  applyOn              String
+  tags                 Json?
+  sortOrder            Int                 @default(0)
+  active               Boolean             @default(true)
+  published            Boolean             @default(true)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  applications         CareerApplication[]
 
   @@index([sortOrder])
   @@index([published])
+  @@index([active])
 }
 
-model ContactInfo {
-  id             String   @id @default(cuid())
-  emailPrimary   String
-  emailSecondary String?
-  phone          String
-  addressLine1   String
-  addressLine2   String
-  mapEmbedUrl    String?
-  rating         Float?
-  reviewCount    Int?
-  updatedAt      DateTime @updatedAt
-}
+model CareerApplication {
+  id          String   @id @default(cuid())
+  careerId    String
+  name        String
+  email       String
+  phone       String
+  coverLetter String
+  cvUrl       String
+  cvFileName  String
+  cvFileType  String
+  cvFileSize  Int
+  status      String   @default("NEW")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  career      Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
 
-model ContactSubmission {
-  id        String   @id @default(cuid())
-  firstName String
-  lastName  String
-  email     String
-  phone     String?
-  service   String?
-  message   String
-  read      Boolean  @default(false)
-  createdAt DateTime @default(now())
-
-  @@index([createdAt])
-  @@index([read])
-}
-
-model ContactMessage {
-  id        String   @id @default(cuid())
-  firstName String
-  lastName  String
-  email     String
-  phone     String?
-  service   String?
-  message   String
-  status    String   @default("NEW")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  @@index([careerId])
   @@index([email])
   @@index([status])
   @@index([createdAt])

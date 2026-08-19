@@ -8,6 +8,7 @@ import { ArrowRight } from "lucide-react";
 
 type Portfolio = {
   id: string | number;
+  slug: string;
   title: string;
   tags: string[];
   image: string;
@@ -144,7 +145,7 @@ export default function PortfoliosPage() {
               {visiblePortfolios.map((portfolio) => (
                 <Link
                   key={portfolio.id}
-                  href={`/portfolios/${portfolio.id}`}
+                  href={`/portfolios/${portfolio.slug}`}
                   className="group block"
                 >
                   <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 h-full flex flex-col">

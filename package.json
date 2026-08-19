@@ -11,9 +11,11 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "tsx prisma/seed-all.ts",
     "db:seed:pricing": "tsx seed-pricing.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:seed:core": "tsx prisma/seed.ts",
+    "db:verify": "tsx prisma/verify-db.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

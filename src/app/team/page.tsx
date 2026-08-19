@@ -14,9 +14,11 @@ export default function TeamPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetch("/api/team", { cache: "no-store" })
+    fetch("/api/team?limit=50", { cache: "no-store" })
       .then((res) => res.json())
-      .then((data) => setAllTeamMembers(Array.isArray(data) ? data : []))
+      .then((data) =>
+        setAllTeamMembers(Array.isArray(data?.data) ? data.data : []),
+      )
       .finally(() => setLoading(false));
   }, []);
 

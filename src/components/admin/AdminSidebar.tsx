@@ -15,6 +15,7 @@ import {
   Tag,
   HelpCircle,
   Mail,
+  UserPlus,
   LogOut,
   AlertCircle,
   CheckCircle,
@@ -33,7 +34,12 @@ const MENU_ITEMS: MenuItem[] = [
   { label: "Portfolios", href: "/admin/portfolio", icon: FolderKanban },
   { label: "Blog", href: "/admin/blog", icon: Newspaper },
   { label: "Team", href: "/admin/team", icon: Users },
-  { label: "Testimonials", href: "/admin/testimonials", icon: MessageSquareQuote },
+  { label: "Careers", href: "/admin/careers", icon: UserPlus },
+  {
+    label: "Testimonials",
+    href: "/admin/testimonials",
+    icon: MessageSquareQuote,
+  },
   { label: "Pricing", href: "/admin/pricing", icon: Tag },
   { label: "FAQ", href: "/admin/faq", icon: HelpCircle },
   { label: "Contact", href: "/admin/contact", icon: Mail },
@@ -72,7 +78,8 @@ export default function AdminSidebar({
     }
     if (accountMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [accountMenuOpen]);
 
@@ -86,7 +93,7 @@ export default function AdminSidebar({
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(
           () => reject(new Error("Logout request timed out after 10 seconds")),
-          10000
+          10000,
         );
       });
 
@@ -102,7 +109,7 @@ export default function AdminSidebar({
       await Promise.race([logoutPromise, timeoutPromise]);
 
       const response = await logoutPromise;
-      
+
       if (!response.ok) {
         throw new Error(`Logout failed with status: ${response.status}`);
       }
@@ -120,14 +127,14 @@ export default function AdminSidebar({
       if (error instanceof Error) {
         if (error.message.includes("timeout")) {
           setErrorMessage(
-            "Logout timed out. Please check your connection and try again."
+            "Logout timed out. Please check your connection and try again.",
           );
         } else if (
           error.message.includes("fetch") ||
           error.message.includes("network")
         ) {
           setErrorMessage(
-            "Network error. Please check your internet connection."
+            "Network error. Please check your internet connection.",
           );
         } else {
           setErrorMessage(error.message);
@@ -155,8 +162,7 @@ export default function AdminSidebar({
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen flex-col bg-[#1a1a2e] py-4 transition-all duration-300 ease-in-out
-          ${isOpen ? "w-64" : "w-16"}`}
+        className={`fixed left-0 top-0 z-50 flex h-screen flex-col bg-[#270f4b] py-4 transition-all duration-300 ease-in-out ${isOpen ? "w-64" : "w-16"}`}
         role="navigation"
         aria-label="Admin sidebar"
       >
@@ -254,8 +260,8 @@ export default function AdminSidebar({
                   logoutState === "error"
                     ? "text-red-400 hover:bg-red-500/10"
                     : logoutState === "success"
-                    ? "text-green-400"
-                    : "text-white/70 hover:bg-white/10 hover:text-white"
+                      ? "text-green-400"
+                      : "text-white/70 hover:bg-white/10 hover:text-white"
                 } ${logoutState === "loading" ? "cursor-not-allowed opacity-70" : ""}`}
               >
                 {logoutState === "loading" ? (

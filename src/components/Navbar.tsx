@@ -46,10 +46,12 @@ const serviceIconMap: Record<string, ComponentType<{ className?: string }>> = {
 };
 
 // --- PORTFOLIOS DROPDOWN ---
-const portfolioLinks = [
-  { label: "Portfolios", href: "/portfolios" },
-  { label: "Portfolio details", href: "/portfolios/1" },
-];
+function buildPortfolioLinks(portfolioDetailsHref: string) {
+  return [
+    { label: "Portfolios", href: "/portfolios" },
+    { label: "Portfolio details", href: portfolioDetailsHref },
+  ];
+}
 
 // --- BLOG DROPDOWN ---
 const blogLinks = [
@@ -59,35 +61,45 @@ const blogLinks = [
 ];
 
 // --- PAGES MEGA MENU ---
-const pagesLinks = {
-  main: [
-    { label: "About us", href: "/about", badge: null },
-    { label: "Our history", href: "/history", badge: "HOT" },
-    { label: "Team", href: "/team", badge: null },
-    { label: "Team details", href: "/team/savanah-nguyen", badge: null },
-    { label: "Careers", href: "/careers", badge: null },
-    { label: "Careers details", href: "/careers/1", badge: "New" },
-    { label: "Pricing Plan", href: "/pricing", badge: null },
-    { label: "Feedbacks", href: "/", badge: null },
-    { label: "Faq", href: "/faq", badge: null },
-    { label: "Contact", href: "/contact", badge: null },
-  ],
-  other: [
-    { label: "Services", href: "/services", badge: null },
-    { label: "Service details", href: "/services/business-process-optimization", badge: null },
-    { label: "Portfolios", href: "/portfolios", badge: null },
-    { label: "Portfolio details", href: "/portfolios/1", badge: null },
-    { label: "Error 404", href: "/404", badge: null },
-    { label: "Blog grid", href: "/blog-grid", badge: "NEW" },
-    { label: "Blog standard", href: "/blog-standard", badge: null },
-    { label: "Blog sidebar", href: "/blog-sidebar", badge: null },
-    { label: "Blog details", href: "/blog", badge: null },
-    { label: "Term & Conditions", href: "/", badge: null },
-  ],
-};
+function buildPagesLinks(
+  portfolioDetailsHref: string,
+  careersDetailsHref: string,
+) {
+  return {
+    main: [
+      { label: "About us", href: "/about", badge: null },
+      { label: "Our history", href: "/history", badge: "HOT" },
+      { label: "Team", href: "/team", badge: null },
+      { label: "Team details", href: "/team/savanah-nguyen", badge: null },
+      { label: "Careers", href: "/careers", badge: null },
+      { label: "Careers details", href: careersDetailsHref, badge: "New" },
+      { label: "Pricing Plan", href: "/pricing", badge: null },
+      { label: "Feedbacks", href: "/", badge: null },
+      { label: "Faq", href: "/faq", badge: null },
+      { label: "Contact", href: "/contact", badge: null },
+    ],
+    other: [
+      { label: "Services", href: "/services", badge: null },
+      { label: "Service details", href: "/services/business-process-optimization", badge: null },
+      { label: "Portfolios", href: "/portfolios", badge: null },
+      { label: "Portfolio details", href: portfolioDetailsHref, badge: null },
+      { label: "Error 404", href: "/404", badge: null },
+      { label: "Blog grid", href: "/blog-grid", badge: "NEW" },
+      { label: "Blog standard", href: "/blog-standard", badge: null },
+      { label: "Blog sidebar", href: "/blog-sidebar", badge: null },
+      { label: "Blog details", href: "/blog", badge: null },
+      { label: "Term & Conditions", href: "/", badge: null },
+    ],
+  };
+}
+
+type PagesLinks = ReturnType<typeof buildPagesLinks>;
 
 // --- MAIN NAV DATA ---
-function buildLinks(servicesDropdown: NavLink["dropdown"]): NavLink[] {
+function buildLinks(
+  servicesDropdown: NavLink["dropdown"],
+  portfolioDetailsHref: string,
+): NavLink[] {
   return [
     { label: "Home", href: "/" },
     { label: "Pages", href: "#", isMegaMenu: true, width: "w-[900px]" },
@@ -100,7 +112,7 @@ function buildLinks(servicesDropdown: NavLink["dropdown"]): NavLink[] {
     {
       label: "Portfolios",
       href: "/portfolios",
-      dropdown: portfolioLinks,
+      dropdown: buildPortfolioLinks(portfolioDetailsHref),
       width: "w-48",
       hasSimpleDropdown: true,
     },
@@ -139,10 +151,12 @@ function PagesMegaMenu({
   open,
   pathname,
   onNavigate,
+  pagesLinks,
 }: {
   open: boolean;
   pathname: string;
   onNavigate: () => void;
+  pagesLinks: PagesLinks;
 }) {
   if (!open) return null;
 
@@ -246,10 +260,12 @@ function NavItem({
   link,
   pathname,
   isHero,
+  pagesLinks,
 }: {
   link: NavLink;
   pathname: string;
   isHero: boolean;
+  pagesLinks: PagesLinks;
 }) {
   const [open, setOpen] = useState(false);
   const isActive =
@@ -282,6 +298,7 @@ function NavItem({
           open={open}
           pathname={pathname}
           onNavigate={() => setOpen(false)}
+          pagesLinks={pagesLinks}
         />
       </div>
     );
@@ -322,7 +339,7 @@ function NavItem({
             const itemActive = item.href === pathname;
             return (
               <Link
-                key={item.href}
+                key={item.label}
                 href={item.href}
                 data-cursor-hover
                 onClick={() => setOpen(false)}
@@ -346,9 +363,11 @@ function NavItem({
 function MobilePagesMenu({
   pathname,
   onNavigate,
+  pagesLinks,
 }: {
   pathname: string;
   onNavigate: () => void;
+  pagesLinks: PagesLinks;
 }) {
   const groups = [
     { title: "Main pages", items: pagesLinks.main },
@@ -363,7 +382,7 @@ function MobilePagesMenu({
           <div className="flex flex-col gap-3">
             {group.items.map((item) => (
               <Link
-                key={item.href}
+                key={item.label}
                 href={item.href}
                 onClick={onNavigate}
                 className={`nav-mobile-dropdown-link flex items-center gap-2 ${
@@ -398,10 +417,12 @@ function MobileSection({
   link,
   onNavigate,
   pathname,
+  pagesLinks,
 }: {
   link: NavLink;
   onNavigate: () => void;
   pathname: string;
+  pagesLinks: PagesLinks;
 }) {
   const [open, setOpen] = useState(false);
   const isActive =
@@ -439,7 +460,11 @@ function MobileSection({
           />
         </button>
         {open && (
-          <MobilePagesMenu pathname={pathname} onNavigate={onNavigate} />
+          <MobilePagesMenu
+            pathname={pathname}
+            onNavigate={onNavigate}
+            pagesLinks={pagesLinks}
+          />
         )}
       </div>
     );
@@ -463,7 +488,7 @@ function MobileSection({
         <div className="nav-mobile-dropdown">
           {link.dropdown.map((item) => (
             <Link
-              key={item.href}
+              key={item.label}
               href={item.href}
               onClick={onNavigate}
               className={`nav-mobile-dropdown-link ${
@@ -527,7 +552,60 @@ export default function Navbar({
     };
   }, []);
 
-  const links = buildLinks(servicesDropdown);
+  // "Portfolio details" and "Careers details" mega-menu links have no fixed
+  // target page — they point at whichever record happens to come first, so
+  // they always resolve to a real, live detail page instead of a
+  // hardcoded/stale id or the listing page.
+  const [portfolioDetailsHref, setPortfolioDetailsHref] =
+    useState("/portfolios");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/portfolio", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: unknown) => {
+        const portfolios = Array.isArray(data) ? data : [];
+        const firstSlug = portfolios[0]?.slug;
+        if (cancelled || !firstSlug) return;
+        setPortfolioDetailsHref(`/portfolios/${firstSlug}`);
+      })
+      .catch(() => {
+        // keep the "/portfolios" fallback on any error
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const [careersDetailsHref, setCareersDetailsHref] = useState("/careers");
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/careers", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: unknown) => {
+        const careers = Array.isArray(data)
+          ? data
+          : Array.isArray((data as { careers?: unknown[] })?.careers)
+            ? (data as { careers: unknown[] }).careers
+            : [];
+        const first = careers[0] as
+          | { id?: string; slug?: string }
+          | undefined;
+        const target = first?.slug || first?.id;
+        if (cancelled || !target) return;
+        setCareersDetailsHref(`/careers/${target}`);
+      })
+      .catch(() => {
+        // keep the "/careers" fallback on any error
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const links = buildLinks(servicesDropdown, portfolioDetailsHref);
+  const pagesLinks = buildPagesLinks(portfolioDetailsHref, careersDetailsHref);
 
   // The parent decides whether this page has a transparent hero navbar.
   // The navbar becomes solid after scrolling.
@@ -539,7 +617,7 @@ export default function Navbar({
     : "/images/Logo/secondary-logo.webp";
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 transition-colors duration-300">
+    <header className="absolute left-0 top-0 z-50 w-full bg-transparent">
       <div
         className={`catalution-navbar ${
           isHeroMode
@@ -570,6 +648,7 @@ export default function Navbar({
               link={l}
               pathname={pathname}
               isHero={useLightText}
+              pagesLinks={pagesLinks}
             />
           ))}
         </nav>
@@ -676,6 +755,7 @@ export default function Navbar({
                     link={l}
                     onNavigate={() => setMobileOpen(false)}
                     pathname={pathname}
+                    pagesLinks={pagesLinks}
                   />
                 </div>
               ))}

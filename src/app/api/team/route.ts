@@ -18,7 +18,14 @@ const teamMemberSchema = z.object({
     .max(140)
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
   bio: z.string().trim().max(2000).optional().nullable(),
-  image: z.string().trim().url(),
+  image: z
+    .string()
+    .trim()
+    .min(1)
+    .refine(
+      (v) => v.startsWith("/") || v.startsWith("http://") || v.startsWith("https://"),
+      "Image must be a valid URL or local path",
+    ),
   email: z.string().trim().email().optional().nullable(),
   phone: z.string().trim().max(40).optional().nullable(),
   linkedin: z.string().trim().url().optional().nullable(),
@@ -62,6 +69,7 @@ function isNotFoundError(error: unknown) {
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
+
   const admin = url.searchParams.get("admin") === "true";
 
   if (admin && !(await getSession())) {
@@ -69,13 +77,52 @@ export async function GET(request: Request) {
   }
 
   try {
-    const team = await withDbRetry(() =>
-      prisma.teamMember.findMany({
-        where: admin ? undefined : { active: true, published: true },
-        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-      }),
+    const pageParam = Number(url.searchParams.get("page") || "1");
+    const limitParam = Number(url.searchParams.get("limit") || "10");
+
+    const page = Math.max(1, Number.isFinite(pageParam) ? pageParam : 1);
+    const limit = Math.min(
+      50,
+      Math.max(1, Number.isFinite(limitParam) ? limitParam : 10),
     );
-    return NextResponse.json(team);
+
+    const skip = (page - 1) * limit;
+
+    const where = admin
+      ? undefined
+      : {
+          active: true,
+          published: true,
+        };
+
+    const [team, total] = await withDbRetry(() =>
+      Promise.all([
+        prisma.teamMember.findMany({
+          where,
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+          skip,
+          take: limit,
+        }),
+
+        prisma.teamMember.count({
+          where,
+        }),
+      ]),
+    );
+
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+
+    return NextResponse.json({
+      data: team,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    });
   } catch (error) {
     console.error("GET /api/team", error);
     return NextResponse.json(
@@ -95,8 +142,16 @@ export async function POST(request: Request) {
     return NextResponse.json(member, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.error("Team validation error:", error.issues);
+
       return NextResponse.json(
-        { error: "Invalid team member data", details: error.flatten() },
+        {
+          error: "Invalid team member data",
+          details: error.issues.map((issue) => ({
+            field: issue.path.join("."),
+            message: issue.message,
+          })),
+        },
         { status: 400 },
       );
     }
@@ -121,13 +176,27 @@ export async function PATCH(request: Request) {
   try {
     const body = await request.json();
     const id = idSchema.parse(body.id);
-    const data = teamMemberSchema.parse(body);
+
+    const {
+      id: _id,
+      ...memberData
+    } = body;
+
+    const data = teamMemberSchema.parse(memberData);
     const member = await prisma.teamMember.update({ where: { id }, data });
     return NextResponse.json(member);
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.error("Team validation error:", error.issues);
+
       return NextResponse.json(
-        { error: "Invalid team member data", details: error.flatten() },
+        {
+          error: "Invalid team member data",
+          details: error.issues.map((issue) => ({
+            field: issue.path.join("."),
+            message: issue.message,
+          })),
+        },
         { status: 400 },
       );
     }

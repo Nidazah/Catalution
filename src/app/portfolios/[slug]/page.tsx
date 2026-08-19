@@ -72,7 +72,7 @@ function getWebsite(
 }
 
 async function getPortfolio(
-  id: string
+  slug: string
 ): Promise<Portfolio | null> {
   try {
     const baseUrl =
@@ -81,8 +81,8 @@ async function getPortfolio(
       "http://localhost:3000";
 
     const response = await fetch(
-      `${baseUrl}/api/portfolio/${encodeURIComponent(
-        id
+      `${baseUrl}/api/portfolio/by-slug/${encodeURIComponent(
+        slug
       )}`,
       {
         cache: "no-store",
@@ -144,11 +144,11 @@ async function getPublishedPortfolios(): Promise<
 export default async function PortfolioDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
 
-  const portfolio = await getPortfolio(id);
+  const portfolio = await getPortfolio(slug);
 
   if (!portfolio || !portfolio.published) {
     notFound();
@@ -293,18 +293,6 @@ export default async function PortfolioDetailPage({
 
                     <dd className="text-lg font-semibold text-purple-900">
                       {portfolio.service}
-                    </dd>
-                  </div>
-                )}
-
-                {portfolio.category && (
-                  <div>
-                    <dt className="mb-1 text-sm text-gray-500">
-                      Category
-                    </dt>
-
-                    <dd className="text-lg font-semibold text-purple-900">
-                      {portfolio.category}
                     </dd>
                   </div>
                 )}
@@ -538,7 +526,7 @@ export default async function PortfolioDetailPage({
 
             {previousPortfolio ? (
               <Link
-                href={`/portfolios/${previousPortfolio.id}`}
+                href={`/portfolios/${previousPortfolio.slug}`}
                 className="group inline-flex items-center gap-3 text-purple-700 transition hover:text-orange-500"
               >
                 <ArrowLeft
@@ -575,7 +563,7 @@ export default async function PortfolioDetailPage({
 
             {nextPortfolio ? (
               <Link
-                href={`/portfolios/${nextPortfolio.id}`}
+                href={`/portfolios/${nextPortfolio.slug}`}
                 className="group inline-flex items-center gap-3 text-right text-purple-700 transition hover:text-orange-500"
               >
                 <span>

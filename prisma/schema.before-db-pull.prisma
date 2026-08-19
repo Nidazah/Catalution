@@ -1,0 +1,299 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model Blog {
+  id           String   @id
+  title        String
+  slug         String   @unique
+  excerpt      String
+  content      String?
+  image        String
+  author       String
+  authorAvatar String?
+  date         String
+  category     String
+  tags         Json?
+  comments     Int      @default(0)
+  sortOrder    Int      @default(0)
+  active       Boolean  @default(true)
+  published    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime
+
+  @@index([active])
+  @@index([category])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model ContactMessage {
+  id        String   @id
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  service   String?
+  message   String
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @updatedAt
+
+  @@index([createdAt])
+  @@index([email])
+  @@index([status])
+}
+
+model ContentSection {
+  id                   String            @id
+  sectionKey           ContentSectionKey @unique
+  label                String
+  eyebrow              String?
+  title                String
+  description          String?
+  image                String?
+  primaryButtonLabel   String?
+  primaryButtonUrl     String?
+  secondaryButtonLabel String?
+  secondaryButtonUrl   String?
+  items                Json?
+  published            Boolean           @default(true)
+  sortOrder            Int               @default(0)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime
+
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model PasswordResetToken {
+  id        String    @id
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Portfolio {
+  id             String   @id
+  title          String
+  slug           String   @unique
+  category       String
+  tags           Json?
+  image          String
+  heroImage      String?
+  intro          String?
+  description    Json?
+  overviewText   String?
+  overviewPoints Json?
+  mediaImage     String?
+  videoUrl       String?
+  finalResult    Json?
+  client         String?
+  portfolio      String?
+  service        String?
+  date           String?
+  sortOrder      Int      @default(0)
+  active         Boolean  @default(true)
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime
+  award          String?
+  challenge      String?
+  highlightStats Json?
+  solution       String?
+  testimonial    String?
+
+  @@index([active])
+  @@index([category])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model Service {
+  id               String   @id
+  title            String
+  slug             String   @unique
+  description      String
+  icon             String   @default("waves")
+  image            String
+  ctaLabel         String   @default("Get optimization")
+  sortOrder        Int      @default(0)
+  published        Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime
+  shortDescription String?
+  fullDescription  String?
+  heroImage2       String?
+  features         Json?
+  overviewItems    Json?
+  ctaUrl           String   @default("/contact")
+  active           Boolean  @default(true)
+
+  @@index([active])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model Career {
+  id                   String   @id @default(cuid())
+  title                String
+  slug                 String   @unique
+  department           String
+  location             String
+  type                 String
+  urgency              String?
+  icon                 String   @default("swirl")
+  description          String
+  requirements         String
+  requirementsGrid     Json?
+  responsibilities     String
+  responsibilitiesList Json?
+  category             String
+  number               String
+  company              String   @default("Catalution")
+  website              String?
+  salary               String
+  vacancy              String
+  applyOn              String
+  tags                 Json?
+  sortOrder            Int      @default(0)
+  active               Boolean  @default(true)
+  published            Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  applications CareerApplication[]
+
+  @@index([sortOrder])
+  @@index([published])
+  @@index([active])
+}
+
+model CareerApplication {
+  id          String   @id @default(cuid())
+  careerId    String
+
+  name        String
+  email       String
+  phone       String
+  coverLetter String
+
+  cvUrl       String
+  cvFileName  String
+  cvFileType  String
+  cvFileSize  Int
+
+  status      String   @default("NEW")
+  notes       String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  career Career @relation(fields: [careerId], references: [id], onDelete: Cascade)
+
+  @@index([careerId])
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model TeamMember {
+  id          String   @id
+  name        String
+  role        String
+  slug        String   @unique
+  bio         String?
+  image       String
+  email       String?
+  linkedin    String?
+  twitter     String?
+  instagram   String?
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  coreBeliefs Json?
+  experience  Json?
+  facebook    String?
+  phone       String?
+  skills      Json?
+
+  @@index([active])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model Testimonial {
+  id        String   @id
+  quote     String
+  name      String
+  role      String
+  slug      String   @unique
+  avatar    String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @updatedAt
+
+  @@index([active])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model User {
+  id                 String               @id
+  email              String               @unique
+  password           String
+  name               String
+  role               Role                 @default(STAFF)
+  createdAt          DateTime             @default(now())
+  PasswordResetToken PasswordResetToken[]
+}
+
+model pricing_plans {
+  id          String   @id
+  name        String   @unique
+  description String?
+  price       Float
+  currency    String   @default("USD")
+  interval    String
+  features    Json?
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+enum ContentSectionKey {
+  HERO
+  ABOUT
+  PROCESS
+  WORK
+  TEAM
+  CASE_STUDIES
+  PRICING
+  TESTIMONIALS
+  CTA
+  BLOG
+  FAQ
+  CAREERS
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}

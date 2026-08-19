@@ -2,46 +2,45 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// The 5 Q&As currently hardcoded in src/app/faq/page.tsx and
-// src/components/ServiceFAQ.tsx. Seeding them into the FAQ ContentSection
-// so both places can be switched to read from the DB instead.
+// Matches the FaqItem shape used by src/app/admin/faq/page.tsx:
+// { title, description, image, meta, link }
 const faqItems = [
   {
-    title: "How do consultants add value to a business?",
+    title: "What services does Catalution offer?",
     description:
-      "Consultants bring deep expertise, fresh perspectives, and data-driven strategies to identify inefficiencies and implement tailored solutions that drive sustainable growth.",
+      "Catalution provides end-to-end consulting and technology solutions, including strategy, process automation, and custom software delivery tailored to each client's operations.",
     image: "",
     meta: "",
     link: "",
   },
   {
-    title: "How do I know if my business needs a consultant?",
+    title: "How long does a typical engagement take?",
     description:
-      "If your business is facing growth plateaus, operational bottlenecks, or needs a new strategic direction, a consultant can provide the objective insights and specialized skills necessary to overcome these challenges.",
+      "Timelines vary by scope, but most engagements run from a few weeks for advisory work to a few months for full implementation projects. We agree on a timeline together during onboarding.",
     image: "",
     meta: "",
     link: "",
   },
   {
-    title: "How do business consultants charge for their services?",
+    title: "Do you work with small businesses or only enterprises?",
     description:
-      "Consultants typically charge based on project scope, hourly rates, or long-term retainers. We offer flexible pricing models designed to align with your specific project goals and budget.",
+      "We work with organizations of all sizes, from growing small businesses to large enterprises, and scale our approach to fit your team and budget.",
     image: "",
     meta: "",
     link: "",
   },
   {
-    title: "Can a business consultant guarantee results?",
+    title: "How do I get started?",
     description:
-      "While we cannot guarantee specific outcomes, we commit to delivering our best expertise, data-driven strategies, and a structured roadmap. We work closely with you to ensure our strategies are actionable.",
+      "Reach out through our contact page with a short description of your needs, and our team will schedule an initial consultation to discuss goals and next steps.",
     image: "",
     meta: "",
     link: "",
   },
   {
-    title: "How can I measure the success of a consulting engagement?",
+    title: "What industries do you specialize in?",
     description:
-      "Success is measured through pre-defined KPIs, ROI analysis, and post-engagement performance reviews. We establish clear metrics at the start of every project to track our progress.",
+      "Our team has experience across a range of industries and adapts our frameworks to the specific regulatory and operational needs of your sector.",
     image: "",
     meta: "",
     link: "",
@@ -49,37 +48,28 @@ const faqItems = [
 ];
 
 async function main() {
-  await prisma.contentSection.upsert({
+  const section = await prisma.contentSection.findFirst({
     where: { sectionKey: "FAQ" },
-    update: {
-      // Only refresh items on re-run if the section is still empty, so
-      // edits made later through /admin/content are never overwritten.
-    },
-    create: {
-      sectionKey: "FAQ",
-      label: "FAQ",
-      eyebrow: "",
-      title: "Hi, how we support you?",
-      description: "No matter the strategy, we've got it handled.",
-      image: "",
-      primaryButtonLabel: "",
-      primaryButtonUrl: "",
-      secondaryButtonLabel: "",
-      secondaryButtonUrl: "",
-      items: faqItems,
-      published: true,
-      sortOrder: 0,
-    },
   });
 
-  console.log(
-    `Seeded FAQ content section (upsert on sectionKey — safe to re-run).`,
-  );
+  if (!section) {
+    console.error('No ContentSection row with sectionKey "FAQ" found. Nothing updated.');
+    process.exit(1);
+  }
+
+  const updated = await prisma.contentSection.update({
+    where: { id: section.id },
+    data: { items: faqItems },
+  });
+
+  console.log(`Updated ContentSection "${updated.id}" with ${faqItems.length} FAQ items.`);
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
+  .catch((err) => {
+    console.error(err);
     process.exit(1);
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

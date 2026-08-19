@@ -58,7 +58,7 @@ export async function GET(request: Request) {
 
   try {
     const submissions = await withDbRetry(() =>
-      prisma.contactSubmission.findMany({
+      prisma.contactMessage.findMany({
         orderBy: [
           {
             createdAt: "desc",
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
      */
     const submission = await withDbRetry(
       () =>
-        prisma.contactSubmission.create({
+        prisma.contactMessage.create({
           data: {
             firstName: data.firstName,
             lastName: data.lastName,
@@ -198,12 +198,12 @@ export async function PATCH(request: Request) {
     const read = z.boolean().parse(body.read);
 
     const submission = await withDbRetry(() =>
-      prisma.contactSubmission.update({
+      prisma.contactMessage.update({
         where: {
           id,
         },
         data: {
-          read,
+          status: read ? "READ" : "NEW",
         },
       })
     );
@@ -267,7 +267,7 @@ export async function DELETE(request: Request) {
     const id = idSchema.parse(body.id);
 
     await withDbRetry(() =>
-      prisma.contactSubmission.delete({
+      prisma.contactMessage.delete({
         where: {
           id,
         },

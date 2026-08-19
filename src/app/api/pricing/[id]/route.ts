@@ -25,7 +25,7 @@ export async function GET(
 
     const { id } = await params;
 
-    const plan = await prisma.plan.findUnique({
+    const plan = await prisma.pricingPlan.findUnique({
       where: { id },
     });
 
@@ -36,7 +36,16 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(plan);
+    return NextResponse.json({
+      id: plan.id,
+      name: plan.name,
+      monthly: `$${plan.price}`,
+      yearly: plan.description || `$${plan.price * 10}`,
+      features: Array.isArray(plan.features) ? plan.features : [],
+      active: plan.active,
+      published: plan.published,
+      sortOrder: plan.sortOrder,
+    });
   } catch (error) {
     console.error("GET /api/pricing/[id] error:", error);
 
@@ -70,7 +79,7 @@ export async function PATCH(
       );
     }
 
-    const data: Prisma.PlanUpdateInput = {};
+    const data: Prisma.PricingPlanUpdateInput = {};
 
     if (body.name !== undefined) {
       if (
@@ -94,7 +103,7 @@ export async function PATCH(
         );
       }
 
-      data.monthly = body.monthly.trim();
+      data.price = parseFloat(body.monthly.replace(/[^0-9.]/g, "")) || 0;
     }
 
     if (body.yearly !== undefined) {
@@ -105,7 +114,7 @@ export async function PATCH(
         );
       }
 
-      data.yearly = body.yearly.trim();
+      data.description = body.yearly.trim();
     }
 
     if (body.features !== undefined) {
@@ -143,12 +152,21 @@ export async function PATCH(
       data.sortOrder = sortOrder;
     }
 
-    const plan = await prisma.plan.update({
+    const plan = await prisma.pricingPlan.update({
       where: { id },
       data,
     });
 
-    return NextResponse.json(plan);
+    return NextResponse.json({
+      id: plan.id,
+      name: plan.name,
+      monthly: `$${plan.price}`,
+      yearly: plan.description || `$${plan.price * 10}`,
+      features: Array.isArray(plan.features) ? plan.features : [],
+      active: plan.active,
+      published: plan.published,
+      sortOrder: plan.sortOrder,
+    });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError
@@ -194,7 +212,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    await prisma.plan.delete({
+    await prisma.pricingPlan.delete({
       where: { id },
     });
 

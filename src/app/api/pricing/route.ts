@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    const plans = await prisma.plan.findMany({
+    const plans = await prisma.pricingPlan.findMany({
       where: admin
         ? undefined
         : {
@@ -63,7 +63,21 @@ export async function GET(req: NextRequest) {
 
     // IMPORTANT:
     // The admin page expects an array directly and calls plans.map(...)
-    return NextResponse.json(plans);
+    // Map Prisma fields to the frontend's monthly/yearly format.
+    const mapped = plans.map((plan) => ({
+      id: plan.id,
+      name: plan.name,
+      monthly: `$${plan.price}`,
+      yearly: plan.description || `$${plan.price * 10}`,
+      features: Array.isArray(plan.features) ? plan.features : [],
+      active: plan.active,
+      published: plan.published,
+      sortOrder: plan.sortOrder,
+      createdAt: plan.createdAt,
+      updatedAt: plan.updatedAt,
+    }));
+
+    return NextResponse.json(mapped);
   } catch (error) {
     console.error("GET /api/pricing error:", error);
 
@@ -118,11 +132,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const plan = await prisma.plan.create({
+    const plan = await prisma.pricingPlan.create({
       data: {
         name: parsed.data.name,
-        monthly: parsed.data.monthly,
-        yearly: parsed.data.yearly,
+        price: parseFloat(parsed.data.monthly.replace(/[^0-9.]/g, "")) || 0,
+        description: parsed.data.yearly,
+        interval: "month",
+        currency: "USD",
         features: parsed.data.features,
         active: parsed.data.active,
         published: parsed.data.published,
@@ -130,9 +146,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(plan, {
-      status: 201,
-    });
+    return NextResponse.json(
+      {
+        id: plan.id,
+        name: plan.name,
+        monthly: `$${plan.price}`,
+        yearly: plan.description || `$${plan.price * 10}`,
+        features: Array.isArray(plan.features) ? plan.features : [],
+        active: plan.active,
+        published: plan.published,
+        sortOrder: plan.sortOrder,
+      },
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -214,18 +242,18 @@ export async function PATCH(req: NextRequest) {
     } = parsed.data;
 
     // Build the update object so omitted fields remain unchanged.
-    const data: Prisma.PlanUpdateInput = {};
+    const data: Prisma.PricingPlanUpdateInput = {};
 
     if (name !== undefined) {
       data.name = name;
     }
 
     if (monthly !== undefined) {
-      data.monthly = monthly;
+      data.price = parseFloat(monthly.replace(/[^0-9.]/g, "")) || 0;
     }
 
     if (yearly !== undefined) {
-      data.yearly = yearly;
+      data.description = yearly;
     }
 
     if (features !== undefined) {
@@ -244,7 +272,7 @@ export async function PATCH(req: NextRequest) {
       data.sortOrder = sortOrder;
     }
 
-    const existing = await prisma.plan.findUnique({
+    const existing = await prisma.pricingPlan.findUnique({
       where: {
         id,
       },
@@ -261,14 +289,23 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    const plan = await prisma.plan.update({
+    const plan = await prisma.pricingPlan.update({
       where: {
         id,
       },
       data,
     });
 
-    return NextResponse.json(plan);
+    return NextResponse.json({
+      id: plan.id,
+      name: plan.name,
+      monthly: `$${plan.price}`,
+      yearly: plan.description || `$${plan.price * 10}`,
+      features: Array.isArray(plan.features) ? plan.features : [],
+      active: plan.active,
+      published: plan.published,
+      sortOrder: plan.sortOrder,
+    });
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError
@@ -335,7 +372,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    const existing = await prisma.plan.findUnique({
+    const existing = await prisma.pricingPlan.findUnique({
       where: {
         id,
       },
@@ -352,7 +389,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    await prisma.plan.delete({
+    await prisma.pricingPlan.delete({
       where: {
         id,
       },

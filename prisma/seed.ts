@@ -1,3 +1,4 @@
+import "dotenv/config";
 // prisma/seed.ts
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -9,8 +10,8 @@ const prisma = new PrismaClient();
 // ============================================
 
 // Admin user credentials (override with env vars)
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@catalution.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "ChangeMe123!";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.SEED_ADMIN_EMAIL || "admin@catalution.com";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.SEED_ADMIN_PASSWORD || "ChangeMe123!";
 
 // Image URLs
 const PLACEHOLDER_IMAGE = "/images/services/tj-service-1.webp";
@@ -419,19 +420,19 @@ async function main() {
     where: { email: ADMIN_EMAIL },
     update: {
       password: passwordHash,
-      name: "Admin",
+      name: process.env.SEED_ADMIN_NAME || "Catalution Admin",
       role: "ADMIN",
     },
     create: {
       email: ADMIN_EMAIL,
       password: passwordHash,
-      name: "Admin",
+      name: process.env.SEED_ADMIN_NAME || "Catalution Admin",
       role: "ADMIN",
     },
   });
 
   console.log(`✅ Admin user ready: ${admin.email}`);
-  if (!process.env.ADMIN_PASSWORD) {
+  if (!process.env.ADMIN_PASSWORD && !process.env.SEED_ADMIN_PASSWORD) {
     console.log(
       `   ℹ️  Using default password: "${ADMIN_PASSWORD}" - Change it after first login`,
     );

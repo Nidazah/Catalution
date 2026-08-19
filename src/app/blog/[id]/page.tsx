@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Calendar, MessageCircle } from "lucide-react";
+
+import PageHero from "@/components/PageHero";
 
 type BlogPost = {
   id: string;
@@ -99,6 +100,7 @@ export default function BlogDetailsPage() {
   if (loading || notFound || !post) {
     return (
       <main className="min-h-screen bg-white">
+        <PageHero title="Blog" />
         <div className="flex min-h-[300px] items-center justify-center">
           <p className="text-sm text-gray-500">Loading blog post...</p>
         </div>
@@ -107,50 +109,8 @@ export default function BlogDetailsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      <section className="relative overflow-hidden bg-navy text-white">
-        <div className="absolute inset-0">
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            className="object-cover opacity-70"
-            priority
-          />
-          <div className="absolute inset-0 bg-navy/80" />
-        </div>
-
-        <div className="relative mx-auto max-w-6xl px-6 py-12 lg:px-16 lg:py-14">
-          <Link
-            href="/blog"
-            className="mb-4 inline-flex items-center gap-2 text-sm text-white/80 hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to blog
-          </Link>
-
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#d5c9ff]">
-            {post.category}
-          </p>
-          <h1 className="max-w-4xl text-3xl font-bold leading-tight md:text-4xl">
-            {post.title}
-          </h1>
-
-          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-white/75">
-            <span className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/10 text-xs font-semibold">
-                {post.author.slice(0, 1)}
-              </span>
-              {post.author}
-            </span>
-            <span className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" /> {post.date}
-            </span>
-            <span className="flex items-center gap-2">
-              <MessageCircle className="h-4 w-4" /> {post.comments} comments
-            </span>
-          </div>
-        </div>
-      </section>
+    <main className="min-h-screen bg-[#F9FAFB] pb-24">
+      <PageHero title={post.title} />
 
       {/* Compact article content */}
       <article className="mx-auto max-w-4xl px-6 py-10 lg:px-12 lg:py-12">

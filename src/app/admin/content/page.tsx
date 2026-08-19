@@ -19,13 +19,7 @@ const sectionOptions = [
   ["ABOUT", "About", "Company story, positioning and trust message"],
   ["PROCESS", "Process", "How your ERP, POS and transformation process works"],
   ["WORK", "Work", "Implementation steps, capabilities or workflow"],
-  ["TEAM", "Team", "Team members and leadership profiles"],
   ["CASE_STUDIES", "Case Studies", "Client projects and success stories"],
-  ["PRICING", "Pricing", "Plans, prices and feature highlights"],
-  ["TESTIMONIALS", "Testimonials", "Client feedback and social proof"],
-  ["CTA", "CTA", "Final conversion section and contact message"],
-  ["BLOG", "Blog", "Articles, insights and announcements"],
-  ["FAQ", "FAQ", "Frequently asked questions and answers"],
 ] as const;
 
 type Item = {

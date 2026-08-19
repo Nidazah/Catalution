@@ -11,14 +11,16 @@ export default function ConsultantBanner() {
 
       <div className="container mx-auto px-6">
         <div className="flex flex-col-reverse sm:flex-row items-center justify-center sm:justify-between gap-6 sm:gap-12 text-center sm:text-left">
-          
           {/* Left: Text - Using Global H3/H4 classes for responsive scaling */}
           <h3 className="h3 sm:h4 text-white tracking-tight">
             GET CONSULTANT NOW!
           </h3>
 
           {/* Right: Button - ✅ Replaced custom Button import with global Outline Button */}
-          <Link href="/contact" className="btn btn-outline shadow-md whitespace-nowrap">
+          <Link
+            href="/contact"
+            className="btn btn-outline shadow-md whitespace-nowrap"
+          >
             Lets talk now
           </Link>
         </div>

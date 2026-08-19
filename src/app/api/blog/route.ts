@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
 
     if (includeInactive) {
       const session = await getSession();
+
       if (!isAdmin(session)) {
         return NextResponse.json(
           { error: "Unauthorized" },
@@ -44,7 +45,9 @@ export async function GET(request: NextRequest) {
       {
         error: "Failed to fetch blog posts",
         message:
-          error instanceof Error ? error.message : "Unknown error",
+          error instanceof Error
+            ? error.message
+            : "Unknown error",
       },
       { status: 500 }
     );
@@ -81,7 +84,15 @@ export async function POST(request: NextRequest) {
       published,
     } = body;
 
-    if (!title || !slug || !excerpt || !image || !author || !date || !category) {
+    if (
+      !title ||
+      !slug ||
+      !excerpt ||
+      !image ||
+      !author ||
+      !date ||
+      !category
+    ) {
       return NextResponse.json(
         {
           error:
@@ -106,18 +117,21 @@ export async function POST(request: NextRequest) {
 
     const post = await prisma.blog.create({
       data: {
-        title,
-        slug,
-        excerpt,
-        content: content || null,
-        image,
-        author,
-        authorAvatar: authorAvatar || null,
-        date,
+        title: title.trim(),
+        slug: slug.trim(),
+        excerpt: excerpt.trim(),
+        content: content?.trim() || null,
+        image: image.trim(),
+        author: author.trim(),
+        authorAvatar: authorAvatar?.trim() || null,
+        date: date.trim(),
+        category: category.trim(),
+
+        tags: Array.isArray(tags) ? tags : [],
+
         comments: Number(comments ?? 0),
-        category,
-        tags: tags ?? [],
         sortOrder: Number(sortOrder ?? 0),
+
         active: active !== false,
         published: published !== false,
       },
@@ -131,7 +145,9 @@ export async function POST(request: NextRequest) {
       {
         error: "Failed to create blog post",
         message:
-          error instanceof Error ? error.message : "Unknown error",
+          error instanceof Error
+            ? error.message
+            : "Unknown error",
       },
       { status: 500 }
     );

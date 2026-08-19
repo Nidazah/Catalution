@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -5,8 +6,9 @@ const prisma = new PrismaClient();
 const plans = [
   {
     name: "Starter",
-    monthly: "29",
-    yearly: "290",
+    description: "Perfect for individuals and small projects",
+    monthly: 29,
+    yearly: 290,
     sortOrder: 1,
     features: [
       "1 User",
@@ -16,8 +18,9 @@ const plans = [
   },
   {
     name: "Pro",
-    monthly: "79",
-    yearly: "790",
+    description: "For growing teams that need more power",
+    monthly: 79,
+    yearly: 790,
     sortOrder: 2,
     features: [
       "5 Users",
@@ -28,8 +31,9 @@ const plans = [
   },
   {
     name: "Enterprise",
-    monthly: "199",
-    yearly: "1990",
+    description: "Full-featured solution for large organizations",
+    monthly: 199,
+    yearly: 1990,
     sortOrder: 3,
     features: [
       "10 Users",
@@ -43,22 +47,55 @@ const plans = [
 
 async function main() {
   for (const plan of plans) {
-    const result = await prisma.plan.upsert({
+    // Upsert the monthly interval entry
+    await prisma.pricingPlan.upsert({
       where: {
-        name: plan.name,
+        name: `${plan.name} Monthly`,
       },
       update: {
-        monthly: plan.monthly,
-        yearly: plan.yearly,
+        description: plan.description,
+        price: plan.monthly,
+        currency: "USD",
+        interval: "monthly",
         features: plan.features,
         sortOrder: plan.sortOrder,
         active: true,
         published: true,
       },
       create: {
-        name: plan.name,
-        monthly: plan.monthly,
-        yearly: plan.yearly,
+        name: `${plan.name} Monthly`,
+        description: plan.description,
+        price: plan.monthly,
+        currency: "USD",
+        interval: "monthly",
+        features: plan.features,
+        sortOrder: plan.sortOrder,
+        active: true,
+        published: true,
+      },
+    });
+
+    // Upsert the yearly interval entry
+    await prisma.pricingPlan.upsert({
+      where: {
+        name: `${plan.name} Yearly`,
+      },
+      update: {
+        description: plan.description,
+        price: plan.yearly,
+        currency: "USD",
+        interval: "yearly",
+        features: plan.features,
+        sortOrder: plan.sortOrder,
+        active: true,
+        published: true,
+      },
+      create: {
+        name: `${plan.name} Yearly`,
+        description: plan.description,
+        price: plan.yearly,
+        currency: "USD",
+        interval: "yearly",
         features: plan.features,
         sortOrder: plan.sortOrder,
         active: true,
@@ -67,11 +104,11 @@ async function main() {
     });
 
     console.log(
-      `Upserted: ${result.name} — monthly ${result.monthly}, yearly ${result.yearly}`,
+      `Upserted: ${plan.name} — monthly $${plan.monthly}, yearly $${plan.yearly}`,
     );
   }
 
-  console.log(`Seeded ${plans.length} pricing plans.`);
+  console.log(`Seeded ${plans.length} pricing plans (${plans.length * 2} entries).`);
 }
 
 main()

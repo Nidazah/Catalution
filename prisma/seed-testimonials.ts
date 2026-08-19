@@ -1,3 +1,4 @@
+import "dotenv/config";
 /**
  * One-off seed script: loads the 6 testimonials currently hardcoded in
  * src/components/Testimonials.tsx's `quotes` array into the Testimonial

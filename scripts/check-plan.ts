@@ -3,8 +3,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
-  const count = await prisma.plan.count();
-  const plans = await prisma.plan.findMany({
+  const count = await prisma.pricingPlan.count();
+  const plans = await prisma.pricingPlan.findMany({
     orderBy: { sortOrder: "asc" },
   });
 

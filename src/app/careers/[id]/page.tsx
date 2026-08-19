@@ -1,398 +1,741 @@
-"use client"; // <--- MUST BE LINE 1
+"use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import PageHero from "@/components/PageHero";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { MapPin, Check } from "lucide-react";
-import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa6";
+import { MapPin, Check, Upload, FileText } from "lucide-react";
+import {
+  FaFacebook,
+  FaTwitter,
+  FaLinkedin,
+  FaInstagram,
+} from "react-icons/fa6";
 
-// --- DATA CENTRALIZED HERE ---
-const jobDetails: Record<string, any> = {
-  "1": {
-    title: "Business strategy consultant",
-    department: "Consulting",
-    location: "London, UK",
-    type: "Full time job/on site",
-    urgency: "Urgent",
-    description: "Our mission is to empower businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptional the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to thrive. Committed to the delivering exceptional in the values through our strategic inset, approaches empower.",
-    requirements: "Formulating and implementing business goals. We begin with an in-depth analysis of your business and market to identify opportunities and challenges. From there, we work with you to define clear, actionable.",
-    requirementsGrid: [
-      "Clear vision and direction for your business for consultings.",
-      "Enhanced ability to anticipate and respond to market changes.",
-      "Data-driven decision-making for strategic planning execution.",
-      "Structured approach to achieving your business goals."
-    ],
-    responsibilities: "Our mission is to empowers businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptional the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to delivering delivering exceptional.",
-    responsibilitiesList: [
-      "Discover our expertise",
-      "Journey and commitment to explained",
-      "Meet our team and learn",
-      "Meet our team"
-    ],
-    category: "Business consultant",
-    number: "6080UO",
-    company: "Solvior",
-    website: "www.example.com",
-    salary: "$400-$550 / week",
-    vacancy: "03 Available",
-    applyOn: "OCT 22, 2024",
-    tags: ["Business", "Consulting", "Insights"]
-  },
-  "2": {
-    title: "Executive Leadership Coach",
-    department: "Consulting",
-    location: "New York, NY",
-    type: "Contract / Remote",
-    urgency: "Urgent",
-    description: "We are looking for an experienced Executive Leadership Coach to work with our C-suite clients. You will be responsible for delivering high-impact one-on-one coaching sessions and facilitating leadership workshops.",
-    requirements: "Formulating and implementing leadership frameworks. We begin with an in-depth analysis of your organizational structure to identify opportunities and challenges.",
-    requirementsGrid: [
-      "Proven executive coaching expertise.",
-      "Enhanced ability to anticipate and respond to leadership challenges.",
-      "Data-driven decision-making for strategic planning.",
-      "Structured approach to achieving organizational goals."
-    ],
-    responsibilities: "Our mission is to empower businesses to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights and innovative approaches.",
-    responsibilitiesList: [
-      "Deliver tailored one-on-one executive coaching sessions.",
-      "Facilitate leadership development workshops.",
-      "Assess organizational needs and design custom coaching programs.",
-      "Provide actionable feedback to drive leadership growth."
-    ],
-    category: "Executive Coach",
-    number: "6080UO",
-    company: "Solvior",
-    website: "www.example.com",
-    salary: "$500-$650 / week",
-    vacancy: "02 Available",
-    applyOn: "OCT 22, 2024",
-    tags: ["Leadership", "Executive", "Coaching"]
-  },
-  "3": {
-    title: "Senior UX Designer",
-    department: "Product Design",
-    location: "Remote (US)",
-    type: "Full time",
-    urgency: "Urgent",
-    description: "We are seeking a Senior UX Designer to lead the design of our digital products. You will drive user-centered design processes and collaborate closely with developers and product managers.",
-    requirements: "We believe in creating world-class user experiences. We begin with a deep understanding of our users to drive innovative design solutions.",
-    requirementsGrid: [
-      "Lead the UX design process from research to final implementation.",
-      "Create user flows, wireframes, high-fidelity prototypes.",
-      "Conduct user testing and iterate based on feedback.",
-      "Collaborate with developers for pixel-perfect implementation."
-    ],
-    responsibilities: "Our mission is to drive user-centered design across all our digital products.",
-    responsibilitiesList: [
-      "Lead the UX design process",
-      "Create user flows and prototypes",
-      "Conduct user testing",
-      "Collaborate with developers"
-    ],
-    category: "UX Designer",
-    number: "7080UO",
-    company: "Solvior",
-    website: "www.example.com",
-    salary: "$600-$750 / week",
-    vacancy: "01 Available",
-    applyOn: "OCT 22, 2024",
-    tags: ["Design", "UX", "UI"]
-  },
+type Career = {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  type: string;
+  urgency: string | null;
+  icon: string;
+  description: string;
+  requirements: string;
+  requirementsGrid: string[] | null;
+  responsibilities: string;
+  responsibilitiesList: string[] | null;
+  category: string;
+  number: string;
+  company: string;
+  website: string | null;
+  salary: string;
+  vacancy: string;
+  applyOn: string;
+  tags: string[] | null;
 };
 
-const allIds = Object.keys(jobDetails);
+const MAX_CV_SIZE = 5 * 1024 * 1024;
 
-// --- CLIENT-SIDE LOGIC ---
-export default function CareerDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const [id, setId] = useState<string | null>(null);
-  
-  useEffect(() => {
-    params.then((res) => setId(res.id));
-  }, [params]);
+const ALLOWED_CV_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 
-  if (!id) {
-    return null;
-  }
+const ALLOWED_CV_EXTENSIONS = [".pdf", ".doc", ".docx"];
 
-  const job = jobDetails[id as keyof typeof jobDetails];
-
-  if (!job) {
-    notFound();
-  }
+function isAllowedCv(file: File) {
+  const extension = file.name
+    .slice(file.name.lastIndexOf("."))
+    .toLowerCase();
 
   return (
-    <main className="detail-page min-h-screen bg-white">
-      <PageHero title={job.title} />
-      <CareerContent job={job} currentId={id} allIds={allIds} />
-    </main>
+    ALLOWED_CV_TYPES.includes(file.type) &&
+    ALLOWED_CV_EXTENSIONS.includes(extension)
   );
 }
 
-// --- RENDER COMPONENT ---
-function CareerContent({ job, currentId, allIds }: { job: any, currentId: string, allIds: string[] }) {
+export default function CareerDetailPage() {
+  const params = useParams<{ id: string }>();
   const router = useRouter();
 
-  const currentIndex = allIds.indexOf(currentId);
-  const nextId = currentIndex < allIds.length - 1 ? allIds[currentIndex + 1] : allIds[0];
-  const prevId = currentIndex > 0 ? allIds[currentIndex - 1] : allIds[allIds.length - 1];
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleNext = () => {
-    router.push(`/careers/${nextId}`);
-  };
+  const [job, setJob] = useState<Career | null>(null);
+  const [jobs, setJobs] = useState<Career[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const handlePrev = () => {
-    router.push(`/careers/${prevId}`);
-  };
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    cover: "",
+  });
+
+  const [cv, setCv] = useState<File | null>(null);
+  const [cvError, setCvError] = useState("");
+
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [submitError, setSubmitError] = useState("");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const id = params?.id;
+
+    if (!id) {
+      setError("Career ID is missing.");
+      setLoading(false);
+      return;
+    }
+
+    async function loadCareer() {
+      try {
+        setLoading(true);
+        setError("");
+
+        const [detailRes, listRes] = await Promise.all([
+          fetch(`/api/careers/${encodeURIComponent(id)}`, {
+            cache: "no-store",
+          }),
+          fetch("/api/careers", {
+            cache: "no-store",
+          }),
+        ]);
+
+        const detail = await detailRes.json();
+        const list = await listRes.json();
+
+        if (!detailRes.ok) {
+          throw new Error(detail?.error || "Career not found");
+        }
+
+        if (!detail?.career) {
+          throw new Error("Career not found");
+        }
+
+        if (!cancelled) {
+          setJob(detail.career);
+
+          setJobs(
+            Array.isArray(list)
+              ? list
+              : Array.isArray(list?.careers)
+                ? list.careers
+                : [],
+          );
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setJob(null);
+
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Could not load career",
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadCareer();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [params?.id]);
+
+  function handleCvChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) {
+    setCvError("");
+
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      setCv(null);
+      return;
+    }
+
+    if (file.size > MAX_CV_SIZE) {
+      setCv(null);
+      setCvError("CV file size must not exceed 5 MB.");
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      return;
+    }
+
+    if (!isAllowedCv(file)) {
+      setCv(null);
+      setCvError(
+        "Only PDF, DOC, and DOCX files are allowed.",
+      );
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      return;
+    }
+
+    setCv(file);
+  }
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!job) {
+      setSubmitError("Career information is not available.");
+      return;
+    }
+
+    setSubmitting(true);
+    setSuccess("");
+    setSubmitError("");
+    setCvError("");
+
+    if (!cv) {
+      setCvError("Please upload your CV.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (cv.size > MAX_CV_SIZE) {
+      setCvError("CV file size must not exceed 5 MB.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!isAllowedCv(cv)) {
+      setCvError(
+        "Only PDF, DOC, and DOCX files are allowed.",
+      );
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+
+      formData.append("careerId", job.id);
+      formData.append("name", form.name);
+      formData.append("email", form.email);
+      formData.append("phone", form.phone);
+      formData.append("coverLetter", form.cover);
+      formData.append("cv", cv);
+
+      const response = await fetch(
+        "/api/career-applications",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error ||
+            "Failed to submit your application.",
+        );
+      }
+
+      setSuccess(
+        "Your application has been submitted successfully. Thank you!",
+      );
+
+      setForm({
+        name: "",
+        email: "",
+        phone: "",
+        cover: "",
+      });
+
+      setCv(null);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Failed to submit your application.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  /*
+   * Loading state
+   */
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-white">
+        <PageHero title="Careers" />
+
+        <div className="py-20 text-center text-sm text-gray-500">
+          Loading career...
+        </div>
+      </main>
+    );
+  }
+
+  /*
+   * Error / career not found state
+   *
+   * IMPORTANT:
+   * This prevents:
+   *
+   * Cannot read properties of null
+   *
+   * when the API returns { career: null }.
+   */
+  if (error || !job) {
+    return (
+      <main className="min-h-screen bg-white">
+        <PageHero title="Careers" />
+
+        <div className="mx-auto max-w-3xl px-6 py-20 text-center">
+          <h1 className="text-3xl font-bold text-navy">
+            Career not found
+          </h1>
+
+          <p className="mt-3 text-sm text-gray-500">
+            {error ||
+              "The career you are looking for does not exist or is no longer available."}
+          </p>
+
+          <button
+            type="button"
+            onClick={() => router.push("/careers")}
+            className="btn btn-primary mt-7"
+          >
+            Back to Careers
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  /*
+   * At this point TypeScript and runtime both know
+   * that job exists.
+   */
+  const index = jobs.findIndex(
+    (item) => item.id === job.id,
+  );
+
+  const previous =
+    jobs.length > 1
+      ? index > 0
+        ? jobs[index - 1]
+        : jobs[jobs.length - 1]
+      : null;
+
+  const next =
+    jobs.length > 1
+      ? index >= 0 && index < jobs.length - 1
+        ? jobs[index + 1]
+        : jobs[0]
+      : null;
+
+  const requirementsGrid =
+    job.requirementsGrid ?? [];
+
+  const responsibilities =
+    job.responsibilitiesList ?? [];
+
+  const tags = job.tags ?? [];
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-6 py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
-        {/* ================= LEFT COLUMN ================= */}
-        <div className="lg:col-span-8 space-y-10">
-          
-          {/* 1. Header Card (Light Orange Background) */}
-          <div className="bg-orange-100 p-8 md:p-10 rounded-lg">
-            <div className="flex items-start gap-6">
-              <div className="w-20 h-20 md:w-24 md:h-24 bg-accent rounded-lg flex items-center justify-center text-white shrink-0">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-12 h-12">
-                  <circle cx="12" cy="12" r="3" />
-                  <circle cx="4" cy="12" r="2" />
-                  <circle cx="20" cy="12" r="2" />
-                  <circle cx="12" cy="4" r="2" />
-                  <circle cx="12" cy="20" r="2" />
-                </svg>
-              </div>
-              
-              <div className="space-y-2.5">
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3.5 py-1 border border-gray-400/40 rounded-full text-[13px] font-medium text-gray-600 bg-white/50">
-                    {job.type}
-                  </span>
-                  <span className="px-3.5 py-1 border border-gray-400/40 rounded-full text-[13px] font-medium text-gray-600 bg-white/50">
-                    {job.urgency}
-                  </span>
+    <main className="min-h-screen bg-white">
+      <PageHero title={job.title} />
+
+      <div className="mx-auto w-full max-w-7xl px-6 py-10 md:py-12">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+          <div className="space-y-10 lg:col-span-8">
+
+            {/* Job Header */}
+            <div className="rounded-lg bg-orange-100 p-7 md:p-9">
+              <div className="flex items-start gap-5">
+                <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-accent text-white">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="h-10 w-10"
+                  >
+                    <circle cx="12" cy="12" r="3" />
+                    <circle cx="4" cy="12" r="2" />
+                    <circle cx="20" cy="12" r="2" />
+                    <circle cx="12" cy="4" r="2" />
+                    <circle cx="12" cy="20" r="2" />
+                  </svg>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-navy">
-                  {job.title}
-                </h1>
-                <div className="flex items-center gap-1.5 text-[15px] font-medium text-navy">
-                  <MapPin className="h-4.5 w-4.5 text-navy" />
-                  <span>{job.location}</span>
+
+                <div>
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    <span className="rounded-full border border-gray-400/40 bg-white/50 px-3 py-1 text-[12px] font-medium text-gray-600">
+                      {job.type}
+                    </span>
+
+                    {job.urgency && (
+                      <span className="rounded-full border border-gray-400/40 bg-white/50 px-3 py-1 text-[12px] font-medium text-gray-600">
+                        {job.urgency}
+                      </span>
+                    )}
+                  </div>
+
+                  <h1 className="text-3xl font-bold text-navy md:text-4xl">
+                    {job.title}
+                  </h1>
+
+                  <div className="mt-2 flex items-center gap-1.5 text-sm font-medium text-navy">
+                    <MapPin className="h-4 w-4" />
+                    {job.location}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* 2. Job Description */}
-          <div>
-            <h2 className="text-2xl font-bold text-navy mb-3">Job Description</h2>
-            <p className="text-gray-600 leading-relaxed text-[15px]">
-              {job.description}
-            </p>
-          </div>
+            {/* Job Description */}
+            <section>
+              <h2 className="mb-3 text-2xl font-bold text-navy">
+                Job Description
+              </h2>
 
-          {/* 3. Requirements */}
-          <div>
-            <h2 className="text-2xl font-bold text-navy mb-3">Requirements</h2>
-            <p className="text-gray-600 leading-relaxed text-[15px] mb-6">
-              {job.requirements}
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {job.requirementsGrid.map((item: string, idx: number) => (
-                <div key={idx} className="border border-gray-200 p-5 bg-white flex items-start gap-3 rounded-sm">
-                  <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                  <p className="text-[14px] text-navy leading-relaxed">{item}</p>
+              <p className="text-[15px] leading-relaxed text-gray-600">
+                {job.description}
+              </p>
+            </section>
+
+            {/* Requirements */}
+            <section>
+              <h2 className="mb-3 text-2xl font-bold text-navy">
+                Requirements
+              </h2>
+
+              <p className="mb-6 text-[15px] leading-relaxed text-gray-600">
+                {job.requirements}
+              </p>
+
+              {requirementsGrid.length > 0 && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {requirementsGrid.map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-3 border border-gray-200 p-5"
+                    >
+                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+
+                      <p className="text-sm leading-relaxed text-navy">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+            </section>
+
+            {/* Responsibilities */}
+            <section>
+              <h2 className="mb-3 text-2xl font-bold text-navy">
+                Responsibilities
+              </h2>
+
+              <p className="mb-4 text-[15px] leading-relaxed text-gray-600">
+                {job.responsibilities}
+              </p>
+
+              {responsibilities.length > 0 && (
+                <ul className="space-y-2.5">
+                  {responsibilities.map((item, i) => (
+                    <li
+                      key={i}
+                      className="flex items-start gap-3 text-sm font-medium text-navy"
+                    >
+                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
+
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+
+            {/* Tags + Share */}
+            <div className="flex flex-col gap-4 border-t border-gray-200 pt-7 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-sm font-medium text-navy">
+                  Tags:
+                </span>
+
+                {tags.length > 0 ? (
+                  tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-600"
+                    >
+                      {tag}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-xs text-gray-400">
+                    No tags
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-navy">
+                  Share:
+                </span>
+
+                <FaFacebook className="cursor-pointer" />
+                <FaTwitter className="cursor-pointer" />
+                <FaLinkedin className="cursor-pointer" />
+                <FaInstagram className="cursor-pointer" />
+              </div>
             </div>
 
-            <p className="text-gray-600 leading-relaxed text-[15px] mt-6">
-              Our mission is to empowers businesses size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptional the value through strategic inset, innovative approaches. Our consulting of our missing empower businesses of all sizes to delivering delivering exceptional.
-            </p>
+            {/* Previous / Next */}
+            {jobs.length > 1 && (
+              <div className="flex items-center justify-between border-t border-gray-200 pt-7">
+                <button
+                  type="button"
+                  disabled={!previous}
+                  onClick={() =>
+                    previous &&
+                    router.push(
+                      `/careers/${previous.id}`,
+                    )
+                  }
+                  className="h-11 w-11 rounded-full border text-xl disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  ←
+                </button>
+
+                <span className="text-sm text-gray-500">
+                  {index >= 0 ? index + 1 : 1} /{" "}
+                  {jobs.length}
+                </span>
+
+                <button
+                  type="button"
+                  disabled={!next}
+                  onClick={() =>
+                    next &&
+                    router.push(`/careers/${next.id}`)
+                  }
+                  className="h-11 w-11 rounded-full border text-xl disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  →
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* 4. Responsibilities */}
-          <div>
-            <h2 className="text-2xl font-bold text-navy mb-3">Responsibilities</h2>
-            <p className="text-gray-600 leading-relaxed text-[15px] mb-4">
-              {job.responsibilities}
-            </p>
-            <ul className="space-y-2.5">
-              {job.responsibilitiesList.map((item: string, idx: number) => (
-                <li key={idx} className="flex items-start gap-3 text-navy font-medium text-[15px]">
-                  <Check className="h-5 w-5 text-accent shrink-0 mt-0.5" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Sidebar */}
+          <aside className="space-y-8 lg:col-span-4">
 
-          {/* 5. Tags & Share Footer */}
-          <div className="pt-8 border-t border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <span className="text-[15px] font-medium text-navy">Tags:</span>
-              <div className="flex flex-wrap gap-2">
-                {job.tags.map((tag: string, idx: number) => (
-                  <span key={idx} className="px-3.5 py-1 border border-gray-200 rounded-full text-[13px] font-medium text-gray-600 bg-white">
-                    {tag}
-                  </span>
+            {/* Job Information */}
+            <div className="rounded-lg border border-gray-200 p-6">
+              <h3 className="mb-5 inline-block border-b-2 border-accent pb-2 text-xl font-bold text-navy">
+                Job information
+              </h3>
+
+              <div className="divide-y divide-gray-200 rounded-lg border border-gray-200 text-sm">
+                {[
+                  ["Category", job.category],
+                  ["Number", job.number],
+                  ["Company", job.company],
+                  ["Website", job.website || "—"],
+                  ["Salary", job.salary],
+                  ["Vacancy", job.vacancy],
+                  ["Apply on", job.applyOn],
+                ].map(([label, value]) => (
+                  <div
+                    key={label}
+                    className="flex p-4"
+                  >
+                    <span className="w-28 shrink-0 font-medium text-gray-500">
+                      {label}
+                    </span>
+
+                    <span>:</span>
+
+                    <span className="pl-3 font-medium text-navy">
+                      {value}
+                    </span>
+                  </div>
                 ))}
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <span className="text-[15px] font-medium text-navy">Share:</span>
-              <div className="flex gap-2">
-                <button className="w-8 h-8 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#1877F2] hover:text-white transition-colors">
-                  <FaFacebook className="h-4 w-4" />
-                </button>
-                <button className="w-8 h-8 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#000000] hover:text-white transition-colors">
-                  <FaTwitter className="h-4 w-4" />
-                </button>
-                <button className="w-8 h-8 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#0A66C2] hover:text-white transition-colors">
-                  <FaLinkedin className="h-4 w-4" />
-                </button>
-                <button className="w-8 h-8 rounded-full bg-gray-200/50 flex items-center justify-center text-gray-500 hover:bg-[#E4405F] hover:text-white transition-colors">
-                  <FaInstagram className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </div>
 
-          {/* 6. Previous / Next Pagination with Arrows on Both Sides */}
-          <div className="pt-8 border-t border-gray-200 flex items-center justify-between">
-            
-            {/* Previous Arrow (←) */}
-            <button
-              onClick={handlePrev}
-              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5`}
-              aria-label="Previous job"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
+            {/* Apply Online */}
+            <div className="rounded-lg border border-gray-200 p-6">
+              <h3 className="mb-6 inline-block border-b-2 border-accent pb-2 text-xl font-bold text-navy">
+                Apply online
+              </h3>
 
-            <span className="text-sm font-medium text-gray-500">
-              {currentIndex + 1} / {allIds.length}
-            </span>
-
-            {/* Next Arrow (→) */}
-            <button
-              onClick={handleNext}
-              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 border-gray-300 text-gray-600 hover:border-accent hover:text-accent hover:bg-accent/5`}
-              aria-label="Next job"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
-          </div>
-
-        </div>
-
-        {/* ================= RIGHT COLUMN ================= */}
-        <div className="lg:col-span-4 space-y-8">
-          
-          {/* 1. Job Information Box */}
-          <div className="border border-gray-200 rounded-lg p-6 bg-white">
-            <h3 className="text-xl font-bold text-navy mb-5 border-b-2 border-accent pb-2.5 inline-block">
-              Job information
-            </h3>
-            
-            <div className="grid grid-cols-1 gap-4 text-[15px] border border-gray-200 rounded-lg divide-y divide-gray-200">
-              <div className="flex p-4">
-                <span className="w-28 font-medium text-[#4B5563] shrink-0">Category</span>
-                <span className="text-navy">:</span>
-                <span className="pl-3 text-navy font-medium">{job.category}</span>
-              </div>
-              <div className="flex p-4">
-                <span className="w-28 font-medium text-[#4B5563] shrink-0">Number</span>
-                <span className="text-navy">:</span>
-                <span className="pl-3 text-navy font-medium">{job.number}</span>
-              </div>
-              <div className="flex p-4">
-                <span className="w-28 font-medium text-[#4B5563] shrink-0">Company</span>
-                <span className="text-navy">:</span>
-                <span className="pl-3 text-navy font-medium">{job.company}</span>
-              </div>
-              <div className="flex p-4">
-                <span className="w-28 font-medium text-[#4B5563] shrink-0">Website</span>
-                <span className="text-navy">:</span>
-                <span className="pl-3 text-navy font-medium">{job.website}</span>
-              </div>
-              <div className="flex p-4">
-                <span className="w-28 font-medium text-[#4B5563] shrink-0">Salary</span>
-                <span className="text-navy">:</span>
-                <span className="pl-3 text-navy font-medium">{job.salary}</span>
-              </div>
-              <div className="flex p-4">
-                <span className="w-28 font-medium text-[#4B5563] shrink-0">Vacancy</span>
-                <span className="text-navy">:</span>
-                <span className="pl-3 text-navy font-medium">{job.vacancy}</span>
-              </div>
-              <div className="flex p-4">
-                <span className="w-28 font-medium text-[#4B5563] shrink-0">Apply on</span>
-                <span className="text-navy">:</span>
-                <span className="pl-3 text-navy font-medium">{job.applyOn}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* 2. Apply Online Form */}
-          <div className="border border-gray-200 rounded-lg p-6 bg-white">
-            <h3 className="text-xl font-bold text-navy mb-6 border-b-2 border-accent pb-2.5 inline-block">
-              Apply online
-            </h3>
-            
-            <form className="space-y-4">
-              <input
-                type="text"
-                placeholder="Full name*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
-              />
-              <input
-                type="email"
-                placeholder="Enter email*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
-              />
-              <input
-                type="tel"
-                placeholder="Phone number*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy"
-              />
-              <textarea
-                placeholder="Cover letter*"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-sm text-[14px] outline-none focus:border-accent placeholder:text-gray-400 text-navy resize-none h-28"
-              />
-
-              <div className="flex items-center gap-3 pt-1">
-                <span className="text-[14px] font-medium text-navy">Attach resume*</span>
-                <div className="flex items-center border border-accent bg-orange-100 rounded-sm">
-                  <span className="px-3 py-1.5 text-[13px] font-medium text-accent cursor-pointer bg-orange-100">Choose File</span>
-                  <span className="px-3 py-1.5 text-[13px] text-gray-500">No file chosen</span>
-                </div>
-              </div>
-
-              {/* ✅ FIX: Replaced custom Button with native HTML button + Global Primary Class */}
-              <button
-                type="submit"
-                className="btn btn-primary mt-2 w-full justify-center"
+              <form
+                onSubmit={submit}
+                className="space-y-4"
               >
-                Submit now
-              </button>
-            </form>
-          </div>
+                {/* Success */}
+                {success && (
+                  <div className="rounded-sm border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                    {success}
+                  </div>
+                )}
 
+                {/* Error */}
+                {submitError && (
+                  <div className="rounded-sm border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {submitError}
+                  </div>
+                )}
+
+                {/* Name */}
+                <input
+                  required
+                  value={form.name}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      name: e.target.value,
+                    })
+                  }
+                  placeholder="Full name*"
+                  className="w-full rounded-sm border border-gray-300 px-4 py-3 text-sm outline-none focus:border-accent"
+                />
+
+                {/* Email */}
+                <input
+                  required
+                  type="email"
+                  value={form.email}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      email: e.target.value,
+                    })
+                  }
+                  placeholder="Enter email*"
+                  className="w-full rounded-sm border border-gray-300 px-4 py-3 text-sm outline-none focus:border-accent"
+                />
+
+                {/* Phone */}
+                <input
+                  required
+                  value={form.phone}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      phone: e.target.value,
+                    })
+                  }
+                  placeholder="Phone number*"
+                  className="w-full rounded-sm border border-gray-300 px-4 py-3 text-sm outline-none focus:border-accent"
+                />
+
+                {/* CV */}
+                <div>
+                  <label
+                    htmlFor="career-cv"
+                    className="mb-2 block text-sm font-medium text-navy"
+                  >
+                    CV / Resume*
+                  </label>
+
+                  <label
+                    htmlFor="career-cv"
+                    className="flex cursor-pointer items-center gap-3 rounded-sm border border-dashed border-gray-300 px-4 py-4 transition hover:border-accent"
+                  >
+                    <Upload className="h-5 w-5 shrink-0 text-accent" />
+
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-navy">
+                        {cv
+                          ? cv.name
+                          : "Choose your CV"}
+                      </p>
+
+                      <p className="mt-1 text-xs text-gray-500">
+                        PDF, DOC or DOCX · Maximum 5 MB
+                      </p>
+                    </div>
+
+                    <input
+                      ref={fileInputRef}
+                      id="career-cv"
+                      type="file"
+                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      onChange={handleCvChange}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {cv && !cvError && (
+                    <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+                      <FileText className="h-4 w-4" />
+
+                      <span>
+                        {(cv.size / 1024 / 1024).toFixed(
+                          2,
+                        )}{" "}
+                        MB
+                      </span>
+                    </div>
+                  )}
+
+                  {cvError && (
+                    <p className="mt-2 text-xs text-red-600">
+                      {cvError}
+                    </p>
+                  )}
+                </div>
+
+                {/* Cover Letter */}
+                <textarea
+                  required
+                  value={form.cover}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      cover: e.target.value,
+                    })
+                  }
+                  placeholder="Cover letter*"
+                  className="h-28 w-full resize-none rounded-sm border border-gray-300 px-4 py-3 text-sm outline-none focus:border-accent"
+                />
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn btn-primary mt-2 w-full justify-center disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {submitting
+                    ? "Submitting..."
+                    : "Submit now"}
+                </button>
+              </form>
+            </div>
+          </aside>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

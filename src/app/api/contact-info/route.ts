@@ -53,10 +53,22 @@ export async function PATCH(request: Request) {
       reviewCount: data.reviewCount ?? null,
     };
 
-    const existing = await prisma.contactInfo.findFirst();
-    const info = existing
-      ? await prisma.contactInfo.update({ where: { id: existing.id }, data: payload })
-      : await prisma.contactInfo.create({ data: payload });
+    const info = await withDbRetry(async () => {
+      const existing = await prisma.contactInfo.findFirst();
+
+      if (existing) {
+        return prisma.contactInfo.update({
+          where: {
+            id: existing.id,
+          },
+          data: payload,
+        });
+      }
+
+      return prisma.contactInfo.create({
+        data: payload,
+      });
+    });
 
     return NextResponse.json(info);
   } catch (error) {

@@ -76,13 +76,29 @@ export default function AdminTeamPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  async function load() {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalMembers, setTotalMembers] = useState(0);
+
+  const ITEMS_PER_PAGE = 10;
+
+  async function load(targetPage = page) {
     setLoading(true);
     try {
-      const res = await fetch("/api/team?admin=true", { cache: "no-store" });
+      setError("");
+
+      const res = await fetch(
+        `/api/team?admin=true&page=${targetPage}&limit=${ITEMS_PER_PAGE}`,
+        { cache: "no-store" },
+      );
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not load team");
-      setTeam(Array.isArray(data) ? data : []);
+
+      setTeam(Array.isArray(data.data) ? data.data : []);
+
+      setPage(data.pagination?.page ?? targetPage);
+      setTotalPages(data.pagination?.totalPages ?? 1);
+      setTotalMembers(data.pagination?.total ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not load team");
     } finally {
@@ -96,7 +112,10 @@ export default function AdminTeamPage() {
 
   function openAdd() {
     setEditingId(null);
-    setForm({ ...emptyForm, sortOrder: team.length + 1 });
+    setForm({
+      ...emptyForm,
+      sortOrder: totalMembers + 1,
+    });
     setError("");
     setOpen(true);
   }
@@ -132,7 +151,7 @@ export default function AdminTeamPage() {
     setError("");
     const payload = {
       ...form,
-      slug: form.slug || slugify(form.name),
+      slug: slugify(form.slug || form.name),
       bio: form.bio || null,
       email: form.email || null,
       phone: form.phone || null,
@@ -148,7 +167,19 @@ export default function AdminTeamPage() {
         body: JSON.stringify(editingId ? { id: editingId, ...payload } : payload),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Could not save team member");
+
+      if (!res.ok) {
+        const details = data.details
+          ? JSON.stringify(data.details, null, 2)
+          : "";
+
+        throw new Error(
+          `${data.error || "Could not save team member"}${
+            details ? `: ${details}` : ""
+          }`
+        );
+      }
+
       setOpen(false);
       await load();
     } catch (err) {
@@ -301,6 +332,74 @@ export default function AdminTeamPage() {
         )}
       </div>
 
+      {!loading && team.length > 0 && totalPages > 1 && (
+        <div className="mt-4 flex flex-col gap-3 rounded-2xl border border-[#e7e9ef] bg-white px-4 py-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div className="font-[var(--font-inter)] text-[11px] text-gray-500">
+            Showing{" "}
+            <span className="font-semibold text-[#151525]">
+              {(page - 1) * ITEMS_PER_PAGE + 1}
+            </span>
+            {" – "}
+            <span className="font-semibold text-[#151525]">
+              {Math.min(page * ITEMS_PER_PAGE, totalMembers)}
+            </span>
+            {" of "}
+            <span className="font-semibold text-[#151525]">
+              {totalMembers}
+            </span>{" "}
+            team members
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              disabled={page === 1 || loading}
+              onClick={() => load(page - 1)}
+              className="rounded-lg border border-[#dfe2e8] px-3 py-1.5 text-[11px] font-medium text-[#151525] transition hover:bg-[#f7f4ff] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Previous
+            </button>
+
+            {Array.from(
+              { length: totalPages },
+              (_, index) => index + 1,
+            ).map((pageNumber) => (
+              <button
+                key={pageNumber}
+                type="button"
+                disabled={loading}
+                onClick={() => load(pageNumber)}
+                className="flex h-8 min-w-8 items-center justify-center rounded-lg border text-[11px] font-semibold transition"
+                style={
+                  pageNumber === page
+                    ? {
+                        background: BRAND.purple,
+                        borderColor: BRAND.purple,
+                        color: "white",
+                      }
+                    : {
+                        background: "white",
+                        borderColor: "#dfe2e8",
+                        color: "#151525",
+                      }
+                }
+              >
+                {pageNumber}
+              </button>
+            ))}
+
+            <button
+              type="button"
+              disabled={page === totalPages || loading}
+              onClick={() => load(page + 1)}
+              className="rounded-lg border border-[#dfe2e8] px-3 py-1.5 text-[11px] font-medium text-[#151525] transition hover:bg-[#f7f4ff] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <form
@@ -324,7 +423,7 @@ export default function AdminTeamPage() {
               <div className="grid gap-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field label="Name" value={form.name} required onChange={(v) => setForm((f) => ({ ...f, name: v }))} placeholder="Jane Doe" />
-                  <Field label="Slug" value={form.slug} required onChange={(v) => setForm((f) => ({ ...f, slug: v }))} placeholder="jane-doe" />
+                  <Field label="Slug" value={form.slug} required onChange={(v) => setForm((f) => ({ ...f, slug: slugify(v) }))} placeholder="jane-doe" />
                 </div>
                 <Field label="Role / Title" value={form.role} required onChange={(v) => setForm((f) => ({ ...f, role: v }))} placeholder="Lead Consultant" />
                 <TextArea label="Bio" value={form.bio} onChange={(v) => setForm((f) => ({ ...f, bio: v }))} placeholder="Short bio shown on the profile page" rows={4} />
