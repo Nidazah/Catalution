@@ -33,7 +33,7 @@ export default function BlogStandardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-transparent">
+    <main className="min-h-screen bg-white">
       <PageHero title="Blog Standard" />
       {/* --- MAIN LAYOUT: LEFT CONTENT + RIGHT SIDEBAR --- */}
       <section className="container mx-auto px-6 py-20 max-w-[1280px]">
