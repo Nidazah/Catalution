@@ -1,19 +1,9 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
 
 import RootShell from "./RootShell";
 
 import "./globals.css";
 import "./typography-readability-fix.css";
-
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-poppins",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Catalution — Catalyzing Solutions. Accelerating Growth.",
@@ -33,8 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`antialiased ${poppins.variable}`}>
-      <body className="relative cursor-none">
+    <html lang="en" className="antialiased">
+      <body
+        className="relative cursor-none"
+        style={{
+          "--font-poppins": "Poppins, Arial, Helvetica, sans-serif",
+          "--font-inter": "Inter, Arial, Helvetica, sans-serif",
+        } as React.CSSProperties}
+      >
         <RootShell>{children}</RootShell>
       </body>
     </html>

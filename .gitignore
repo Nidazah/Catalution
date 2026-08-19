@@ -3,4 +3,11 @@ node_modules/
 out/
 .env
 .env.local
+node_modules/
+.next/
+out/
+.env
+.env.local
+/src/generated/prisma
+
 /src/generated/prisma

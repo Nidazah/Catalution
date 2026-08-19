@@ -32,7 +32,7 @@ export async function GET() {
     const applications = await withDbRetry(() =>
       prisma.careerApplication.findMany({
         include: {
-          Career: {
+          career: {
             select: {
               id: true,
               title: true,
@@ -51,8 +51,8 @@ export async function GET() {
 
     const mapped = applications.map((application) => ({
       ...application,
-      careerTitle: application.Career?.title ?? "",
-      career: application.Career,
+      careerTitle: application.career?.title ?? "",
+      career: application.career,
     }));
 
     return NextResponse.json({

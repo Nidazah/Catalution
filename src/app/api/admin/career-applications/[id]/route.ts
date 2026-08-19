@@ -84,7 +84,7 @@ export async function PATCH(
             : {}),
         },
         include: {
-          Career: {
+          career: {
             select: {
               id: true,
               title: true,
