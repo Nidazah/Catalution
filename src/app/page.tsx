@@ -12,6 +12,9 @@ import Price from "../components/Price";
 import Testimonials from "../components/Testimonials";
 import CTA from "../components/CTA";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 
 function parseJsonArray<T = unknown>(
   value: Prisma.JsonValue | null | undefined,
@@ -65,6 +68,14 @@ export default async function Home() {
       />
 
       <Services />
+
+      <Process
+        eyebrow={byKey.PROCESS?.eyebrow}
+        title={byKey.PROCESS?.title}
+        description={byKey.PROCESS?.description}
+        image={byKey.PROCESS?.image}
+        items={processItems}
+      />
 
       <AboutSection
         eyebrow={byKey.ABOUT?.eyebrow}
