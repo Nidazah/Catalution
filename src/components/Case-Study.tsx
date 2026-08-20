@@ -12,13 +12,31 @@ import { portfolios } from "../app/data/portfolios";
 import "swiper/css";
 import "swiper/css/pagination";
 
+export type CaseStudyItem = {
+  title?: string;
+  description?: string;
+  image?: string;
+  meta?: string;
+  link?: string;
+};
+
 interface CaseStudyProps {
   eyebrow?: string;
   title?: string;
   description?: string;
+  items?: CaseStudyItem[];
 }
 
-export default function CaseStudy({ eyebrow, title, description }: CaseStudyProps) {
+export default function CaseStudy({ eyebrow, title, description, items }: CaseStudyProps) {
+  const projects = items && items.length > 0
+    ? items.map((item, index) => ({
+        id: `cms-${index}`,
+        title: item.title || `Project ${index + 1}`,
+        img: item.image || "/images/portfolio/portfolio-1.jpg",
+        tags: item.meta ? [item.meta] : ["Case Study"],
+        link: item.link || `/portfolios/${index}`,
+      }))
+    : portfolios;
   return (
     <section
       id="case-studies"
@@ -71,11 +89,11 @@ export default function CaseStudy({ eyebrow, title, description }: CaseStudyProp
           // ✅ FIX: Reduced horizontal padding to squeeze the slides closer to the edges
           className="!overflow-visible px-4 md:px-8"
         >
-          {portfolios.map((project) => (
+          {projects.map((project) => (
             <SwiperSlide key={project.id} className="h-auto">
               <ScrollReveal className="h-full flex">
                 <Link
-                  href={`/portfolios/${project.id}`}
+                  href={project.link || `/portfolios/${project.id}`}
                   data-cursor-hover
                   className="group relative flex w-full flex-col overflow-hidden rounded-xl h-[280px] sm:h-[300px] md:h-[320px]"
                 >

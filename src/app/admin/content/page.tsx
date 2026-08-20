@@ -18,7 +18,6 @@ const sectionOptions = [
   ["HERO", "Hero", "Homepage opening message and primary CTA"],
   ["ABOUT", "About", "Company story, positioning and trust message"],
   ["PROCESS", "Process", "How your ERP, POS and transformation process works"],
-  ["WORK", "Work", "Implementation steps, capabilities or workflow"],
   ["CASE_STUDIES", "Case Studies", "Client projects and success stories"],
 ] as const;
 

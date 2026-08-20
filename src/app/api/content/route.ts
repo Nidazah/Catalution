@@ -7,7 +7,6 @@ const sectionKeys = [
   "HERO",
   "ABOUT",
   "PROCESS",
-  "WORK",
   "TEAM",
   "CASE_STUDIES",
   "PRICING",

@@ -5,16 +5,14 @@ import AboutSection from "../components/About";
 import Services from "../components/Services";
 import Process, { type ProcessItem } from "../components/Process";
 import Marquee from "../components/Marquee";
-import Work from "../components/Work";
 import Team, { type TeamItem } from "../components/Team";
-import CaseStudy from "../components/Case-Study";
+import CaseStudy, { type CaseStudyItem } from "../components/Case-Study";
 import Price from "../components/Price";
 import Testimonials from "../components/Testimonials";
 import CTA from "../components/CTA";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
 
 function parseJsonArray<T = unknown>(
   value: Prisma.JsonValue | null | undefined,
@@ -55,6 +53,9 @@ export default async function Home() {
 
   const processItems = parseJsonArray<ProcessItem>(byKey.PROCESS?.items);
   const teamItemsFromSection = parseJsonArray<TeamItem>(byKey.TEAM?.items);
+  const caseStudyItems = parseJsonArray<CaseStudyItem>(
+    byKey.CASE_STUDIES?.items,
+  );
 
   return (
     <main>
@@ -69,14 +70,6 @@ export default async function Home() {
 
       <Services />
 
-      <Process
-        eyebrow={byKey.PROCESS?.eyebrow}
-        title={byKey.PROCESS?.title}
-        description={byKey.PROCESS?.description}
-        image={byKey.PROCESS?.image}
-        items={processItems}
-      />
-
       <AboutSection
         eyebrow={byKey.ABOUT?.eyebrow}
         title={byKey.ABOUT?.title}
@@ -88,13 +81,12 @@ export default async function Home() {
 
       <Marquee />
 
-      <Work
-        eyebrow={byKey.WORK?.eyebrow}
-        title={byKey.WORK?.title}
-        description={byKey.WORK?.description}
-        image={byKey.WORK?.image}
-        primaryButtonLabel={byKey.WORK?.primaryButtonLabel}
-        primaryButtonUrl={byKey.WORK?.primaryButtonUrl}
+      <Process
+        eyebrow={byKey.PROCESS?.eyebrow}
+        title={byKey.PROCESS?.title}
+        description={byKey.PROCESS?.description}
+        image={byKey.PROCESS?.image}
+        items={processItems}
       />
 
       <Team
@@ -111,6 +103,7 @@ export default async function Home() {
         eyebrow={byKey.CASE_STUDIES?.eyebrow}
         title={byKey.CASE_STUDIES?.title}
         description={byKey.CASE_STUDIES?.description}
+        items={caseStudyItems}
       />
 
       <Price
