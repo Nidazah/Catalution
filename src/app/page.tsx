@@ -1,6 +1,6 @@
 import { prisma, withDbRetry } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
-import Hero from "../components/Hero";
+import Hero, { type HeroItem } from "../components/Hero";
 import AboutSection from "../components/About";
 import Services from "../components/Services";
 import Process, { type ProcessItem } from "../components/Process";
@@ -10,6 +10,7 @@ import CaseStudy, { type CaseStudyItem } from "../components/Case-Study";
 import Price from "../components/Price";
 import Testimonials from "../components/Testimonials";
 import CTA from "../components/CTA";
+import CmsSection from "../components/CmsSection";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -51,6 +52,7 @@ export default async function Home() {
     link: `/team/${m.slug}`,
   }));
 
+  const heroItems = parseJsonArray<HeroItem>(byKey.HERO?.items);
   const processItems = parseJsonArray<ProcessItem>(byKey.PROCESS?.items);
   const teamItemsFromSection = parseJsonArray<TeamItem>(byKey.TEAM?.items);
   const caseStudyItems = parseJsonArray<CaseStudyItem>(
@@ -59,37 +61,38 @@ export default async function Home() {
 
   return (
     <main>
-      <Hero
+      <CmsSection sectionKey="HERO"><Hero
         eyebrow={byKey.HERO?.eyebrow}
         title={byKey.HERO?.title}
         description={byKey.HERO?.description}
         image={byKey.HERO?.image}
         primaryButtonLabel={byKey.HERO?.primaryButtonLabel}
         primaryButtonUrl={byKey.HERO?.primaryButtonUrl}
-      />
+        items={heroItems}
+      /></CmsSection>
 
-      <Services />
+      <CmsSection sectionKey="SERVICES"><Services /></CmsSection>
 
-      <AboutSection
+      <CmsSection sectionKey="ABOUT"><AboutSection
         eyebrow={byKey.ABOUT?.eyebrow}
         title={byKey.ABOUT?.title}
         description={byKey.ABOUT?.description}
         image={byKey.ABOUT?.image}
         primaryButtonLabel={byKey.ABOUT?.primaryButtonLabel}
         primaryButtonUrl={byKey.ABOUT?.primaryButtonUrl}
-      />
+      /></CmsSection>
 
-      <Marquee />
+      <CmsSection sectionKey="MARQUE"><Marquee /></CmsSection>
 
-      <Process
+      <CmsSection sectionKey="PROCESS"><Process
         eyebrow={byKey.PROCESS?.eyebrow}
         title={byKey.PROCESS?.title}
         description={byKey.PROCESS?.description}
         image={byKey.PROCESS?.image}
         items={processItems}
-      />
+      /></CmsSection>
 
-      <Team
+      <CmsSection sectionKey="TEAM"><Team
         eyebrow={byKey.TEAM?.eyebrow}
         title={byKey.TEAM?.title}
         description={byKey.TEAM?.description}
@@ -97,33 +100,36 @@ export default async function Home() {
         primaryButtonLabel={byKey.TEAM?.primaryButtonLabel}
         primaryButtonUrl={byKey.TEAM?.primaryButtonUrl}
         items={teamItems.length ? teamItems : teamItemsFromSection}
-      />
+      /></CmsSection>
 
-      <CaseStudy
+      <CmsSection sectionKey="CASE_STUDIES"><CaseStudy
         eyebrow={byKey.CASE_STUDIES?.eyebrow}
         title={byKey.CASE_STUDIES?.title}
         description={byKey.CASE_STUDIES?.description}
         items={caseStudyItems}
-      />
+      /></CmsSection>
 
-      <Price
+      <CmsSection sectionKey="PRICING"><Price
         eyebrow={byKey.PRICING?.eyebrow}
         title={byKey.PRICING?.title}
         description={byKey.PRICING?.description}
-      />
+      /></CmsSection>
 
-      <Testimonials
+      <CmsSection sectionKey="TESTIMONIALS"><Testimonials
         eyebrow={byKey.TESTIMONIALS?.eyebrow}
         title={byKey.TESTIMONIALS?.title}
-      />
+      /></CmsSection>
 
-      <CTA
-        eyebrow={byKey.CTA?.eyebrow}
-        title={byKey.CTA?.title}
-        description={byKey.CTA?.description}
-        primaryButtonLabel={byKey.CTA?.primaryButtonLabel}
-        primaryButtonUrl={byKey.CTA?.primaryButtonUrl}
-      />
+      <CmsSection sectionKey="CTA">
+        <CTA
+          eyebrow={byKey.CTA?.eyebrow}
+          title={byKey.CTA?.title}
+          description={byKey.CTA?.description}
+          image={byKey.CTA?.image}
+          primaryButtonLabel={byKey.CTA?.primaryButtonLabel}
+          primaryButtonUrl={byKey.CTA?.primaryButtonUrl}
+        />
+      </CmsSection>
     </main>
   );
 }

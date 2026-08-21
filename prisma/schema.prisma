@@ -8,6 +8,14 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
+model SiteSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Blog {
   id           String   @id @default(cuid())
   title        String
@@ -301,6 +309,7 @@ enum ContentSectionKey {
   BLOG
   FAQ
   CAREERS
+  MARQUE
 }
 
 enum Role {

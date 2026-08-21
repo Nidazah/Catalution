@@ -15,10 +15,13 @@ import {
 import ImageUploadField from "@/components/admin/ImageUploadField";
 
 const sectionOptions = [
-  ["HERO", "Hero", "Homepage opening message and primary CTA"],
-  ["ABOUT", "About", "Company story, positioning and trust message"],
-  ["PROCESS", "Process", "How your ERP, POS and transformation process works"],
-  ["CASE_STUDIES", "Case Studies", "Client projects and success stories"],
+  ["HERO", "Hero", "Homepage opening message, imagery and primary CTAs"],
+  ["SERVICES", "Services", "Homepage service cards, labels, descriptions and links"],
+  ["ABOUT", "About", "Company story, positioning, image and trust message"],
+  ["MARQUE", "Marquee", "Scrolling brand/message strip and repeatable items"],
+  ["PROCESS", "Process", "Transformation process, steps, images and descriptions"],
+  ["CASE_STUDIES", "Case Study", "Homepage case-study heading and project cards"],
+  ["CTA", "CTA", "Homepage call-to-action heading, copy and button"],
 ] as const;
 
 type Item = {
@@ -197,6 +200,49 @@ export default function ContentManagerPage() {
     setOpen(false);
     setSaving(false);
     await load();
+  }
+
+  function fieldLabels(key: Section["sectionKey"]) {
+    switch (key) {
+      case "MARQUE":
+        return { itemTitle: "Marquee text", itemDescription: "Optional subtitle", itemMeta: "Badge / label", itemLink: "Link" };
+      case "PROCESS":
+        return { itemTitle: "Step title", itemDescription: "Step description", itemMeta: "Step label", itemLink: "Learn-more URL" };
+      case "CASE_STUDIES":
+        return { itemTitle: "Project title", itemDescription: "Project summary", itemMeta: "Category / tag", itemLink: "Project URL" };
+      case "SERVICES":
+        return { itemTitle: "Service title", itemDescription: "Service description", itemMeta: "Short label", itemLink: "Service URL" };
+      default:
+        return { itemTitle: "Item title", itemDescription: "Description", itemMeta: "Label / meta", itemLink: "Link" };
+    }
+  }
+
+  // Not every section actually uses a single "main image" or a section-level
+  // call-to-action — e.g. Case Study only ever renders the per-project images
+  // inside its auto-rotating carousel, so a single main image and CTA buttons
+  // would do nothing on the live site. Keep the panel honest about what each
+  // section actually supports.
+  function sectionCapabilities(key: Section["sectionKey"]) {
+    switch (key) {
+      case "CASE_STUDIES":
+        return { mainImage: false, cta: false };
+      default:
+        return { mainImage: true, cta: true };
+    }
+  }
+
+  function itemsIntro(key: Section["sectionKey"]) {
+    if (key === "CASE_STUDIES") {
+      return {
+        title: "Case study projects",
+        subtitle:
+          "Each project's image becomes a slide in the auto-rotating homepage carousel — add as many as you like.",
+      };
+    }
+    return {
+      title: "Content items",
+      subtitle: "Use this for team members, steps, projects, plans or testimonials.",
+    };
   }
 
   async function remove(id: string) {
@@ -417,6 +463,12 @@ export default function ContentManagerPage() {
 
             <div className="overflow-y-auto px-5 py-5">
               <div className="grid gap-4">
+                {(() => {
+                  const capabilities = sectionCapabilities(form.sectionKey);
+                  const labels = fieldLabels(form.sectionKey);
+                  const intro = itemsIntro(form.sectionKey);
+                  return (
+                    <>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field
                     label="Section label"
@@ -451,12 +503,15 @@ export default function ContentManagerPage() {
                   />
                 </label>
 
-                <ImageUploadField
-                  label="Main image"
-                  value={form.image}
-                  onChange={(url) => setForm({ ...form, image: url })}
-                />
+                {capabilities.mainImage && (
+                  <ImageUploadField
+                    label="Main image"
+                    value={form.image}
+                    onChange={(url) => setForm({ ...form, image: url })}
+                  />
+                )}
 
+                {capabilities.cta && (
                 <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
                   <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
                     Calls to action
@@ -494,16 +549,16 @@ export default function ContentManagerPage() {
                     />
                   </div>
                 </div>
+                )}
 
                 <div className="rounded-xl border border-[#ece6f7] p-3.5">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
-                        Content items
+                        {intro.title}
                       </p>
                       <p className="mt-0.5 text-[10px] text-[#7b8190]">
-                        Use this for team members, steps, projects, plans or
-                        testimonials.
+                        {intro.subtitle}
                       </p>
                     </div>
                     <button
@@ -528,7 +583,7 @@ export default function ContentManagerPage() {
                         >
                           <div className="mb-2.5 flex items-center justify-between">
                             <span className="text-[9px] font-bold uppercase tracking-[0.12em] text-[#ff6800]">
-                              Item {String(index + 1).padStart(2, "0")}
+                              {form.sectionKey === "CASE_STUDIES" ? "Project" : "Item"} {String(index + 1).padStart(2, "0")}
                             </span>
                             <button
                               type="button"
@@ -540,7 +595,7 @@ export default function ContentManagerPage() {
                           </div>
                           <div className="grid gap-2.5">
                             <Field
-                              label="Title"
+                              label={labels.itemTitle}
                               required
                               value={item.title}
                               onChange={(value) =>
@@ -548,7 +603,7 @@ export default function ContentManagerPage() {
                               }
                             />
                             <Field
-                              label="Meta / role / price"
+                              label={labels.itemMeta}
                               value={item.meta}
                               onChange={(value) =>
                                 updateItem(index, { meta: value })
@@ -561,7 +616,7 @@ export default function ContentManagerPage() {
                             />
                             <label className="grid gap-1">
                               <span className="text-[10.5px] font-semibold text-[#24133f]">
-                                Description / details
+                                {labels.itemDescription}
                               </span>
                               <textarea
                                 rows={2}
@@ -575,7 +630,7 @@ export default function ContentManagerPage() {
                               />
                             </label>
                             <Field
-                              label="Link"
+                              label={labels.itemLink}
                               value={item.link}
                               onChange={(value) =>
                                 updateItem(index, { link: value })
@@ -588,6 +643,9 @@ export default function ContentManagerPage() {
                     )}
                   </div>
                 </div>
+                    </>
+                  );
+                })()}
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field

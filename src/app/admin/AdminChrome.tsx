@@ -38,7 +38,7 @@ export default function AdminChrome({
         onToggle={onToggleSidebar} 
         onClose={onCloseSidebar} 
       />
-      <main className={`admin-main ${isSidebarOpen ? "ml-64" : "ml-16"}`}>
+      <main className={`admin-main ${isSidebarOpen ? "ml-64" : "ml-20"}`}>
         {children}
       </main>
     </div>

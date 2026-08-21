@@ -6,6 +6,8 @@ import { z } from "zod";
 const sectionKeys = [
   "HERO",
   "ABOUT",
+  "SERVICES",
+  "MARQUE",
   "PROCESS",
   "TEAM",
   "CASE_STUDIES",

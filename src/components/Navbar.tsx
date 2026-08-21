@@ -513,6 +513,21 @@ export default function Navbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [layout, setLayout] = useState<{
+    logo?: string; logoWidth?: number; ctaLabel?: string; ctaUrl?: string; exploreLabel?: string; mobileSearchPlaceholder?: string;
+    navItems?: Array<{ label: string; href: string }>;
+  }>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/site-settings?key=LAYOUT", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (!cancelled && payload?.data?.navbar) setLayout(payload.data.navbar);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   // Track scroll state
   const [scrolled, setScrolled] = useState(false);
@@ -604,7 +619,10 @@ export default function Navbar({
     };
   }, []);
 
-  const links = buildLinks(servicesDropdown, portfolioDetailsHref);
+  const links = buildLinks(servicesDropdown, portfolioDetailsHref).map((link) => {
+    const configured = layout.navItems?.find((item) => item.label === link.label);
+    return configured ? { ...link, label: configured.label, href: configured.href } : link;
+  });
   const pagesLinks = buildPagesLinks(portfolioDetailsHref, careersDetailsHref);
 
   // The parent decides whether this page has a transparent hero navbar.
@@ -612,9 +630,9 @@ export default function Navbar({
   const isHeroMode = transparent && !scrolled;
   const useLightText = isHeroMode && lightText;
 
-  const logoSrc = useLightText
+  const logoSrc = layout.logo || (useLightText
     ? "/images/Logo/primary-logo.webp"
-    : "/images/Logo/secondary-logo.webp";
+    : "/images/Logo/secondary-logo.webp");
 
   return (
     <header className="absolute left-0 top-0 z-50 w-full bg-transparent">
@@ -622,8 +640,16 @@ export default function Navbar({
         className={`catalution-navbar ${
           isHeroMode
             ? "bg-transparent shadow-none border-none"
-            : "bg-white/95 backdrop-blur-md border-b border-[var(--color-line)] shadow-[0_2px_10px_rgba(72,29,150,0.08)]"
+            : "bg-white/95 backdrop-blur-md border-b shadow-[0_2px_10px_rgba(72,29,150,0.08)]"
         }`}
+        style={{
+          backgroundColor: isHeroMode ? "transparent" : "var(--cms-navbar-bg, #ffffff)",
+          borderColor: isHeroMode ? "transparent" : "var(--cms-navbar-border, var(--color-line))",
+          paddingLeft: "var(--cms-navbar-px, 4%)",
+          paddingRight: "var(--cms-navbar-px, 4%)",
+          paddingTop: "var(--cms-navbar-py, 1rem)",
+          paddingBottom: "var(--cms-navbar-py, 1rem)",
+        }}
       >
         {/* --- LOGO (Far Left) --- */}
         <Link
@@ -633,7 +659,7 @@ export default function Navbar({
           <Image
             src={logoSrc}
             alt="Catalution Logo"
-            width={120}
+            width={layout.logoWidth || 120}
             height={40}
             className="h-auto w-auto"
             priority
@@ -662,11 +688,11 @@ export default function Navbar({
                 : "text-[var(--color-purple-900)] hover:text-[var(--color-accent)]"
             }`}
           >
-            Explore <Search className="h-4 w-4" />
+            {layout.exploreLabel || "Explore"} <Search className="h-4 w-4" />
           </button>
 
-          <Link href="/contact" className="btn-nav-primary">
-            Get Started
+          <Link href={layout.ctaUrl || "/contact"} className="btn-nav-primary" style={{backgroundColor:"var(--cms-navbar-cta-bg, var(--color-purple-900))", color:"var(--cms-navbar-cta-text, #fff)"}}>
+            {layout.ctaLabel || "Get Started"}
             <span className="arrow">
               <ArrowUpRight className="h-4 w-4" />
             </span>
@@ -737,7 +763,7 @@ export default function Navbar({
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Search here..."
+                  placeholder={layout.mobileSearchPlaceholder || "Search here..."}
                   className="w-full"
                 />
                 <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-purple-900)]/50 w-5 h-5" />

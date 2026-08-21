@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUp, Send, ShieldCheck } from "lucide-react";
+import { ArrowUp, Globe, Send, ShieldCheck } from "lucide-react";
 
 /* ---------- inline social icons (lucide dropped brand logos) ---------- */
 function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -41,6 +41,22 @@ function LinkedinIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M6.94 8.5H4.1V19h2.84V8.5zM5.52 3.5a1.65 1.65 0 1 0 0 3.3 1.65 1.65 0 0 0 0-3.3zM20 19v-5.8c0-3.1-1.66-4.55-3.87-4.55-1.78 0-2.58.98-3.03 1.66V8.5H10.3c.04.8 0 10.5 0 10.5h2.8v-5.86c0-.31.02-.63.11-.85.25-.63.8-1.28 1.74-1.28 1.23 0 1.72.94 1.72 2.31V19H20z" />
     </svg>
   );
+}
+
+/* Map social labels → icon components (used when CMS items omit `icon`) */
+const socialIconByLabel: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
+  Facebook: FacebookIcon,
+  Instagram: InstagramIcon,
+  Twitter: TwitterIcon,
+  LinkedIn: LinkedinIcon,
+  Linkedin: LinkedinIcon,
+};
+
+function getSocialIcon(
+  s: { label: string; href: string; icon?: React.ComponentType<React.SVGProps<SVGSVGElement>> }
+): React.ComponentType<React.SVGProps<SVGSVGElement>> {
+  if (s.icon) return s.icon;
+  return socialIconByLabel[s.label] ?? Globe;
 }
 
 const socials = [
@@ -84,6 +100,21 @@ const services = [
 
 export default function FooterV2() {
   const [email, setEmail] = useState("");
+  const [layout, setLayout] = useState<{
+    description?: string; newsletterTitle?: string; copyright?: string;
+    social?: Array<{ label: string; href: string }>;
+  }>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/site-settings?key=LAYOUT", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((payload) => {
+        if (!cancelled && payload?.data?.footer) setLayout(payload.data.footer);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,8 +125,8 @@ export default function FooterV2() {
   };
 
   return (
-    <footer className="relative bg-[var(--color-section)]">
-      <div className="mx-auto max-w-7xl px-6 py-20 grid gap-12 md:grid-cols-[1.3fr_0.8fr_0.8fr_1fr]">
+    <footer className="relative" style={{backgroundColor:"var(--cms-footer-bg, var(--color-section))"}}>
+      <div className="mx-auto max-w-7xl px-6 grid gap-12 md:grid-cols-[1.3fr_0.8fr_0.8fr_1fr]" style={{paddingTop:"var(--cms-footer-pt, 80px)",paddingBottom:"var(--cms-footer-pb, 80px)"}}>
         {/* Brand + social */}
         <div>
           <Link href="/" className="flex items-center gap-2">
@@ -106,21 +137,20 @@ export default function FooterV2() {
               height={38}
               className="h-9 w-auto"
             />
-            <span className="font-display text-2xl font-bold text-[var(--color-heading)]">
+            <span className="font-display text-2xl font-bold" style={{color:"var(--cms-footer-heading, var(--color-heading))"}}>
               Catalution
             </span>
           </Link>
 
-          <p className="mt-6 max-w-xs text-sm leading-relaxed text-[var(--color-body)]">
-            Our mission is to empower businesses of all sizes to thrive in an
-            ever changing marketplace.
+          <p className="mt-6 max-w-xs text-sm leading-relaxed" style={{color:"var(--cms-footer-text, var(--color-body))"}}>
+            {layout.description || "Our mission is to empower businesses of all sizes to thrive in an ever changing marketplace."}
           </p>
 
-          <h4 className="mt-8 font-display text-base font-bold text-[var(--color-heading)]">
+          <h4 className="mt-8 font-display text-base font-bold" style={{color:"var(--cms-footer-heading, var(--color-heading))"}}>
             Follow Us:
           </h4>
           <div className="mt-4 flex gap-3">
-            {socials.map((s) => (
+            {(layout.social?.length ? layout.social : socials).map((s) => (
               <a
                 key={s.label}
                 href={s.href}
@@ -130,7 +160,10 @@ export default function FooterV2() {
                 /* ✅ UPDATED HOVER COLOR TO LIGHT PURPLE */
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-purple-300)] text-white transition-colors hover:bg-[var(--color-purple-300)] hover:text-white"
               >
-                <s.icon className="h-4 w-4" />
+                {(() => {
+                  const Icon = getSocialIcon(s);
+                  return <Icon className="h-4 w-4" />;
+                })()}
               </a>
             ))}
           </div>
@@ -138,7 +171,7 @@ export default function FooterV2() {
 
         {/* Resources */}
         <div>
-          <h4 className="font-display text-lg font-bold text-[var(--color-heading)]">
+          <h4 className="font-display text-lg font-bold" style={{color:"var(--cms-footer-heading, var(--color-heading))"}}>
             Resources
           </h4>
           <ul className="mt-6 space-y-4">
@@ -162,7 +195,7 @@ export default function FooterV2() {
 
         {/* Services */}
         <div>
-          <h4 className="font-display text-lg font-bold text-[var(--color-heading)]">
+          <h4 className="font-display text-lg font-bold" style={{color:"var(--cms-footer-heading, var(--color-heading))"}}>
             Services
           </h4>
           <ul className="mt-6 space-y-4">
@@ -181,8 +214,8 @@ export default function FooterV2() {
 
         {/* Newsletter */}
         <div>
-          <h4 className="font-display text-2xl font-bold leading-snug text-[var(--color-heading)]">
-            Subscribe to our newsletter
+          <h4 className="font-display text-2xl font-bold leading-snug" style={{color:"var(--cms-footer-heading, var(--color-heading))"}}>
+            {layout.newsletterTitle || "Subscribe to our newsletter"}
           </h4>
           <form
             onSubmit={handleSubscribe}
@@ -208,16 +241,15 @@ export default function FooterV2() {
       </div>
 
       {/* Bottom bar */}
-      <div className="bg-[var(--color-navy)]">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[var(--color-purple-100)]">
-          <div className="flex items-center gap-2">
+      <div className="" style={{backgroundColor:"var(--cms-footer-bottom, var(--color-navy))"}}>
+        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+          <div className="flex items-center gap-2" style={{color:"var(--cms-footer-bottom-text, var(--color-purple-100))"}}>
             <ShieldCheck className="h-4 w-4 text-white" />
             <span>Trusted partner in business excellence</span>
           </div>
           <div>
             © {new Date().getFullYear()}{" "}
-            <span className="font-semibold text-white">Catalution</span> All right
-            reserved.
+            <span className="font-semibold text-white">Catalution</span> {layout.copyright || "All right reserved."}
           </div>
           <div className="flex items-center gap-3">
             <a href="/privacy" className="hover:text-white transition-colors">

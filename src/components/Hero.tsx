@@ -17,6 +17,14 @@ const item: Variants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: easeOut } },
 };
 
+export type HeroItem = {
+  title?: string;
+  description?: string;
+  image?: string;
+  meta?: string;
+  link?: string;
+};
+
 type HeroProps = {
   eyebrow?: string;
   title?: string;
@@ -24,6 +32,7 @@ type HeroProps = {
   image?: string;
   primaryButtonLabel?: string;
   primaryButtonUrl?: string;
+  items?: HeroItem[];
 };
 
 export default function Hero({
@@ -33,12 +42,22 @@ export default function Hero({
   image,
   primaryButtonLabel,
   primaryButtonUrl,
+  items = [],
 }: HeroProps) {
-  const avatars = [
+  const fallbackAvatars = [
     "/images/about/thumb-1.png",
     "/images/about/thumb-2.png",
     "/images/about/thumb-3.png",
   ];
+
+  const cmsAvatars = items
+    .map((item) => item.image?.trim())
+    .filter((image): image is string => Boolean(image))
+    .slice(0, 3);
+
+  const avatars = fallbackAvatars.map(
+    (fallback, index) => cmsAvatars[index] || fallback,
+  );
 
   const heroImage = image && image.trim() !== "" ? image : "/images/hero/h5-hero.png";
   const heroEyebrow = eyebrow && eyebrow.trim() !== "" ? eyebrow : "SOLVER AGENCY";

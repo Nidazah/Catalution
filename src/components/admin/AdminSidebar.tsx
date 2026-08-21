@@ -7,6 +7,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useCallback, useRef, useEffect } from "react";
 import {
   LayoutDashboard,
+  PanelsTopLeft,
+  Paintbrush,
   Briefcase,
   FolderKanban,
   Newspaper,
@@ -30,6 +32,8 @@ interface MenuItem {
 
 const MENU_ITEMS: MenuItem[] = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Layout", href: "/admin/layout-manager", icon: PanelsTopLeft },
+  { label: "Theme", href: "/admin/brand-settings", icon: Paintbrush },
   { label: "Services", href: "/admin/services", icon: Briefcase },
   { label: "Portfolios", href: "/admin/portfolio", icon: FolderKanban },
   { label: "Blog", href: "/admin/blog", icon: Newspaper },
@@ -162,7 +166,7 @@ export default function AdminSidebar({
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 flex h-screen flex-col bg-[#270f4b] py-4 transition-all duration-300 ease-in-out ${isOpen ? "w-64" : "w-16"}`}
+        className={`fixed left-0 top-0 z-50 flex h-screen flex-col bg-[#270f4b] py-4 transition-all duration-300 ease-in-out ${isOpen ? "w-64" : "w-20"}`}
         role="navigation"
         aria-label="Admin sidebar"
       >
@@ -208,7 +212,7 @@ export default function AdminSidebar({
                   onClick={onClose}
                   aria-current={active ? "page" : undefined}
                   className={`flex items-center rounded-xl transition-all duration-150 w-full ${
-                    isOpen ? "gap-3 px-3 py-2.5" : "h-10 w-10 justify-center"
+                    isOpen ? "gap-3 px-3 py-2.5" : "h-11 w-11 justify-center"
                   } ${
                     active
                       ? "bg-[#667eea]/20 text-[#667eea]"
@@ -222,7 +226,7 @@ export default function AdminSidebar({
                 </Link>
 
                 {!isOpen && (
-                  <span className="pointer-events-none absolute left-14 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#1c1c20] px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
+                  <span className="pointer-events-none absolute left-[76px] top-1/2 -translate-y-1/2 whitespace-nowrap rounded-md bg-[#1c1c20] px-2.5 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
                     {item.label}
                   </span>
                 )}
@@ -298,7 +302,7 @@ export default function AdminSidebar({
             className={`flex items-center gap-2.5 rounded-full transition-colors ${
               isOpen
                 ? "w-full rounded-xl px-2 py-2 hover:bg-white/10"
-                : "h-9 w-9 justify-center"
+                : "h-10 w-10 justify-center"
             }`}
             aria-label="Account menu"
             aria-expanded={accountMenuOpen}

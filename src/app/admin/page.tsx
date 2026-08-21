@@ -15,13 +15,15 @@ export default async function AdminDashboardPage() {
   const portfolioCount = await prisma.portfolio.count().catch(() => 0)
   const publishedPortfolios = await prisma.portfolio.count({ where: { published: true } }).catch(() => 0)
 
+  const totalItems = serviceCount + contentCount + portfolioCount
+  const totalPublished = publishedServices + publishedContent + publishedPortfolios
+  const overallPct = totalItems > 0 ? Math.round((totalPublished / totalItems) * 100) : 0
+
   return (
     <div className="space-y-5 text-[13px]">
 
       {/* Hero Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#481d96] via-[#6d28d9] to-[#8b5cf6] p-5 text-white shadow-lg">
-        <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full border border-white/20" />
-        <div className="pointer-events-none absolute -right-4 -bottom-32 h-72 w-72 rounded-full border border-[#ff6800]/50" />
         <div className="relative max-w-3xl">
           <p className="text-[9.5px] font-bold uppercase tracking-[0.2em] text-[#ffd59e]">Catalution CMS</p>
           <h1 className="mt-1.5 text-sm font-bold tracking-tight">Catalyzing your content.</h1>
@@ -81,20 +83,86 @@ export default async function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* Next Steps Section */}
-      <div className="rounded-xl border border-[#ece6f7] bg-white p-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[9.5px] font-bold uppercase tracking-[0.16em] text-[#ff6800]">Next</p>
-            <h2 className="mt-0.5 text-[9px] font-bold text-[#24133f]">Continue building the CMS one section at a time</h2>
-            <p className="mt-0.5 text-[11.5px] leading-4 text-[#7b8190]">Hero, About, Process, Work, Team, Case Studies, Pricing, Testimonials and CTA are now available as managed content sections.</p>
+      {/* Publish coverage visuals */}
+      <div className="grid gap-3 lg:grid-cols-[220px_1fr]">
+        <div className="flex flex-col items-center justify-center gap-2 rounded-xl border border-[#ece6f7] bg-white p-4">
+          <PublishRing percent={overallPct} />
+          <div className="text-center">
+            <div className="text-[13px] font-bold text-[#24133f]">{overallPct}% published</div>
+            <p className="mt-0.5 text-[10.5px] text-[#7b8190]">{totalPublished} of {totalItems} items live</p>
           </div>
-          <Link href="/admin/content" className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#481d96] px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-[#6d28d9]">
-            Open Content <ArrowUpRight size={12} />
-          </Link>
+        </div>
+
+        <div className="rounded-xl border border-[#ece6f7] bg-white p-4">
+          <p className="mb-3 text-[9.5px] font-bold uppercase tracking-[0.16em] text-[#8a8399]">Publish coverage by type</p>
+          <div className="space-y-3.5">
+            <PublishBar label="Services" published={publishedServices} total={serviceCount} color="#481d96" />
+            <PublishBar label="Website sections" published={publishedContent} total={contentCount} color="#ff6800" />
+            <PublishBar label="Portfolio" published={publishedPortfolios} total={portfolioCount} color="#2f8f46" />
+          </div>
         </div>
       </div>
     </div>
+  )
+}
+
+function PublishBar({
+  label,
+  published,
+  total,
+  color,
+}: {
+  label: string
+  published: number
+  total: number
+  color: string
+}) {
+  const pct = total > 0 ? Math.round((published / total) * 100) : 0
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between text-[11px] font-semibold text-[#24133f]">
+        <span>{label}</span>
+        <span className="text-[#7b8190]">{published}/{total} · {pct}%</span>
+      </div>
+      <div className="h-2 w-full overflow-hidden rounded-full bg-[#f1eefa]">
+        <div
+          className="h-full rounded-full transition-[width]"
+          style={{ width: `${pct}%`, backgroundColor: color }}
+        />
+      </div>
+    </div>
+  )
+}
+
+function PublishRing({ percent }: { percent: number }) {
+  const size = 96
+  const stroke = 10
+  const radius = (size - stroke) / 2
+  const circumference = 2 * Math.PI * radius
+  const offset = circumference - (percent / 100) * circumference
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke="#f1eefa"
+        strokeWidth={stroke}
+      />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="none"
+        stroke="#ff6800"
+        strokeWidth={stroke}
+        strokeLinecap="round"
+        strokeDasharray={circumference}
+        strokeDashoffset={offset}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+      />
+    </svg>
   )
 }
 

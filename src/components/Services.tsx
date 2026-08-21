@@ -21,6 +21,17 @@ type Service = {
 
 export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
+  const [cmsItems, setCmsItems] = useState<Array<{ title: string; description?: string; meta?: string; link?: string }>>([]);
+
+  useEffect(() => {
+    fetch("/api/content?sectionKey=SERVICES", { cache: "no-store" })
+      .then((res) => res.ok ? res.json() : [])
+      .then((sections) => {
+        const section = Array.isArray(sections) ? sections[0] : null;
+        if (Array.isArray(section?.items) && section.items.length) setCmsItems(section.items);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -35,9 +46,11 @@ export default function Services() {
     return () => { cancelled = true; };
   }, []);
 
-  const items = services.length > 0
-    ? services.slice(0, 4).map((s) => ({ title: s.title, text: s.shortDescription || s.description, icon: s.icon }))
-    : fallbackServices.map((s) => ({ ...s, icon: undefined }));
+  const items = cmsItems.length
+    ? cmsItems.slice(0, 4).map((s) => ({ title: s.title, text: s.description || s.meta || "", icon: undefined }))
+    : services.length > 0
+      ? services.slice(0, 4).map((s) => ({ title: s.title, text: s.shortDescription || s.description, icon: s.icon }))
+      : fallbackServices.map((s) => ({ ...s, icon: undefined }));
 
   return (
     <section id="services" className="bg-navy py-10">

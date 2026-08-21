@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 const items = [
   "Mission and progress",
   "Founders and vision",
@@ -7,11 +9,11 @@ const items = [
   "Team and values",
 ];
 
-function Row() {
+function Row({ values }: { values: string[] }) {
   return (
     <div className="flex items-center shrink-0 gap-16 pr-16">
-      {items.map((t) => (
-        <div key={t} className="flex items-center gap-16">
+      {values.map((t, index) => (
+        <div key={`${t}-${index}`} className="flex items-center gap-16">
           <span className="font-display text-3xl md:text-4xl font-semibold text-white whitespace-nowrap">
             {t}
           </span>
@@ -31,12 +33,25 @@ function Row() {
 }
 
 export default function Marquee() {
+  const [values, setValues] = useState(items);
+  useEffect(() => {
+    fetch("/api/content?sectionKey=MARQUE", { cache: "no-store" })
+      .then((res) => res.ok ? res.json() : [])
+      .then((sections) => {
+        const section = Array.isArray(sections) ? sections[0] : null;
+        const next = Array.isArray(section?.items)
+          ? section.items.map((item: { title?: string }) => item.title).filter(Boolean)
+          : [];
+        if (next.length) setValues(next as string[]);
+      })
+      .catch(() => {});
+  }, []);
   return (
     <div className="bg-[var(--color-accent)] overflow-hidden py-6">
       <div className="flex animate-marquee whitespace-nowrap">
-        <Row />
-        <Row />
-        <Row />
+        <Row values={values} />
+        <Row values={values} />
+        <Row values={values} />
       </div>
     </div>
   );

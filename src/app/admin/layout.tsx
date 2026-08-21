@@ -66,7 +66,7 @@ export default function AdminLayout({
         />
         <main
           className={`min-h-screen p-8 text-sm transition-all duration-300 ${
-            isSidebarOpen ? "md:ml-64" : "md:ml-16"
+            isSidebarOpen ? "md:ml-64" : "md:ml-20"
           }`}
         >
           {children}

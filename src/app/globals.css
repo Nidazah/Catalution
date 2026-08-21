@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;500;600;700;800&family=Merriweather:wght@400;700&family=Nunito:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&family=Raleway:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap");
 @import "tailwindcss";
 /* Poppins/Inter are loaded via next/font in layout.tsx (--font-poppins, --font-inter below) */
 
@@ -40,6 +41,15 @@
     "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --radius-btn: 12px;
+  --cms-body-line-height: 1.6;
+  --cms-container-width: 1280px;
+  --cms-section-gap: 0px;
+  --cms-button-px: 24px;
+  --cms-button-py: 12px;
+  --cms-button-primary-bg: #481d96;
+  --cms-button-primary-text: #ffffff;
+  --cms-button-secondary-bg: #ff6800;
+  --cms-button-secondary-text: #ffffff;
 }
 
 @theme inline {
@@ -78,7 +88,7 @@ body {
   color: var(--color-heading);
   font-family: var(--font-inter), Inter, Arial, Helvetica, sans-serif;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: var(--cms-body-line-height, 1.6);
   text-rendering: optimizeLegibility;
 }
 
@@ -884,4 +894,35 @@ h6 {
 .portfolio-detail h2 {
   font-size: 2rem;
   line-height: 1.2;
+}
+
+
+/* ===================================================================
+   CMS RUNTIME DESIGN SYSTEM
+   Values are populated by the admin Theme + Layout managers.
+=================================================================== */
+.cms-section {
+  position: relative;
+  width: 100%;
+  transition: background-color .2s ease, color .2s ease, padding .2s ease;
+}
+.cms-section img {
+  transition: object-position .2s ease, transform .2s ease;
+}
+.btn {
+  border-radius: var(--radius-btn);
+  padding-left: var(--cms-button-px);
+  padding-right: var(--cms-button-px);
+  padding-top: var(--cms-button-py);
+  padding-bottom: var(--cms-button-py);
+}
+.btn-primary {
+  background: var(--cms-button-primary-bg);
+  color: var(--cms-button-primary-text);
+  border-color: var(--cms-button-primary-bg);
+}
+.btn-secondary {
+  background: var(--cms-button-secondary-bg);
+  color: var(--cms-button-secondary-text);
+  border-color: var(--cms-button-secondary-bg);
 }
