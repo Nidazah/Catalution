@@ -2,22 +2,9 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 import { z } from "zod";
+import { Prisma, ContentSectionKey } from "@prisma/client";
 
-const sectionKeys = [
-  "HERO",
-  "ABOUT",
-  "SERVICES",
-  "MARQUE",
-  "PROCESS",
-  "TEAM",
-  "CASE_STUDIES",
-  "PRICING",
-  "TESTIMONIALS",
-  "CTA",
-  "BLOG",
-  "FAQ",
-  "CAREERS",
-] as const;
+const sectionKeys = Object.values(ContentSectionKey);
 
 const itemSchema = z.object({
   title: z.string().trim().min(1).max(160),
@@ -58,9 +45,9 @@ export async function GET(request: Request) {
     session?.role ?? "",
   );
 
-  const where = {
-    ...(key && sectionKeys.includes(key as (typeof sectionKeys)[number])
-      ? { sectionKey: key as (typeof sectionKeys)[number] }
+  const where: Prisma.ContentSectionWhereInput = {
+    ...(key && sectionKeys.includes(key as ContentSectionKey)
+      ? { sectionKey: key as ContentSectionKey }
       : {}),
     ...(isAdmin ? {} : { published: true }),
   };

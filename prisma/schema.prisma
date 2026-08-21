@@ -298,18 +298,19 @@ model CareerApplication {
 
 enum ContentSectionKey {
   HERO
+  SERVICES
   ABOUT
+  MARQUE
   PROCESS
-  WORK
-  TEAM
   CASE_STUDIES
+  CTA
+  FAQ
+  TEAM
   PRICING
   TESTIMONIALS
-  CTA
   BLOG
-  FAQ
   CAREERS
-  MARQUE
+  WORK
 }
 
 enum Role {
