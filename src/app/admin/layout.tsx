@@ -3,6 +3,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { Menu } from "lucide-react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import CustomCursor from "@/components/CustomCursor";
 
@@ -11,7 +12,7 @@ import "./admin.css";
 // Pages that should not show the sidebar
 const HIDE_SIDEBAR_PATHS = [
   "/admin/login",
-  "/admin/logout", 
+  "/admin/logout",
   "/admin/forgot-password",
   "/admin/reset-password",
 ];
@@ -31,6 +32,11 @@ export default function AdminLayout({
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Close the mobile drawer automatically on route changes.
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [pathname]);
 
   const shouldHideSidebar = HIDE_SIDEBAR_PATHS.some(
     (path) => pathname === path || pathname?.startsWith(`${path}/`)
@@ -59,14 +65,34 @@ export default function AdminLayout({
     <>
       <CustomCursor />
       <div className="min-h-screen bg-[#f8f6fc]">
-        <AdminSidebar 
-          isOpen={isSidebarOpen} 
-          onToggle={toggleSidebar} 
-          onClose={closeSidebar} 
+        <AdminSidebar
+          isOpen={isSidebarOpen}
+          onToggle={toggleSidebar}
+          onClose={closeSidebar}
         />
+
+        {/* Mobile-only top bar: the sidebar is off-canvas below md, so this
+            is the only way to reach it on phones/tablets. */}
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-[#ece6f7] bg-white/95 px-4 backdrop-blur md:hidden">
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            aria-label="Open sidebar"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-[#481d96] transition-colors hover:bg-[#f0eafa]"
+          >
+            <Menu size={20} strokeWidth={2} />
+          </button>
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#481d96] text-[11px] font-bold text-white">
+            C
+          </span>
+          <span className="text-sm font-semibold text-[#24133f]">
+            Catalution Admin
+          </span>
+        </header>
+
         <main
-          className={`min-h-screen p-8 text-sm transition-all duration-300 ${
-            isSidebarOpen ? "md:ml-64" : "md:ml-20"
+          className={`min-h-screen p-4 text-sm transition-all duration-300 sm:p-6 lg:p-8 ${
+            isSidebarOpen ? "md:ml-72" : "md:ml-20"
           }`}
         >
           {children}

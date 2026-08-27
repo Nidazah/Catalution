@@ -1,65 +1,84 @@
-# Services panel + themed icon picker
+# Admin Dashboard & Sidebar Polish — README
 
-## What changed
+3 files changed, drop each one into the matching path in your repo
+(overwrite the existing file):
 
-### 1. New shared icon set — `src/lib/service-icons.tsx`
-Single source of truth for service icons (18 curated icons: waves, boxes,
-users, sparkles, circledot, repeat, zap, target, rocket, shield, trendingup,
-handshake, lightbulb, award, briefcase, barchart, compass, layers). Exposes
-`getServiceIcon(name)` with a safe fallback. Keys are lowercase, no-dash
-slugs — same convention already used in the database (`icon: "waves"`
-default etc.), so existing data keeps working.
+- `AdminSidebar.tsx`  → `src/components/admin/AdminSidebar.tsx`
+- `layout.tsx`        → `src/app/admin/layout.tsx`
+- `page.tsx`          → `src/app/admin/page.tsx`   (the Dashboard)
 
-### 2. New themed icon picker — `src/components/admin/IconPicker.tsx`
-Replaces the old plain text input ("e.g. waves, boxes, users") and the old
-bare `<select>` with a visual grid picker: each icon renders with its actual
-glyph, and the trigger button + selected swatch use the site's purple→orange
-brand gradient. Reused everywhere an icon is chosen:
-- `/admin/content` → Services section → each service tile's icon
-- `/admin/services` → a service's main icon
-- `/admin/services` → each feature's icon
+No schema, API, or auth changes — this is UI-only. Logout still calls
+the same `/api/auth/logout` endpoint the same way.
 
-### 3. Services panel now matches what the homepage actually shows —
-`src/app/admin/content/page.tsx`
-The Services section's repeatable-items editor previously showed the same
-generic fields as every other section (Image upload, Link, Badge, Tags) even
-though the homepage Services tiles never use them. For `sectionKey ===
-"SERVICES"` specifically, the editor now shows only what's rendered on the
-homepage tile: Title, Short label (used as a description fallback), the new
-Icon Picker, and Description — with a caption explaining what the icon/label
-control. Every other section (Marquee, Process, Case Study, etc.) is
-unchanged. Also gave the Services item list its own intro copy ("Service
-tiles — the first 4 published items become the service tiles on the
-homepage, each with its own icon").
+## 1. Logout position — fixed
 
-### 4. Homepage Services section now renders the icon —
-`src/components/Services.tsx`
-The `icon` field existed in the data model already but was silently dropped
-before reaching the UI. Now:
-- Both data sources (CMS items and the `/api/services` fallback) carry
-  `icon` through to the rendered card.
-- Each card shows the icon in a circular chip (white/10 by default,
-  transitioning to the purple→orange brand gradient on hover — matching the
-  card's existing hover-glow effect).
-- `fallbackServices` (used before any data loads) now has icons too (zap,
-  lightbulb, target, repeat).
+The account dropdown (avatar → "A" menu) is now:
+- Anchored with `bottom-[calc(100%+8px)]` instead of a fixed `bottom-12`,
+  so it always sits flush above its trigger no matter the button's
+  actual height — nothing floats or gets clipped.
+- Fixed at a consistent 224px width when the sidebar is collapsed
+  (icon-only mode), and stretches edge-to-edge of the sidebar when
+  expanded, instead of guessing a fixed width in both states.
+- The avatar row, name/role text, and the "Log out" button icon+label
+  are all centered and vertically aligned with `items-center`, with a
+  divider between the profile row and the logout action.
+- The menu now closes automatically on route change or when the
+  sidebar's expanded/collapsed state changes, so it can't ever be
+  left open and misaligned after a layout change.
 
-### 5. Consistency cleanup
-- `src/components/ServicesSidebar.tsx` and `src/app/admin/services/page.tsx`
-  now use the same shared `getServiceIcon` / `IconPicker` instead of their
-  own separate 6-icon maps, so all 18 icons work everywhere consistently.
-  Removed the now-dead local `icons` array and `SelectField` component from
-  `admin/services/page.tsx`.
+## 2. "Website CMS" added to the sidebar
 
-## Known follow-up (not changed, flagging so it's not a surprise)
-`src/app/services/page.tsx` (the individual service detail page) renders
-icons with its own hand-rolled inline SVGs for only 5 of the icon names
-(boxes, users, sparkles, circledot, repeat) — it doesn't use the shared
-icon set. If a service is given one of the newer icons (zap, target,
-rocket, etc.) via the new picker, this specific page will render nothing
-for that icon until it's wired to `getServiceIcon` too. Everywhere else
-(homepage tiles, sidebar, admin panels) already reflects the full icon set.
+Added as the second item, right under **Dashboard**, since it's the
+main content-management hub. It links to your existing
+`/admin/content` page (the Content Sections editor with Media
+Library) — no new page or duplicate route was created. Icon:
+`LayoutTemplate` from lucide-react, matching the existing icon set.
+It gets the same active/hover/focus states as every other nav item.
 
-## To run locally
-`npx prisma generate` / `npm run build` as usual — no schema or API changes
-were needed, this is UI-only.
+## 3. Sidebar — responsive fix
+
+Previously the sidebar had no mobile behavior: it was always
+`fixed`/visible at `w-20` or `w-64`, overlapping page content on
+small screens with no way to fully hide it.
+
+Now:
+- **Desktop (`md:` and up):** unchanged behavior — click the logo to
+  collapse/expand between icon-only (`w-20`) and full (`w-72`) width.
+- **Mobile/tablet (below `md`):** the sidebar is a full off-canvas
+  drawer (`-translate-x-full` when closed), opened via a new
+  hamburger button in a slim top bar (`layout.tsx`) that's only
+  rendered below `md`. Opening it shows the existing dark overlay
+  and a full-width drawer with an explicit close (✕) button.
+- Fixed sidebar width bumped from `w-64` → `w-72` to give the new
+  account row (name + role + chevron) room to breathe; `layout.tsx`'s
+  main content margin (`md:ml-72`/`md:ml-20`) was updated to match.
+- Tooltips, active-state highlight (now a left accent bar instead of
+  a flat tint, for clearer hierarchy), and spacing were tightened up
+  throughout the nav list and logo row.
+
+## 4. Dashboard polish
+
+`page.tsx` keeps the exact same Prisma queries and stat logic —
+only the markup changed:
+- Type scale bumped up across the board (the previous version used
+  9.5–13px text everywhere, which read as cramped/unfinished at
+  normal viewing distance). Page now has a proper `<h1>`, stat values
+  are `text-2xl`, section labels are readable at `text-xs`/`text-sm`.
+- Added a plain page heading above the hero banner ("Dashboard" +
+  one-line subtext), which the page was missing entirely.
+- Cards got consistent `shadow-sm`, padding (`p-5`), and icon-badge
+  sizing; the publish ring got a bit bigger and less cramped.
+- Hero banner gets a subtle decorative blur accent and slightly more
+  breathing room; buttons enlarged to a normal touch-friendly size.
+
+## Not changed / out of scope
+
+- `AdminChrome.tsx` and the `.admin-card` / `.admin-table` / etc.
+  classes in `admin.css` are dead code — nothing in the app actually
+  imports or uses them (verified: `AdminChrome` isn't imported
+  anywhere, and none of the `.admin-*` component classes appear
+  outside `admin.css` itself). Left untouched since removing them
+  wasn't part of this task, but worth cleaning up later.
+- Individual list/edit pages (Services, Blog, Team, etc.) already
+  use plain Tailwind consistent with the new dashboard styling and
+  weren't touched.
