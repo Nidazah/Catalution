@@ -1,0 +1,344 @@
+warning: in the working copy of 'prisma/schema.prisma', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/prisma/schema.prisma b/prisma/schema.prisma[m
+[1mindex 3f82bd2..76ac46f 100644[m
+[1m--- a/prisma/schema.prisma[m
+[1m+++ b/prisma/schema.prisma[m
+[36m@@ -3,18 +3,73 @@[m [mgenerator client {[m
+ }[m
+ [m
+ datasource db {[m
+[31m-  provider = "postgresql"[m
+[31m-  url      = env("DATABASE_URL")[m
+[32m+[m[32m  provider          = "postgresql"[m
+[32m+[m[32m  url               = env("DATABASE_URL")[m
+[32m+[m[32m  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")[m
+ }[m
+ [m
+[31m-model User {[m
+[31m-  id          String               @id @default(cuid())[m
+[31m-  email       String               @unique[m
+[31m-  password    String[m
+[31m-  name        String[m
+[31m-  role        Role                 @default(STAFF)[m
+[31m-  createdAt   DateTime             @default(now())[m
+[31m-  resetTokens PasswordResetToken[][m
+[32m+[m[32mmodel Blog {[m
+[32m+[m[32m  id           String   @id @default(cuid())[m
+[32m+[m[32m  title        String[m
+[32m+[m[32m  slug         String   @unique[m
+[32m+[m[32m  excerpt      String[m
+[32m+[m[32m  content      String?[m
+[32m+[m[32m  image        String[m
+[32m+[m[32m  author       String[m
+[32m+[m[32m  authorAvatar String?[m
+[32m+[m[32m  date         String[m
+[32m+[m[32m  category     String[m
+[32m+[m[32m  tags         Json?[m
+[32m+[m[32m  comments     Int      @default(0)[m
+[32m+[m[32m  sortOrder    Int      @default(0)[m
+[32m+[m[32m  active       Boolean  @default(true)[m
+[32m+[m[32m  published    Boolean  @default(true)[m
+[32m+[m[32m  createdAt    DateTime @default(now())[m
+[32m+[m[32m  updatedAt    DateTime[m
+[32m+[m
+[32m+[m[32m  @@index([active])[m
+[32m+[m[32m  @@index([category])[m
+[32m+[m[32m  @@index([published])[m
+[32m+[m[32m  @@index([sortOrder])[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mmodel ContactMessage {[m
+[32m+[m[32m  id        String   @id @default(cuid())[m
+[32m+[m[32m  firstName String[m
+[32m+[m[32m  lastName  String[m
+[32m+[m[32m  email     String[m
+[32m+[m[32m  phone     String?[m
+[32m+[m[32m  service   String?[m
+[32m+[m[32m  message   String[m
+[32m+[m[32m  status    String   @default("NEW")[m
+[32m+[m[32m  createdAt DateTime @default(now())[m
+[32m+[m[32m  updatedAt DateTime @updatedAt @updatedAt[m
+[32m+[m
+[32m+[m[32m  @@index([createdAt])[m
+[32m+[m[32m  @@index([email])[m
+[32m+[m[32m  @@index([status])[m
+[32m+[m[32m}[m
+[32m+[m
+[32m+[m[32mmodel ContentSection {[m
+[32m+[m[32m  id                   String            @id @default(cuid())[m
+[32m+[m[32m  sectionKey           ContentSectionKey @unique[m
+[32m+[m[32m  label                String[m
+[32m+[m[32m  eyebrow              String?[m
+[32m+[m[32m  title                String[m
+[32m+[m[32m  description          String?[m
+[32m+[m[32m  image                String?[m
+[32m+[m[32m  primaryButtonLabel   String?[m
+[32m+[m[32m  primaryButtonUrl     String?[m
+[32m+[m[32m  secondaryButtonLabel String?[m
+[32m+[m[32m  secondaryButtonUrl   String?[m
+[32m+[m[32m  items                Json?[m
+[32m+[m[32m  published            Boolean           @default(true)[m
+[32m+[m[32m  sortOrder            Int               @default(0)[m
+[32m+[m[32m  createdAt            DateTime          @default(now())[m
+[32m+[m[32m  updatedAt            DateTime[m
+[32m+[m
+[32m+[m[32m  @@index([published])[m
+[32m+[m[32m  @@index([sortOrder])[m
+ }[m
+ [m
+ model PasswordResetToken {[m
+[36m@@ -24,36 +79,11 @@[m [mmodel PasswordResetToken {[m
+   expiresAt DateTime[m
+   usedAt    DateTime?[m
+   createdAt DateTime  @default(now())[m
+[31m-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)[m
+[32m+[m[32m  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)[m
+ [m
+   @@index([userId])[m
+ }[m
+ [m
+[31m-model Service {[m
+[31m-  id               String   @id @default(cuid())[m
+[31m-  title            String[m
+[31m-  slug             String   @unique[m
+[31m-  description      String[m
+[31m-  icon             String   @default("waves")[m
+[31m-  image            String[m
+[31m-  ctaLabel         String   @default("Get optimization")[m
+[31m-  sortOrder        Int      @default(0)[m
+[31m-  published        Boolean  @default(true)[m
+[31m-  createdAt        DateTime @default(now())[m
+[31m-  updatedAt        DateTime @updatedAt[m
+[31m-  shortDescription String?[m
+[31m-  fullDescription  String?[m
+[31m-  heroImage2       String?[m
+[31m-  features         Json?[m
+[31m-  overviewItems    Json?[m
+[31m-  ctaUrl           String   @default("/contact")[m
+[31m-  active           Boolean  @default(true)[m
+[31m-[m
+[31m-  @@index([sortOrder])[m
+[31m-  @@index([published])[m
+[31m-  @@index([active])[m
+[31m-}[m
+[31m-[m
+ model Portfolio {[m
+   id             String   @id @default(cuid())[m
+   title          String[m
+[36m@@ -77,42 +107,42 @@[m [mmodel Portfolio {[m
+   active         Boolean  @default(true)[m
+   published      Boolean  @default(true)[m
+   createdAt      DateTime @default(now())[m
+[31m-  updatedAt      DateTime @updatedAt[m
+[32m+[m[32m  updatedAt      DateTime[m
+   award          String?[m
+   challenge      String?[m
+   highlightStats Json?[m
+   solution       String?[m
+   testimonial    String?[m
+ [m
+[31m-  @@index([sortOrder])[m
+[31m-  @@index([published])[m
+   @@index([active])[m
+   @@index([category])[m
+[32m+[m[32m  @@index([published])[m
+[32m+[m[32m  @@index([sortOrder])[m
+ }[m
+ [m
+[31m-model Blog {[m
+[31m-  id           String   @id @default(cuid())[m
+[31m-  title        String[m
+[31m-  slug         String   @unique[m
+[31m-  excerpt      String[m
+[31m-  content      String?[m
+[31m-  image        String[m
+[31m-  author       String[m
+[31m-  authorAvatar String?[m
+[31m-  date         String[m
+[31m-  category     String[m
+[31m-  tags         Json?[m
+[31m-  comments     Int      @default(0)[m
+[31m-  sortOrder    Int      @default(0)[m
+[31m-  active       Boolean  @default(true)[m
+[31m-  published    Boolean  @default(true)[m
+[31m-  createdAt    DateTime @default(now())[m
+[31m-  updatedAt    DateTime @updatedAt[m
+[32m+[m[32mmodel Service {[m
+[32m+[m[32m  id               String   @id @default(cuid())[m
+[32m+[m[32m  title            String[m
+[32m+[m[32m  slug             String   @unique[m
+[32m+[m[32m  description      String[m
+[32m+[m[32m  icon             String   @default("waves")[m
+[32m+[m[32m  image            String[m
+[32m+[m[32m  ctaLabel         String   @default("Get optimization")[m
+[32m+[m[32m  sortOrder        Int      @default(0)[m
+[32m+[m[32m  published        Boolean  @default(true)[m
+[32m+[m[32m  createdAt        DateTime @default(now())[m
+[32m+[m[32m  updatedAt        DateTime[m
+[32m+[m[32m  shortDescription String?[m
+[32m+[m[32m  fullDescription  String?[m
+[32m+[m[32m  heroImage2       String?[m
+[32m+[m[32m  features         Json?[m
+[32m+[m[32m  overviewItems    Json?[m
+[32m+[m[32m  ctaUrl           String   @default("/contact")[m
+[32m+[m[32m  active           Boolean  @default(true)[m
+ [m
+[31m-  @@index([sortOrder])[m
+[31m-  @@index([published])[m
+   @@index([active])[m
+[31m-  @@index([category])[m
+[32m+[m[32m  @@index([published])[m
+[32m+[m[32m  @@index([sortOrder])[m
+ }[m
+ [m
+ model TeamMember {[m
+[36m@@ -130,16 +160,16 @@[m [mmodel TeamMember {[m
+   active      Boolean  @default(true)[m
+   published   Boolean  @default(true)[m
+   createdAt   DateTime @default(now())[m
+[31m-  updatedAt   DateTime @updatedAt[m
+[32m+[m[32m  updatedAt   DateTime[m
+   coreBeliefs Json?[m
+   experience  Json?[m
+   facebook    String?[m
+   phone       String?[m
+   skills      Json?[m
+ [m
+[31m-  @@index([sortOrder])[m
+[31m-  @@index([published])[m
+   @@index([active])[m
+[32m+[m[32m  @@index([published])[m
+[32m+[m[32m  @@index([sortOrder])[m
+ }[m
+ [m
+ model Testimonial {[m
+[36m@@ -153,39 +183,21 @@[m [mmodel Testimonial {[m
+   active    Boolean  @default(true)[m
+   published Boolean  @default(true)[m
+   createdAt DateTime @default(now())[m
+[31m-  updatedAt DateTime @updatedAt @updatedAt @updatedAt[m
+[32m+[m[32m  updatedAt DateTime @updatedAt @updatedAt[m
+ [m
+[31m-  @@index([sortOrder])[m
+[31m-  @@index([published])[m
+   @@index([active])[m
+[31m-}[m
+[31m-[m
+[31m-model FAQ {[m
+[31m-  id        String   @id @default(cuid())[m
+[31m-  question  String[m
+[31m-  answer    String[m
+[31m-  sortOrder Int      @default(0)[m
+[31m-  active    Boolean  @default(true)[m
+[31m-  published Boolean  @default(true)[m
+[31m-  createdAt DateTime @default(now())[m
+[31m-  updatedAt DateTime @updatedAt @updatedAt @updatedAt[m
+[31m-[m
+[31m-  @@index([sortOrder])[m
+   @@index([published])[m
+[31m-  @@index([active])[m
+[32m+[m[32m  @@index([sortOrder])[m
+ }[m
+ [m
+[31m-model Plan {[m
+[31m-  id        String   @id @default(cuid())[m
+[31m-  name      String   @unique[m
+[31m-  monthly   String[m
+[31m-  yearly    String[m
+[31m-  features  String[][m
+[31m-  active    Boolean  @default(true)[m
+[31m-  published Boolean  @default(false)[m
+[31m-  sortOrder Int      @default(0)[m
+[31m-  createdAt DateTime @default(now())[m
+[31m-  updatedAt DateTime @updatedAt @updatedAt @updatedAt[m
+[32m+[m[32mmodel User {[m
+[32m+[m[32m  id                 String               @id @default(cuid())[m
+[32m+[m[32m  email              String               @unique[m
+[32m+[m[32m  password           String[m
+[32m+[m[32m  name               String[m
+[32m+[m[32m  role               Role                 @default(STAFF)[m
+[32m+[m[32m  createdAt          DateTime             @default(now())[m
+[32m+[m[32m  PasswordResetToken PasswordResetToken[][m
+ }[m
+ [m
+ model PricingPlan {[m
+[36m@@ -200,78 +212,11 @@[m [mmodel PricingPlan {[m
+   published   Boolean  @default(false)[m
+   active      Boolean  @default(true)[m
+   createdAt   DateTime @default(now())[m
+[31m-  updatedAt   DateTime @updatedAt[m
+[32m+[m[32m  updatedAt   DateTime[m
+ [m
+   @@map("pricing_plans")[m
+ }[m
+ [m
+[31m-model ContentSection {[m
+[31m-  id                   String            @id @default(cuid())[m
+[31m-  sectionKey           ContentSectionKey @unique[m
+[31m-  label                String[m
+[31m-  eyebrow              String?[m
+[31m-  title                String[m
+[31m-  description          String?[m
+[31m-  image                String?[m
+[31m-  primaryButtonLabel   String?[m
+[31m-  primaryButtonUrl     String?[m
+[31m-  secondaryButtonLabel String?[m
+[31m-  secondaryButtonUrl   String?[m
+[31m-  items                Json?[m
+[31m-  published            Boolean           @default(true)[m
+[31m-  sortOrder            Int               @default(0)[m
+[31m-  createdAt            DateTime          @default(now())[m
+[31m-  updatedAt            DateTime          @updatedAt[m
+[31m-[m
+[31m-  @@index([sortOrder])[m
+[31m-  @@index([published])[m
+[31m-}[m
+[31m-[m
+[31m-model ContactInfo {[m
+[31m-  id             String   @id @default(cuid())[m
+[31m-  emailPrimary   String[m
+[31m-  emailSecondary String?[m
+[31m-  phone          String[m
+[31m-  addressLine1   String[m
+[31m-  addressLine2   String[m
+[31m-  mapEmbedUrl    String?[m
+[31m-  rating         Float?[m
+[31m-  reviewCount    Int?[m
+[31m-  updatedAt      DateTime @updatedAt[m
+[31m-}[m
+[31m-[m
+[31m-model ContactSubmission {[m
+[31m-  id        String   @id @default(cuid())[m
+[31m-  firstName String[m
+[31m-  lastName  String[m
+[31m-  email     String[m
+[31m-  phone     String?[m
+[31m-  service   String?[m
+[31m-  message   String[m
+[31m-  read      Boolean  @default(false)[m
+[31m-  createdAt DateTime @default(now())[m
+[31m-[m
+[31m-  @@index([createdAt])[m
+[31m-  @@index([read])[m
+[31m-}[m
+[31m-[m
+[31m-model ContactMessage {[m
+[31m-  id        String   @id @default(cuid())[m
+[31m-  firstName String[m
+[31m-  lastName  String[m
+[31m-  email     String[m
+[31m-  phone     String?[m
+[31m-  service   String?[m
+[31m-  message   String[m
+[31m-  status    String   @default("NEW")[m
+[31m-  createdAt DateTime @default(now())[m
+[31m-  updatedAt DateTime @updatedAt @updatedAt @updatedAt[m
+[31m-[m
+[31m-  @@index([email])[m
+[31m-  @@index([status])[m
+[31m-  @@index([createdAt])[m
+[31m-}[m
+[31m-[m
+ enum ContentSectionKey {[m
+   HERO[m
+   ABOUT[m

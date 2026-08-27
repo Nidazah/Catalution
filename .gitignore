@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Next.js build files
+.next/
+out/
+
+# Environment files and secrets
+.env
+.env.local
+.env.*
+
+# Keep an example environment file if you create one
+!.env.example
+
+# Generated Prisma files
+/src/generated/prisma
