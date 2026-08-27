@@ -1,6 +1,7 @@
 // src/app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { isRateLimited } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
 import {
@@ -141,6 +142,25 @@ function setSessionCookie(response: NextResponse, token: string) {
 
 export async function POST(req: NextRequest) {
   try {
+    const contentLength = Number(req.headers.get("content-length") || "0");
+    if (Number.isFinite(contentLength) && contentLength > 16 * 1024) {
+      return NextResponse.json({ error: "Request too large." }, { status: 413 });
+    }
+
+    const forwardedFor = req.headers.get("x-forwarded-for");
+    const clientIp = forwardedFor?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
+
+    // Apply both per-IP and per-identity limits. This is intentionally
+    // conservative because password verification is CPU-expensive.
+    if (isRateLimited(`login:ip:${clientIp}`, 20, 15 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again later." },
+        { status: 429, headers: { "Retry-After": "900" } },
+      );
+    }
+
     const body = await req.json().catch(() => null);
     if (!body) {
       return NextResponse.json(
@@ -163,11 +183,20 @@ export async function POST(req: NextRequest) {
       }
 
       const { email, password } = parsed.data;
-      const result = await authenticateUser(email, password);
+      const normalizedEmail = email.trim().toLowerCase();
+
+      if (isRateLimited(`login:email:${normalizedEmail}`, 5, 15 * 60 * 1000)) {
+        return NextResponse.json(
+          { error: "Too many login attempts. Please try again later." },
+          { status: 429, headers: { "Retry-After": "900" } },
+        );
+      }
+
+      const result = await authenticateUser(normalizedEmail, password);
 
       if (!result.success || !result.user) {
         return NextResponse.json(
-          { error: result.error || "Invalid email or password." },
+          { error: "Invalid email or password." },
           { status: 401 }
         );
       }
@@ -198,12 +227,19 @@ export async function POST(req: NextRequest) {
         );
       }
 
+      if (isRateLimited(`login:admin:${clientIp}`, 5, 15 * 60 * 1000)) {
+        return NextResponse.json(
+          { error: "Too many login attempts. Please try again later." },
+          { status: 429, headers: { "Retry-After": "900" } },
+        );
+      }
+
       const result = await authenticateAdmin(parsed.data.password);
 
 
       if (!result.success || !result.user) {
         return NextResponse.json(
-          { error: result.error || "Incorrect password." },
+          { error: "Invalid email or password." },
           { status: 401 }
         );
       }

@@ -4,20 +4,7 @@ import { forgotPasswordSchema } from "@/lib/validation/password-reset";
 import { generateResetToken, RESET_TOKEN_TTL_MS } from "@/lib/reset-token";
 import { sendPasswordResetEmail } from "@/lib/email";
 
-// Very small in-memory rate limiter: 3 requests per email per 15 minutes.
-// Fine for a low-traffic internal admin panel; swap for Redis/Upstash if
-// this ever needs to survive multiple server instances or restarts.
-const attempts = new Map<string, number[]>();
-const WINDOW_MS = 15 * 60 * 1000;
-const MAX_ATTEMPTS = 3;
-
-function isRateLimited(key: string) {
-  const now = Date.now();
-  const history = (attempts.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  history.push(now);
-  attempts.set(key, history);
-  return history.length > MAX_ATTEMPTS;
-}
+import { isRateLimited as checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -31,6 +18,11 @@ export async function POST(req: NextRequest) {
     }
 
     const { email } = parsed.data;
+    const normalizedEmail = email.trim().toLowerCase();
+    const forwardedFor = req.headers.get("x-forwarded-for");
+    const clientIp = forwardedFor?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      "unknown";
 
     // Always return the same generic response whether or not the account
     // exists, is rate-limited, etc. — the response must never reveal
@@ -39,11 +31,14 @@ export async function POST(req: NextRequest) {
       message: "If that email is registered, we've sent a reset link.",
     });
 
-    if (isRateLimited(email.toLowerCase())) {
+    if (
+      checkRateLimit(`forgot:ip:${clientIp}`, 10, 15 * 60 * 1000) ||
+      checkRateLimit(`forgot:email:${normalizedEmail}`, 3, 15 * 60 * 1000)
+    ) {
       return genericResponse;
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user) {
       return genericResponse;
     }

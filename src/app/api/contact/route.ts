@@ -147,26 +147,6 @@ export async function POST(request: Request) {
       error
     );
 
-    /*
-     * During development, return the actual Prisma error
-     * so you can see exactly what is wrong.
-     *
-     * In production, keep the error generic.
-     */
-    if (process.env.NODE_ENV === "development") {
-      return NextResponse.json(
-        {
-          error:
-            error instanceof Error
-              ? error.message
-              : "Database error",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-
     return NextResponse.json(
       {
         error: "Could not submit your message",

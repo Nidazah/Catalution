@@ -329,20 +329,6 @@ export async function POST(request: Request) {
       error
     );
 
-    if (process.env.NODE_ENV === "development") {
-      return NextResponse.json(
-        {
-          error:
-            error instanceof Error
-              ? error.message
-              : "Database error",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
-
     return NextResponse.json(
       {
         error: "Could not submit application",

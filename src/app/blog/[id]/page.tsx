@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import PageHero from "@/components/PageHero";
+import { sanitizeHtml } from "@/lib/sanitize-html";
 
 type BlogPost = {
   id: string;
@@ -83,6 +84,12 @@ export default function BlogDetailsPage() {
     }
   }, [notFound, router]);
 
+  const [safeContent, setSafeContent] = useState("");
+
+  useEffect(() => {
+    setSafeContent(post?.content ? sanitizeHtml(post.content) : "");
+  }, [post?.content]);
+
   const relatedPosts = useMemo(() => {
     if (!post) return [];
 
@@ -116,7 +123,7 @@ export default function BlogDetailsPage() {
       <article className="mx-auto max-w-4xl px-6 py-10 lg:px-12 lg:py-12">
         <div className="prose prose-base max-w-none text-gray-700 prose-headings:text-navy prose-a:text-[#481d96]">
           {post.content ? (
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div dangerouslySetInnerHTML={{ __html: safeContent }} />
           ) : (
             <p>{post.excerpt}</p>
           )}

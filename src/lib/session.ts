@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify, type JWTPayload } from "jose";
 import { cookies } from "next/headers"; // If using Next.js
 
 export const SESSION_COOKIE = "catalution_session";
-export const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
+export const SESSION_TTL_SECONDS = 60 * 60 * 24; // 24 hours
 export const SESSION_TTL_MS = SESSION_TTL_SECONDS * 1000;
 
 // Session payload type
@@ -27,13 +27,12 @@ function getSecretKey() {
     throw new Error("SESSION_SECRET environment variable is not set");
   }
   
-  // Ensure minimum length for HS256
+  // HS256 should use a strong, production-sized secret. Do not continue
+  // with a weak secret because that would make every session forgeable.
   if (secret.length < 32) {
-    console.warn(
-      "SESSION_SECRET should be at least 32 characters for security"
-    );
+    throw new Error("SESSION_SECRET must be at least 32 characters long");
   }
-  
+
   return new TextEncoder().encode(secret);
 }
 
@@ -64,10 +63,18 @@ export async function verifySessionToken(
       audience: "catalution-api",
     });
     
-    if (!payload.sub || !payload.email || !payload.role) {
+    if (
+      typeof payload.sub !== "string" ||
+      typeof payload.email !== "string" ||
+      !payload.email.includes("@") ||
+      (payload.role !== "ADMIN" && payload.role !== "STAFF") ||
+      (payload.permissions !== undefined &&
+        (!Array.isArray(payload.permissions) ||
+          !payload.permissions.every((permission) => typeof permission === "string")))
+    ) {
       return null;
     }
-    
+
     return {
       sub: payload.sub as string,
       email: payload.email as string,
@@ -77,8 +84,9 @@ export async function verifySessionToken(
       exp: payload.exp as number,
       iat: payload.iat as number,
     };
-  } catch (error) {
-    console.error("Session verification failed:", error);
+  } catch {
+    // Do not log token contents or verification details. Invalid tokens are
+    // expected input for an internet-facing authentication boundary.
     return null;
   }
 }

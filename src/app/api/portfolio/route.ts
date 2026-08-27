@@ -259,7 +259,7 @@ export async function POST(request: NextRequest) {
     console.error("POST /api/portfolio error:", error);
 
     return NextResponse.json(
-      { error: error?.message || "Failed to create portfolio" },
+      { error: "Failed to create portfolio" },
       { status: 500 }
     );
   }

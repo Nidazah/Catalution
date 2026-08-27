@@ -16,9 +16,12 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
+    const session = await getSession();
 
-    const post = await prisma.blog.findUnique({
-      where: { id },
+    const post = await prisma.blog.findFirst({
+      where: session?.role === "ADMIN"
+        ? { id }
+        : { id, active: true, published: true },
     });
 
     if (!post) {
@@ -35,8 +38,6 @@ export async function GET(
     return NextResponse.json(
       {
         error: "Failed to fetch blog post",
-        message:
-          error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
@@ -135,8 +136,6 @@ export async function PUT(
     return NextResponse.json(
       {
         error: "Failed to update blog post",
-        message:
-          error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );
@@ -184,8 +183,6 @@ export async function DELETE(
     return NextResponse.json(
       {
         error: "Failed to delete blog post",
-        message:
-          error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );

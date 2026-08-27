@@ -57,12 +57,21 @@ export async function proxy(req: NextRequest) {
   requestHeaders.set("x-user-role", session.role);
   requestHeaders.set("x-user-email", session.email);
 
-  // Proceed with modified headers
-  return NextResponse.next({
+  // Security headers for the admin application. These reduce the impact of
+  // accidental content injection and prevent framing/cross-origin surprises.
+  const response = NextResponse.next({
     request: {
       headers: requestHeaders,
     },
   });
+
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  response.headers.set("Content-Security-Policy", "frame-ancestors 'none'; base-uri 'self'; form-action 'self';");
+
+  return response;
 }
 
 // Configure which paths the proxy runs on

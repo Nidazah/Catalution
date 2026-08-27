@@ -17,7 +17,7 @@ export async function GET() {
   } catch (error) {
     console.error("Ping error:", error);
     return NextResponse.json(
-      { status: "error", message: String(error) },
+      { status: "error" },
       { status: 500 }
     );
   }

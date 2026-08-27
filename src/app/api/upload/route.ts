@@ -34,9 +34,10 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!file.type.startsWith("image/")) {
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+    if (!allowedTypes.has(file.type)) {
       return NextResponse.json(
-        { error: "Only image files are allowed" },
+        { error: "Only JPEG, PNG, WebP, and GIF images are allowed" },
         { status: 400 }
       );
     }
@@ -57,7 +58,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    const header = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+    const isJpeg = header[0] === 0xff && header[1] === 0xd8 && header[2] === 0xff;
+    const isPng = header[0] === 0x89 && header[1] === 0x50 && header[2] === 0x4e && header[3] === 0x47;
+    const isGif = header[0] === 0x47 && header[1] === 0x49 && header[2] === 0x46;
+    const isWebp = header[0] === 0x52 && header[1] === 0x49 && header[2] === 0x46 && header[3] === 0x46 && header[8] === 0x57 && header[9] === 0x45 && header[10] === 0x42 && header[11] === 0x50;
+
+    if (!isJpeg && !isPng && !isGif && !isWebp) {
+      return NextResponse.json(
+        { error: "The uploaded file is not a valid supported image." },
+        { status: 400 }
+      );
+    }
+
+    const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-").slice(-120);
 
     const blob = await put(
       `team/${Date.now()}-${safeFileName}`,
@@ -77,10 +91,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Could not upload image",
+        error: "Could not upload image",
       },
       { status: 500 }
     );

@@ -74,9 +74,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  if (!(await requireAdmin())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
 
   try {
     const body = await request.json();
@@ -120,7 +119,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          error instanceof Error ? error.message : "Could not create section",
+          "Could not create section",
       },
       { status: 500 },
     );
@@ -128,12 +127,8 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  if (!(await requireAdmin())) {
-    return NextResponse.json(
-      { error: "Unauthorized" },
-      { status: 401 }
-    )
-  }
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
 
   try {
     const body = await request.json()
@@ -194,10 +189,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Could not update section",
+        error: "Could not update section",
       },
       { status: 500 }
     )
@@ -205,9 +197,8 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  if (!(await requireAdmin())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const auth = await requireAdmin();
+  if (auth instanceof NextResponse) return auth;
 
   try {
     const { id } = z
