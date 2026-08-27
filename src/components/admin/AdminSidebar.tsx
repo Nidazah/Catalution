@@ -17,6 +17,7 @@ import {
   HelpCircle,
   Mail,
   UserPlus,
+  FileText,
   LogOut,
   AlertCircle,
   CheckCircle,
@@ -42,6 +43,7 @@ const MENU_ITEMS: MenuItem[] = [
   { label: "Blog", href: "/admin/blog", icon: Newspaper },
   { label: "Team", href: "/admin/team", icon: Users },
   { label: "Careers", href: "/admin/careers", icon: UserPlus },
+  { label: "Applications for Jobs", href: "/admin/career-applications", icon: FileText },
   {
     label: "Testimonials",
     href: "/admin/testimonials",

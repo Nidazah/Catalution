@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Loader2, TriangleAlert } from "lucide-react";
-import CustomCursor from "@/components/CustomCursor";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -34,7 +33,7 @@ export default function AdminLoginPage() {
         return;
       }
 
-      router.push("/admin/pricing");
+      router.push("/admin");
       router.refresh();
     } catch {
       setError("Something went wrong. Try again.");
@@ -45,8 +44,6 @@ export default function AdminLoginPage() {
 
   return (
     <>
-      <CustomCursor />
-
       <div className="login-screen">
         <svg
           className="login-wave"
@@ -179,6 +176,12 @@ export default function AdminLoginPage() {
               )}
             </button>
           </form>
+
+          <div className="login-forgot-wrap">
+            <a href="/admin/forgot-password" className="login-forgot">
+              Forgot Password?
+            </a>
+          </div>
 
           {/* FOOTER */}
           <p className="login-footer">
@@ -465,6 +468,24 @@ export default function AdminLoginPage() {
             to {
               transform: rotate(360deg);
             }
+          }
+
+          .login-forgot-wrap {
+            margin-top: 14px;
+            text-align: right;
+          }
+
+          .login-forgot {
+            font-family: var(--font-inter);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--color-purple-500);
+            text-decoration: none;
+          }
+
+          .login-forgot:hover {
+            color: var(--color-orange-700);
+            text-decoration: underline;
           }
 
           .login-footer {

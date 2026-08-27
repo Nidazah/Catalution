@@ -67,7 +67,7 @@ function buildPagesLinks(
 ) {
   return {
     main: [
-      { label: "About us", href: "/about", badge: null },
+      { label: "About us", href: "/about", badge: null, visible: true },
       { label: "Our history", href: "/history", badge: "HOT" },
       { label: "Team", href: "/team", badge: null },
       { label: "Team details", href: "/team/savanah-nguyen", badge: null },
@@ -101,17 +101,19 @@ function buildLinks(
   portfolioDetailsHref: string,
 ): NavLink[] {
   return [
-    { label: "Home", href: "/" },
-    { label: "Pages", href: "#", isMegaMenu: true, width: "w-[900px]" },
+    { label: "Home", href: "/", menuKey: "home" },
+    { label: "Pages", href: "#", menuKey: "pages", isMegaMenu: true, width: "w-[900px]" },
     {
       label: "Services",
       href: "/services",
+      menuKey: "services",
       dropdown: servicesDropdown,
       width: "w-56",
     },
     {
       label: "Portfolios",
       href: "/portfolios",
+      menuKey: "portfolios",
       dropdown: buildPortfolioLinks(portfolioDetailsHref),
       width: "w-48",
       hasSimpleDropdown: true,
@@ -119,11 +121,12 @@ function buildLinks(
     {
       label: "Blog",
       href: "/blog",
+      menuKey: "blog",
       dropdown: blogLinks,
       width: "w-48",
       hasSimpleDropdown: true,
     },
-    { label: "Contact", href: "/contact" },
+    { label: "Contact", href: "/contact", menuKey: "contact" },
   ];
 }
 
@@ -136,6 +139,8 @@ interface NavLink {
   label: string;
   href: string;
   active?: boolean;
+  visible?: boolean;
+  menuKey?: string;
   isMegaMenu?: boolean;
   dropdown?: Array<{
     icon?: ComponentType<{ className?: string }>;
@@ -514,10 +519,10 @@ export default function Navbar({
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [layout, setLayout] = useState<{
-    logo?: string; logoWidth?: number; ctaLabel?: string; ctaUrl?: string; exploreLabel?: string; mobileSearchPlaceholder?: string;
-    navItems?: Array<{ label: string; href: string }>;
-    pagesMain?: Array<{ label: string; href: string; badge?: string }>;
-    pagesOther?: Array<{ label: string; href: string; badge?: string }>;
+    logo?: string; logoWidth?: number; ctaLabel?: string; ctaUrl?: string; ctaVisible?: boolean; mobileSearchPlaceholder?: string;
+    navItems?: Array<{ label: string; href: string; visible?: boolean; menuKey?: string }>;
+    pagesMain?: Array<{ label: string; href: string; badge?: string; visible?: boolean }>;
+    pagesOther?: Array<{ label: string; href: string; badge?: string; visible?: boolean }>;
     mobileContactEmail1?: string; mobileContactEmail2?: string; mobileContactPhone?: string; mobileContactAddress?: string; mobileFollowLabel?: string; mobileSocials?: string[];
   }>({});
 
@@ -628,16 +633,20 @@ export default function Navbar({
   // Any item whose label matches one of the built-in menu items keeps that
   // item's dropdown/mega-menu; unrecognized labels render as plain links.
   const configuredItems = layout.navItems?.length ? layout.navItems : staticLinks;
-  const links: NavLink[] = configuredItems.map((item) => {
-    const staticMatch = staticLinks.find((l) => l.label === item.label);
-    return staticMatch
-      ? { ...staticMatch, label: item.label, href: item.href }
-      : { label: item.label, href: item.href };
-  });
+  const links: NavLink[] = configuredItems
+    .filter((item) => item.visible !== false)
+    .map((item) => {
+      const staticMatch = staticLinks.find((l) =>
+        item.menuKey ? l.menuKey === item.menuKey : l.label === item.label,
+      );
+      return staticMatch
+        ? { ...staticMatch, label: item.label, href: item.href, visible: item.visible }
+        : { label: item.label, href: item.href, visible: item.visible };
+    });
   const defaultPages = buildPagesLinks(portfolioDetailsHref, careersDetailsHref);
   const pagesLinks: PagesLinks = {
-    main: layout.pagesMain?.length ? layout.pagesMain.map((item) => ({ label: item.label, href: item.href, badge: item.badge ?? null })) : defaultPages.main,
-    other: layout.pagesOther?.length ? layout.pagesOther.map((item) => ({ label: item.label, href: item.href, badge: item.badge ?? null })) : defaultPages.other,
+    main: layout.pagesMain?.length ? layout.pagesMain.filter((item) => item.visible !== false).map((item) => ({ label: item.label, href: item.href, badge: item.badge ?? null })) : defaultPages.main,
+    other: layout.pagesOther?.length ? layout.pagesOther.filter((item) => item.visible !== false).map((item) => ({ label: item.label, href: item.href, badge: item.badge ?? null })) : defaultPages.other,
   };
 
   // The parent decides whether this page has a transparent hero navbar.
@@ -696,22 +705,12 @@ export default function Navbar({
 
         {/* --- CTA BUTTON & SEARCH (Far Right) --- */}
         <div className="hidden md:flex items-center gap-6">
-          <button
-            className={`inline-flex items-center gap-2 text-[13px] font-medium transition-colors ${
-              useLightText
-                ? "text-white hover:text-[var(--color-accent)]"
-                : "text-[var(--color-purple-900)] hover:text-[var(--color-accent)]"
-            }`}
-          >
-            {layout.exploreLabel || "Explore"} <Search className="h-4 w-4" />
-          </button>
-
-          <Link href={layout.ctaUrl || "/contact"} className="btn-nav-primary" style={{backgroundColor:"var(--cms-navbar-cta-bg, var(--color-purple-900))", color:"var(--cms-navbar-cta-text, #fff)"}}>
+          {layout.ctaVisible !== false && <Link href={layout.ctaUrl || "/contact"} className="btn-nav-primary" style={{backgroundColor:"var(--cms-navbar-cta-bg, var(--color-purple-900))", color:"var(--cms-navbar-cta-text, #fff)"}}>
             {layout.ctaLabel || "Get Started"}
             <span className="arrow">
               <ArrowUpRight className="h-4 w-4" />
             </span>
-          </Link>
+          </Link>}
         </div>
 
         {/* --- MOBILE MENU BUTTON --- */}

@@ -70,8 +70,7 @@ export const defaultLayout = {
 
     ctaLabel: "Get Started",
     ctaUrl: "/contact",
-
-    exploreLabel: "Explore",
+    ctaVisible: true,
 
     mobileSearchPlaceholder: "Search here...",
 
@@ -79,26 +78,32 @@ export const defaultLayout = {
       {
         label: "Home",
         href: "/",
+        menuKey: "home",
       },
       {
         label: "Pages",
         href: "#",
+        menuKey: "pages",
       },
       {
         label: "Services",
         href: "/services",
+        menuKey: "services",
       },
       {
         label: "Portfolios",
         href: "/portfolios",
+        menuKey: "portfolios",
       },
       {
         label: "Blog",
         href: "/blog",
+        menuKey: "blog",
       },
       {
         label: "Contact",
         href: "/contact",
+        menuKey: "contact",
       },
     ],
 
@@ -160,18 +165,22 @@ export const defaultLayout = {
       {
         label: "Facebook",
         href: "https://facebook.com/catalution",
+        visible: true,
       },
       {
         label: "Instagram",
         href: "https://instagram.com/catalution",
+        visible: true,
       },
       {
         label: "Twitter",
         href: "https://twitter.com/catalution",
+        visible: true,
       },
       {
         label: "LinkedIn",
         href: "https://linkedin.com/company/catalution",
+        visible: true,
       },
     ],
 
@@ -219,6 +228,7 @@ export const defaultLayout = {
     ].map((label) => ({
       label,
       href: "/services",
+      visible: true,
     })),
 
     backgroundColor: "#f8f5ff",
@@ -234,6 +244,10 @@ export const defaultLayout = {
 
     newsletterPlaceholder:
       "Enter email",
+
+    newsletterButtonVisible: true,
+    privacyVisible: true,
+    termsVisible: true,
 
     followLabel:
       "Follow Us:",
@@ -290,6 +304,8 @@ export const defaultLayout = {
 
     buttonUrl:
       "/contact",
+
+    buttonVisible: true,
 
     backgroundColor:
       "#481d96",

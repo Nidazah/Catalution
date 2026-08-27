@@ -273,17 +273,12 @@ export async function GET(
      * This is NOT the effective/default data.
      * -------------------------------------------------------
      */
-    if (
-      raw &&
-      key === "SECTION_STYLES"
-    ) {
-      const savedData =
-        await getSavedData(
-          "SECTION_STYLES",
-        );
+    if (raw && (key === "SECTION_STYLES" || key === "LAYOUT" || key === "THEME")) {
+      const typedKey = key as SettingsKey;
+      const savedData = await getSavedData(typedKey);
 
       return NextResponse.json({
-        key: "SECTION_STYLES",
+        key: typedKey,
         data: savedData,
       });
     }

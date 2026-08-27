@@ -87,7 +87,7 @@ export default function CareerApplicationsAdminPage() {
       setError("");
 
       const response = await fetch(
-        "/api/admin/career-applications",
+        "/api/career-applications",
         {
           cache: "no-store",
         },
@@ -124,13 +124,14 @@ export default function CareerApplicationsAdminPage() {
   ) {
     try {
       const response = await fetch(
-        `/api/admin/career-applications/${id}`,
+        "/api/career-applications",
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            id,
             status,
           }),
         },
@@ -184,9 +185,13 @@ export default function CareerApplicationsAdminPage() {
 
     try {
       const response = await fetch(
-        `/api/admin/career-applications/${id}`,
+        "/api/career-applications",
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ id }),
         },
       );
 
@@ -222,7 +227,7 @@ export default function CareerApplicationsAdminPage() {
     return (
       <div className="p-8">
         <h1 className="text-3xl font-bold text-navy">
-          Career Applications
+          Applications for Jobs
         </h1>
 
         <div className="py-20 text-center text-sm text-gray-500">
@@ -237,7 +242,7 @@ export default function CareerApplicationsAdminPage() {
       <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-navy">
-            Career Applications
+            Applications for Jobs
           </h1>
 
           <p className="mt-2 text-sm text-gray-500">

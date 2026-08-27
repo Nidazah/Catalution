@@ -107,10 +107,14 @@ export default function FooterV2() {
     logo?: string;
     followLabel?: string; resourcesTitle?: string; servicesTitle?: string; newsletterPlaceholder?: string; trustedText?: string; privacyLabel?: string; termsLabel?: string; privacyUrl?: string; termsUrl?: string;
     brandName?: string;
+    privacyVisible?: boolean;
+    termsVisible?: boolean;
+    newsletterButtonVisible?: boolean;
 
     social?: Array<{
       label: string;
       href: string;
+      visible?: boolean;
     }>;
 
     socialShape?: "circle" | "rounded" | "square";
@@ -119,11 +123,13 @@ export default function FooterV2() {
       label: string;
       href: string;
       badge?: string;
+      visible?: boolean;
     }>;
 
     services?: Array<{
       label: string;
       href: string;
+      visible?: boolean;
     }>;
 
     goTop?: {
@@ -160,12 +166,12 @@ export default function FooterV2() {
 
   const resourceLinks =
     layout.resources?.length
-      ? layout.resources.map((r) => ({ name: r.label, href: r.href, badge: r.badge }))
+      ? layout.resources.filter((r) => r.visible !== false).map((r) => ({ name: r.label, href: r.href, badge: r.badge }))
       : resources.map((r) => ({ name: r.name, href: r.href, badge: r.name === "Careers" ? "New" : undefined }));
 
   const serviceLinks =
     layout.services?.length
-      ? layout.services.map((s) => ({ name: s.label, href: s.href }))
+      ? layout.services.filter((s) => s.visible !== false).map((s) => ({ name: s.label, href: s.href }))
       : services;
 
   return (
@@ -194,7 +200,7 @@ export default function FooterV2() {
             {layout.followLabel || "Follow Us:"}
           </h4>
           <div className="mt-4 flex gap-3">
-            {(layout.social?.length ? layout.social : socials).map((s) => (
+            {(layout.social?.length ? layout.social.filter((s) => s.visible !== false) : socials).map((s) => (
               <a
                 key={s.label}
                 href={s.href}
@@ -274,13 +280,13 @@ export default function FooterV2() {
               placeholder={layout.newsletterPlaceholder || "Enter email"}
               className="w-full bg-transparent text-sm text-[var(--color-heading)] placeholder:text-[var(--color-body)] focus:outline-none"
             />
-            <button
+            {layout.newsletterButtonVisible !== false && <button
               type="submit"
               aria-label="Subscribe"
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-accent)] text-white transition-transform hover:scale-105"
             >
               <Send className="h-4 w-4" />
-            </button>
+            </button>}
           </form>
         </div>
       </div>
@@ -297,13 +303,17 @@ export default function FooterV2() {
             <span className="font-semibold text-white">Catalution</span> {layout.copyright || "All right reserved."}
           </div>
           <div className="flex items-center gap-3">
-            <a href={layout.privacyUrl || "/privacy"} className="hover:text-white transition-colors">
-              {layout.privacyLabel || "Policy & privacy"}
-            </a>
-            <span>•</span>
-            <a href={layout.termsUrl || "/terms"} className="hover:text-white transition-colors">
-              {layout.termsLabel || "Terms & conditions"}
-            </a>
+            {layout.privacyVisible !== false && (
+              <a href={layout.privacyUrl || "/privacy"} className="hover:text-white transition-colors">
+                {layout.privacyLabel || "Policy & privacy"}
+              </a>
+            )}
+            {layout.privacyVisible !== false && layout.termsVisible !== false && <span>•</span>}
+            {layout.termsVisible !== false && (
+              <a href={layout.termsUrl || "/terms"} className="hover:text-white transition-colors">
+                {layout.termsLabel || "Terms & conditions"}
+              </a>
+            )}
           </div>
         </div>
       </div>

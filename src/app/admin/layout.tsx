@@ -26,7 +26,10 @@ export default function AdminLayout({
   const [isMounted, setIsMounted] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const toggleSidebar = useCallback(() => setIsSidebarOpen((prev) => !prev), []);
+  const toggleSidebar = useCallback(
+    () => setIsSidebarOpen((prev) => !prev),
+    [],
+  );
   const closeSidebar = useCallback(() => setIsSidebarOpen(false), []);
 
   useEffect(() => {
@@ -39,24 +42,31 @@ export default function AdminLayout({
   }, [pathname]);
 
   const shouldHideSidebar = HIDE_SIDEBAR_PATHS.some(
-    (path) => pathname === path || pathname?.startsWith(`${path}/`)
+    (path) => pathname === path || pathname?.startsWith(`${path}/`),
   );
 
-  // Don't render anything on server to prevent hydration mismatch
+  // The custom cursor must also be available on auth pages (login, forgot-password, reset-password).
+  // Keep it mounted once at the admin-layout level so route changes never remove it.
   if (!isMounted) {
     return (
-      <div className="min-h-screen bg-[#f8f6fc]">
-        <main className="min-h-screen">{children}</main>
-      </div>
+      <>
+        <CustomCursor />
+        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f8f6fc]">
+          <main className="min-h-screen">{children}</main>
+        </div>
+      </>
     );
   }
 
   // If we should hide the sidebar, render without it
   if (shouldHideSidebar) {
     return (
-      <div className="min-h-screen bg-[#f8f6fc]">
-        <main className="min-h-screen">{children}</main>
-      </div>
+      <>
+        <CustomCursor />
+        <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f8f6fc]">
+          <main className="min-h-screen">{children}</main>
+        </div>
+      </>
     );
   }
 
@@ -64,7 +74,7 @@ export default function AdminLayout({
   return (
     <>
       <CustomCursor />
-      <div className="min-h-screen bg-[#f8f6fc]">
+      <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f8f6fc]">
         <AdminSidebar
           isOpen={isSidebarOpen}
           onToggle={toggleSidebar}
@@ -91,7 +101,7 @@ export default function AdminLayout({
         </header>
 
         <main
-          className={`min-h-screen p-4 text-sm transition-all duration-300 sm:p-6 lg:p-8 ${
+          className={`admin-main min-h-screen max-w-full overflow-x-hidden p-4 text-sm transition-all duration-300 sm:p-6 lg:p-8 ${
             isSidebarOpen ? "md:ml-72" : "md:ml-20"
           }`}
         >

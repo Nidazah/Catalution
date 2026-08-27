@@ -226,6 +226,11 @@ export default function LayoutManagerPage() {
   const [layout, setLayout] =
     useState<Record<string, unknown>>({});
 
+  // Effective LAYOUT values are used by the form; only these
+  // partial overrides are persisted so defaults stay pristine.
+  const [layoutOverrides, setLayoutOverrides] =
+    useState<Record<string, unknown>>({});
+
   const [loading, setLoading] =
     useState(true);
 
@@ -234,6 +239,9 @@ export default function LayoutManagerPage() {
 
   const [message, setMessage] =
     useState("");
+
+  const [dirty, setDirty] =
+    useState(false);
 
   const activeStyle =
     effectiveStyles[activeSection] ?? {};
@@ -306,6 +314,21 @@ export default function LayoutManagerPage() {
       } else {
         setSectionStyles({});
       }
+
+      // Load raw LAYOUT overrides separately from effective defaults.
+      const rawLayoutResponse = await fetch(
+        "/api/site-settings?key=LAYOUT&raw=true",
+        { cache: "no-store" },
+      );
+
+      if (rawLayoutResponse.ok) {
+        const rawLayoutData = await rawLayoutResponse.json();
+        setLayoutOverrides(rawLayoutData.data ?? {});
+      } else {
+        setLayoutOverrides({});
+      }
+
+      setDirty(false);
     } catch (error) {
       console.error(
         "Failed to load settings:",
@@ -358,33 +381,34 @@ export default function LayoutManagerPage() {
         },
       };
     });
+
+    setDirty(true);
+    setMessage("Unsaved changes");
   }
 
   /*
    * Update ONE FIELD of ONE LAYOUT SUBSECTION
-   * (navbar/footer/consultantBanner) and save it
-   * immediately.
+   * (navbar/footer/consultantBanner) in the local draft.
+   * Layout overrides are persisted with Save Changes.
    *
    * This is a separate system from sectionStyles/
    * SECTION_STYLES above — layout fields like the logo
-   * live under the LAYOUT settings key, not SECTION_STYLES,
-   * so they're saved on change rather than waiting for
-   * "Save All Changes".
+   * live under the LAYOUT settings key, not SECTION_STYLES.
+   * They are kept as local overrides and persisted together
+   * with the other pending CMS changes.
    */
-  async function updateLayoutField(
+  function updateLayoutField(
     section: GlobalSectionKey,
     key: string,
     value: unknown,
-  ) {
+  ): Promise<void> {
+    // Update the effective form immediately.
     setLayout((current) => {
       const currentSection =
-        (current[section] as
-          | Record<string, unknown>
-          | undefined) ?? {};
+        (current[section] as Record<string, unknown> | undefined) ?? {};
 
       return {
         ...current,
-
         [section]: {
           ...currentSection,
           [key]: value,
@@ -392,46 +416,24 @@ export default function LayoutManagerPage() {
       };
     });
 
-    try {
-      const response =
-        await fetch(
-          "/api/site-settings",
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-            body: JSON.stringify({
-              key: "LAYOUT",
-              data: {
-                [section]: {
-                  [key]: value,
-                },
-              },
-            }),
-          },
-        );
+    // Keep only the fields the admin actually changed. This prevents
+    // saving the entire default layout back into the database.
+    setLayoutOverrides((current) => {
+      const currentSection =
+        (current[section] as Record<string, unknown> | undefined) ?? {};
 
-      if (!response.ok) {
-        throw new Error(
-          "Failed to save logo",
-        );
-      }
+      return {
+        ...current,
+        [section]: {
+          ...currentSection,
+          [key]: value,
+        },
+      };
+    });
 
-      setMessage(
-        "Logo updated.",
-      );
-    } catch (error) {
-      console.error(
-        "Layout field save error:",
-        error,
-      );
-
-      setMessage(
-        "Could not save the logo. Please try again.",
-      );
-    }
+    setDirty(true);
+    setMessage("Unsaved changes");
+    return Promise.resolve();
   }
 
   async function saveAllChanges() {
@@ -439,45 +441,59 @@ export default function LayoutManagerPage() {
       setSaving(true);
       setMessage("");
 
-      const response =
-        await fetch(
-          "/api/site-settings",
-          {
+      const requests: Promise<Response>[] = [];
+
+      if (Object.keys(sectionStyles).length > 0) {
+        requests.push(
+          fetch("/api/site-settings", {
             method: "PUT",
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               key: "SECTION_STYLES",
               data: sectionStyles,
             }),
-          },
-        );
-
-      const result =
-        await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.error ??
-            "Failed to save settings",
+          }),
         );
       }
 
+      if (Object.keys(layoutOverrides).length > 0) {
+        requests.push(
+          fetch("/api/site-settings", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              key: "LAYOUT",
+              data: layoutOverrides,
+            }),
+          }),
+        );
+      }
+
+      if (!requests.length) {
+        setDirty(false);
+        setMessage("There are no changes to save.");
+        return;
+      }
+
+      const responses = await Promise.all(requests);
+      const failed = responses.find((response) => !response.ok);
+
+      if (failed) {
+        let detail = "Could not save changes.";
+        try {
+          const result = await failed.json();
+          detail = result?.error || detail;
+        } catch {}
+        throw new Error(detail);
+      }
+
       await loadSettings();
-
-      setMessage(
-        "All changes saved successfully.",
-      );
+      setDirty(false);
+      setMessage("Changes saved successfully.");
     } catch (error) {
-      console.error(
-        "Save error:",
-        error,
-      );
-
+      console.error("Save error:", error);
       setMessage(
-        "Could not save changes.",
+        error instanceof Error ? error.message : "Could not save changes.",
       );
     } finally {
       setSaving(false);
@@ -505,9 +521,14 @@ export default function LayoutManagerPage() {
     try {
       setMessage("");
 
+      const settingsKey =
+        globalSections.some((item) => item.key === section)
+          ? "LAYOUT"
+          : "SECTION_STYLES";
+
       const response =
         await fetch(
-          `/api/site-settings?key=SECTION_STYLES&section=${encodeURIComponent(
+          `/api/site-settings?key=${settingsKey}&section=${encodeURIComponent(
             section,
           )}`,
           {
@@ -563,7 +584,7 @@ export default function LayoutManagerPage() {
 
   return (
     <div className="min-h-screen bg-[#f8f7fc] text-[#21164f]">
-      <div className="px-8 pb-5 pt-8">
+      <div className="px-4 pb-5 pt-6 sm:px-6 sm:pt-8 lg:px-8">
         <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
           Theme Settings
         </div>
@@ -573,13 +594,13 @@ export default function LayoutManagerPage() {
         </h1>
 
         <p className="mt-2 max-w-3xl text-xs text-gray-500">
-          Control each website section independently.
-          Changing one setting will not modify unrelated
-          settings.
+          Manage website content and layout overrides without changing the
+          original theme. Changes are scoped to the selected area and can
+          always be restored to the original default.
         </p>
       </div>
 
-      <div className="mx-8 mb-8 grid grid-cols-[190px_minmax(0,1fr)] gap-4">
+      <div className="mx-4 mb-8 grid grid-cols-1 gap-4 sm:mx-6 lg:mx-8 lg:grid-cols-[190px_minmax(0,1fr)]">
         <aside className="rounded-lg border border-[#e5ddf5] bg-white p-3">
           <div className="mb-3 px-2 text-[9px] font-bold uppercase tracking-[0.18em] text-[#7d72a3]">
             Global Chrome
@@ -658,7 +679,7 @@ export default function LayoutManagerPage() {
           )}
         </aside>
 
-        <main className="rounded-lg border border-[#e5ddf5] bg-white p-5">
+        <main className="min-w-0 rounded-lg border border-[#e5ddf5] bg-white p-4 sm:p-5">
           <div className="mb-6">
             <div className="mb-2 text-[9px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
               Section Panel
@@ -678,7 +699,7 @@ export default function LayoutManagerPage() {
           {(activeSection === "navbar" ||
             activeSection === "footer") && (
             <EditorGroup title="Logo">
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 <ImageUploadField
                   label="Logo image"
                   value={String(
@@ -717,8 +738,18 @@ export default function LayoutManagerPage() {
             </EditorGroup>
           )}
 
+          {(activeSection === "navbar" ||
+            activeSection === "footer" ||
+            activeSection === "consultantBanner") && (
+            <LayoutLinksEditor
+              section={activeSection}
+              layout={layout}
+              updateLayoutField={updateLayoutField}
+            />
+          )}
+
           <EditorGroup title="General">
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <CheckboxField
                 label="Show section"
                 checked={
@@ -766,7 +797,7 @@ export default function LayoutManagerPage() {
           </EditorGroup>
 
           <EditorGroup title="Colors">
-            <div className="grid grid-cols-3 gap-x-3 gap-y-3">
+            <div className="grid grid-cols-1 gap-x-3 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
               <ColorField
                 label="Section background"
                 value={String(
@@ -882,7 +913,7 @@ export default function LayoutManagerPage() {
           </EditorGroup>
 
           <EditorGroup title="Typography">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <SelectField
                 label="Heading font"
                 value={String(
@@ -977,7 +1008,7 @@ export default function LayoutManagerPage() {
           </EditorGroup>
 
           <EditorGroup title="Spacing & Position">
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <NumberField
                 label="Padding top (px)"
                 value={toNumber(
@@ -1124,7 +1155,17 @@ export default function LayoutManagerPage() {
           </EditorGroup>
 
           <div className="mt-8 flex items-center justify-between border-t border-[#eee8f7] pt-4">
-            <div
+            <div className="flex items-center gap-3">
+              <span
+                className={`inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-semibold ${
+                  dirty
+                    ? "bg-[#fff4e8] text-[#c65a00]"
+                    : "bg-[#edf9f1] text-[#2f7a49]"
+                }`}
+              >
+                {dirty ? "Unsaved changes" : "All changes saved"}
+              </span>
+              <div
               className={`text-xs ${
                 message.startsWith("Could") ||
                 message.startsWith("Failed")
@@ -1133,10 +1174,8 @@ export default function LayoutManagerPage() {
               }`}
             >
               {message ||
-                `${
-                  activeSectionInfo?.label ??
-                  activeSection
-                } style is ready.`}
+                `${activeSectionInfo?.label ?? activeSection} is ready to edit.`}
+              </div>
             </div>
 
             <div className="flex gap-2">
@@ -1157,12 +1196,12 @@ export default function LayoutManagerPage() {
                 onClick={
                   saveAllChanges
                 }
-                disabled={saving}
-                className="rounded-md bg-[#21164f] px-4 py-2 text-xs font-semibold text-white hover:opacity-90 disabled:opacity-50"
+                disabled={saving || !dirty}
+                className="rounded-md bg-[#21164f] px-4 py-2 text-xs font-semibold text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {saving
                   ? "Saving..."
-                  : "Save All Changes"}
+                  : "Save Changes"}
               </button>
             </div>
           </div>
@@ -1175,6 +1214,365 @@ export default function LayoutManagerPage() {
 /* =========================================================
    UI COMPONENTS
 ========================================================= */
+
+function LayoutLinksEditor({
+  section,
+  layout,
+  updateLayoutField,
+}: {
+  section: GlobalSectionKey;
+  layout: Record<string, unknown>;
+  updateLayoutField: (
+    section: GlobalSectionKey,
+    key: string,
+    value: unknown,
+  ) => Promise<void>;
+}) {
+  const current =
+    (layout[section] as Record<string, any> | undefined) ?? {};
+
+  // Show the original navigation structure even when there are no
+  // saved CMS overrides yet. The first edit converts it into an override.
+  const defaultPagesMain = [
+    { label: "About us", href: "/about", visible: true },
+    { label: "Our history", href: "/history", badge: "HOT", visible: true },
+    { label: "Team", href: "/team", visible: true },
+    { label: "Team details", href: "/team/savanah-nguyen", visible: true },
+    { label: "Careers", href: "/careers", visible: true },
+    { label: "Careers details", href: "/careers", badge: "New", visible: true },
+    { label: "Pricing Plan", href: "/pricing", visible: true },
+    { label: "Feedbacks", href: "/", visible: true },
+    { label: "Faq", href: "/faq", visible: true },
+    { label: "Contact", href: "/contact", visible: true },
+  ];
+  const defaultPagesOther = [
+    { label: "Services", href: "/services", visible: true },
+    { label: "Service details", href: "/services/business-process-optimization", visible: true },
+    { label: "Portfolios", href: "/portfolios", visible: true },
+    { label: "Portfolio details", href: "/portfolios", visible: true },
+    { label: "Error 404", href: "/404", visible: true },
+    { label: "Blog grid", href: "/blog-grid", badge: "NEW", visible: true },
+    { label: "Blog standard", href: "/blog-standard", visible: true },
+    { label: "Blog sidebar", href: "/blog-sidebar", visible: true },
+    { label: "Blog details", href: "/blog", visible: true },
+    { label: "Term & Conditions", href: "/", visible: true },
+  ];
+
+  const updateItem = async (
+    listKey: "navItems" | "pagesMain" | "pagesOther" | "resources" | "services" | "social",
+    index: number,
+    field: string,
+    value: unknown,
+  ) => {
+    const source = Array.isArray(current[listKey])
+      ? current[listKey]
+      : listKey === "pagesMain"
+        ? defaultPagesMain
+        : listKey === "pagesOther"
+          ? defaultPagesOther
+          : [];
+    const items = [...source];
+    items[index] = {
+      ...(items[index] ?? {}),
+      [field]: value,
+    };
+    await updateLayoutField(section, listKey, items);
+  };
+
+  const addItem = async (
+    listKey: "navItems" | "pagesMain" | "pagesOther" | "resources" | "services" | "social",
+  ) => {
+    const source = Array.isArray(current[listKey])
+      ? current[listKey]
+      : listKey === "pagesMain"
+        ? defaultPagesMain
+        : listKey === "pagesOther"
+          ? defaultPagesOther
+          : [];
+    const items = [...source];
+    items.push({
+      label: "New link",
+      href: "/",
+      ...(listKey === "social" ? {} : {}),
+    });
+    await updateLayoutField(section, listKey, items);
+  };
+
+  const removeItem = async (
+    listKey: "navItems" | "pagesMain" | "pagesOther" | "resources" | "services" | "social",
+    index: number,
+  ) => {
+    const source = Array.isArray(current[listKey])
+      ? current[listKey]
+      : listKey === "pagesMain"
+        ? defaultPagesMain
+        : listKey === "pagesOther"
+          ? defaultPagesOther
+          : [];
+    const items = [...source];
+    items.splice(index, 1);
+    await updateLayoutField(section, listKey, items);
+  };
+
+  const renderList = (
+    title: string,
+    listKey: "navItems" | "pagesMain" | "pagesOther" | "resources" | "services" | "social",
+  ) => {
+    const items = (Array.isArray(current[listKey])
+      ? current[listKey]
+      : listKey === "pagesMain"
+        ? defaultPagesMain
+        : listKey === "pagesOther"
+          ? defaultPagesOther
+          : []) as Array<Record<string, unknown>>;
+
+    return (
+      <EditorGroup title={title}>
+        <div className="space-y-3">
+          {items.map((item, index) => (
+            <div
+              key={`${listKey}-${index}`}
+              className="rounded-md border border-[#e5ddf5] p-3"
+            >
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1.4fr_auto]">
+                <TextField
+                  label="Text"
+                  value={String(item.label ?? "")}
+                  onChange={(value) =>
+                    updateItem(listKey, index, "label", value)
+                  }
+                />
+                <TextField
+                  label="URL"
+                  value={String(item.href ?? "")}
+                  onChange={(value) =>
+                    updateItem(listKey, index, "href", value)
+                  }
+                />
+                <div className="flex items-end gap-2">
+                  <CheckboxField
+                    label="Visible"
+                    checked={item.visible !== false}
+                    onChange={(value) =>
+                      updateItem(listKey, index, "visible", value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeItem(listKey, index)}
+                    className="h-[38px] rounded-md border border-[#e5ddf5] px-3 text-xs text-gray-600 hover:bg-gray-50"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+              {listKey === "resources" && (
+                <div className="mt-3 max-w-xs">
+                  <TextField
+                    label="Badge (optional)"
+                    value={String(item.badge ?? "")}
+                    onChange={(value) =>
+                      updateItem(listKey, index, "badge", value)
+                    }
+                  />
+                </div>
+              )}
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => addItem(listKey)}
+            className="rounded-md border border-[#d9ccef] px-3 py-2 text-xs font-semibold text-[#5e3a91] hover:bg-[#f8f5ff]"
+          >
+            + Add link
+          </button>
+        </div>
+      </EditorGroup>
+    );
+  };
+
+  if (section === "navbar") {
+    return (
+      <>
+        <EditorGroup title="Navbar CTA Button">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <TextField
+              label="Button text"
+              value={String(current.ctaLabel ?? "")}
+              onChange={(value) =>
+                updateLayoutField("navbar", "ctaLabel", value)
+              }
+            />
+            <TextField
+              label="Button URL"
+              value={String(current.ctaUrl ?? "")}
+              onChange={(value) =>
+                updateLayoutField("navbar", "ctaUrl", value)
+              }
+            />
+            <CheckboxField
+              label="Visible"
+              checked={current.ctaVisible !== false}
+              onChange={(value) =>
+                updateLayoutField("navbar", "ctaVisible", value)
+              }
+            />
+          </div>
+        </EditorGroup>
+
+        {renderList("Navigation Links", "navItems")}
+        {renderList("Pages → Main Pages", "pagesMain")}
+        {renderList("Pages → Other Pages", "pagesOther")}
+      </>
+    );
+  }
+
+  if (section === "footer") {
+    return (
+      <>
+        {renderList("Resource Links", "resources")}
+        {renderList("Service Links", "services")}
+        {renderList("Social Links", "social")}
+
+        <EditorGroup title="Footer Legal Links">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <TextField
+              label="Privacy text"
+              value={String(current.privacyLabel ?? "")}
+              onChange={(value) =>
+                updateLayoutField("footer", "privacyLabel", value)
+              }
+            />
+            <TextField
+              label="Privacy URL"
+              value={String(current.privacyUrl ?? "")}
+              onChange={(value) =>
+                updateLayoutField("footer", "privacyUrl", value)
+              }
+            />
+            <TextField
+              label="Terms text"
+              value={String(current.termsLabel ?? "")}
+              onChange={(value) =>
+                updateLayoutField("footer", "termsLabel", value)
+              }
+            />
+            <TextField
+              label="Terms URL"
+              value={String(current.termsUrl ?? "")}
+              onChange={(value) =>
+                updateLayoutField("footer", "termsUrl", value)
+              }
+            />
+          </div>
+        </EditorGroup>
+
+        <EditorGroup title="Go-to-top Button">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <TextField
+              label="Button text"
+              value={String(current.goTop?.label ?? "")}
+              onChange={(value) =>
+                updateLayoutField("footer", "goTop", {
+                  ...(current.goTop ?? {}),
+                  label: value,
+                })
+              }
+            />
+            <TextField
+              label="Button URL / target"
+              value={String(current.goTop?.target ?? "")}
+              onChange={(value) =>
+                updateLayoutField("footer", "goTop", {
+                  ...(current.goTop ?? {}),
+                  target: value,
+                })
+              }
+            />
+            <CheckboxField
+              label="Visible"
+              checked={current.goTop?.enabled !== false}
+              onChange={(value) =>
+                updateLayoutField("footer", "goTop", {
+                  ...(current.goTop ?? {}),
+                  enabled: value,
+                })
+              }
+            />
+          </div>
+        </EditorGroup>
+      </>
+    );
+  }
+
+  return (
+    <EditorGroup title="Consultant Banner Button">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <TextField
+          label="Banner title"
+          value={String(current.title ?? "")}
+          onChange={(value) =>
+            updateLayoutField("consultantBanner", "title", value)
+          }
+        />
+        <TextField
+          label="Button text"
+          value={String(current.buttonLabel ?? "")}
+          onChange={(value) =>
+            updateLayoutField("consultantBanner", "buttonLabel", value)
+          }
+        />
+        <TextField
+          label="Button URL"
+          value={String(current.buttonUrl ?? "")}
+          onChange={(value) =>
+            updateLayoutField("consultantBanner", "buttonUrl", value)
+          }
+        />
+        <CheckboxField
+          label="Button visible"
+          checked={current.buttonVisible !== false}
+          onChange={(value) =>
+            updateLayoutField("consultantBanner", "buttonVisible", value)
+          }
+        />
+      </div>
+      <div className="mt-3">
+        <CheckboxField
+          label="Show banner"
+          checked={current.enabled !== false}
+          onChange={(value) =>
+            updateLayoutField("consultantBanner", "enabled", value)
+          }
+        />
+      </div>
+    </EditorGroup>
+  );
+}
+
+function TextField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1 block text-[10px] font-semibold">
+        {label}
+      </span>
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        className="h-[36px] w-full rounded-md border border-[#ddd2ee] px-3 text-xs outline-none focus:border-[#7b4eb0]"
+      />
+    </label>
+  );
+}
 
 function EditorGroup({
   title,

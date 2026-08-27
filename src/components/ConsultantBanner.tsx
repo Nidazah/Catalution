@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function ConsultantBanner() {
   const [settings, setSettings] = useState({
-    enabled: true, title: "GET CONSULTANT NOW!", buttonLabel: "Lets talk now", buttonUrl: "/contact",
+    enabled: true, title: "GET CONSULTANT NOW!", buttonLabel: "Lets talk now", buttonUrl: "/contact", buttonVisible: true,
   });
   useEffect(() => {
     fetch("/api/site-settings?key=LAYOUT", { cache: "no-store" })
@@ -28,12 +28,12 @@ export default function ConsultantBanner() {
           </h3>
 
           {/* Right: Button - ✅ Replaced custom Button import with global Outline Button */}
-          <Link
+          {settings.buttonVisible !== false && <Link
             href={settings.buttonUrl || "/contact"}
             className="btn shadow-md whitespace-nowrap" style={{backgroundColor:"var(--cms-banner-button-bg, #fff)", color:"var(--cms-banner-button-text, var(--color-navy))", borderColor:"var(--cms-banner-button-bg, #fff)"}}
           >
             {settings.buttonLabel || "Lets talk now"}
-          </Link>
+          </Link>}
         </div>
       </div>
     </section>

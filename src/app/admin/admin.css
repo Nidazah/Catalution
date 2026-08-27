@@ -186,3 +186,125 @@
   border-radius: 18px;
   padding: 32px;
 }
+
+
+/* ---- Responsive admin workspace ---- */
+.admin-card,
+.admin-modal,
+.admin-auth-card {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-table-wrap,
+.admin-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-table {
+  min-width: 680px;
+}
+
+@media (max-width: 767px) {
+  .admin-topbar {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-bottom: 18px;
+  }
+
+  .admin-topbar > * {
+    max-width: 100%;
+  }
+
+  .admin-btn {
+    min-height: 42px;
+    max-width: 100%;
+  }
+
+  .admin-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .admin-field-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .admin-modal-backdrop {
+    padding: 12px;
+  }
+
+  .admin-modal {
+    max-height: calc(100vh - 24px);
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .admin-auth-card {
+    padding: 24px 18px;
+  }
+
+  .admin-table {
+    font-size: 13px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 11px 10px;
+  }
+}
+
+/* Prevent long CMS values, URLs and email addresses from forcing a
+   horizontal page scroll on phones. */
+.admin-main,
+.admin-main * {
+  min-width: 0;
+}
+
+.admin-main input,
+.admin-main textarea,
+.admin-main select {
+  max-width: 100%;
+}
+
+/* =========================================================
+   ADMIN WORKSPACE — PREVENT SIDEBAR + CONTENT OVERFLOW
+   ========================================================= */
+
+.admin-main {
+  width: auto !important;
+  max-width: none;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.admin-main,
+.admin-main * {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.admin-main input,
+.admin-main textarea,
+.admin-main select {
+  max-width: 100%;
+}
+
+/* Collapsed desktop sidebar = 80px */
+@media (min-width: 768px) {
+  .admin-main {
+    width: calc(100% - 5rem) !important;
+  }
+}
+
+/* Mobile: sidebar becomes an off-canvas drawer */
+@media (max-width: 767px) {
+  .admin-main {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
