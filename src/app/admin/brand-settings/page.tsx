@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RotateCcw, Save } from "lucide-react";
+import { Save } from "lucide-react";
 
-import { defaultLayout, defaultTheme } from "@/lib/site-defaults";
+import { defaultTheme } from "@/lib/site-defaults";
 
 type Theme = {
   primaryColor: string;
@@ -52,6 +52,45 @@ type LayoutSettings = {
 };
 
 const defaults: Theme = defaultTheme as Theme;
+
+// Fonts available across the font selectors. Each is mapped to a real
+// CSS font-family stack so the option (and the closed select) can
+// render a live preview in that font, instead of a plain text label.
+const FONT_OPTIONS = [
+  "Poppins",
+  "Inter",
+  "Roboto",
+  "Open Sans",
+  "Lato",
+  "Montserrat",
+  "Nunito",
+  "Raleway",
+  "Merriweather",
+  "Arial",
+  "Helvetica",
+  "Georgia",
+  "system-ui",
+] as const;
+
+const FONT_FAMILY_STACKS: Record<string, string> = {
+  Poppins: "'Poppins', sans-serif",
+  Inter: "'Inter', sans-serif",
+  Roboto: "'Roboto', sans-serif",
+  "Open Sans": "'Open Sans', sans-serif",
+  Lato: "'Lato', sans-serif",
+  Montserrat: "'Montserrat', sans-serif",
+  Nunito: "'Nunito', sans-serif",
+  Raleway: "'Raleway', sans-serif",
+  Merriweather: "'Merriweather', serif",
+  Arial: "Arial, Helvetica, sans-serif",
+  Helvetica: "Helvetica, Arial, sans-serif",
+  Georgia: "Georgia, 'Times New Roman', serif",
+  "system-ui": "system-ui, -apple-system, sans-serif",
+};
+
+function getFontStack(fontName: string): string {
+  return FONT_FAMILY_STACKS[fontName] || `'${fontName}', sans-serif`;
+}
 
 const defaultGoTop: GoTopSettings = {
   enabled: true,
@@ -165,42 +204,6 @@ export default function BrandSettingsPage() {
     }
   }
 
-  async function saveLayout() {
-    setLayoutSaving(true);
-    setLayoutMessage("");
-
-    try {
-      const response = await fetch(
-        "/api/site-settings",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            key: "LAYOUT",
-            data: layout,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      setLayoutMessage(
-        response.ok
-          ? "Global chrome saved."
-          : data?.error ?? "Could not save global chrome."
-      );
-    } catch (error) {
-      console.error("Save layout error:", error);
-      setLayoutMessage(
-        "Could not save global chrome."
-      );
-    } finally {
-      setLayoutSaving(false);
-    }
-  }
-
   async function saveGoTop() {
     setLayoutSaving(true);
     setLayoutMessage("");
@@ -253,16 +256,9 @@ export default function BrandSettingsPage() {
     }
   }
 
-  async function resetGlobalSetting(
-    key: "THEME" | "LAYOUT"
-  ) {
-    const label =
-      key === "THEME"
-        ? "theme"
-        : "global chrome";
-
+  async function resetTheme() {
     const confirmed = window.confirm(
-      `Reset ${label} to the original defaults?`
+      "Reset theme to the original defaults?"
     );
 
     if (!confirmed) {
@@ -271,7 +267,7 @@ export default function BrandSettingsPage() {
 
     try {
       const response = await fetch(
-        `/api/site-settings?key=${key}`,
+        "/api/site-settings?key=THEME",
         {
           method: "DELETE",
         }
@@ -281,40 +277,20 @@ export default function BrandSettingsPage() {
         throw new Error("Reset failed");
       }
 
-      if (key === "THEME") {
-        setTheme({
-          ...defaultTheme,
-        } as Theme);
+      setTheme({
+        ...defaultTheme,
+      } as Theme);
 
-        setMessage(
-          "Theme reset to original defaults."
-        );
-      } else {
-        const resetLayout = JSON.parse(
-          JSON.stringify(defaultLayout)
-        );
-
-        setLayout(resetLayout);
-
-        setLayoutMessage(
-          "Global chrome reset to original defaults."
-        );
-      }
+      setMessage(
+        "Theme reset to original defaults."
+      );
     } catch (error) {
       console.error(
-        "Reset global setting error:",
+        "Reset theme error:",
         error
       );
 
-      if (key === "THEME") {
-        setMessage(
-          `Could not reset ${label}.`
-        );
-      } else {
-        setLayoutMessage(
-          `Could not reset ${label}.`
-        );
-      }
+      setMessage("Could not reset theme.");
     }
   }
 
@@ -405,24 +381,10 @@ export default function BrandSettingsPage() {
         </h2>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Select
+          <FontSelect
             label="Heading font"
             value={theme.headingFont}
-            options={[
-              "Poppins",
-              "Inter",
-              "Roboto",
-              "Open Sans",
-              "Lato",
-              "Montserrat",
-              "Nunito",
-              "Raleway",
-              "Merriweather",
-              "Arial",
-              "Helvetica",
-              "Georgia",
-              "system-ui",
-            ]}
+            options={FONT_OPTIONS}
             onChange={(value) =>
               setTheme({
                 ...theme,
@@ -431,24 +393,10 @@ export default function BrandSettingsPage() {
             }
           />
 
-          <Select
+          <FontSelect
             label="Body font"
             value={theme.bodyFont}
-            options={[
-              "Inter",
-              "Poppins",
-              "Roboto",
-              "Open Sans",
-              "Lato",
-              "Montserrat",
-              "Nunito",
-              "Raleway",
-              "Merriweather",
-              "Arial",
-              "Helvetica",
-              "Georgia",
-              "system-ui",
-            ]}
+            options={FONT_OPTIONS}
             onChange={(value) =>
               setTheme({
                 ...theme,
@@ -528,87 +476,6 @@ export default function BrandSettingsPage() {
             }
           />
         </div>
-      </div>
-
-      {/* GLOBAL CHROME */}
-
-      <div className="rounded-xl border border-[#ece6f7] bg-white p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
-              Global Chrome
-            </p>
-
-            <h2 className="mt-1 font-bold text-[#24133f]">
-              Navbar, Footer & Consultant Banner
-            </h2>
-
-            <p className="mt-1 text-[10.5px] leading-5 text-[#6b7280]">
-              Every visible label, URL, image,
-              navigation item, badge and global
-              chrome value is stored here.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={() =>
-              resetGlobalSetting("LAYOUT")
-            }
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-[#d9cceb] bg-white px-3 py-2 text-[10.5px] font-semibold text-[#481d96] hover:bg-[#f0eafa]"
-          >
-            <RotateCcw size={11} />
-            Reset Chrome
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <TextArea
-            label="Global Chrome JSON"
-            value={JSON.stringify(
-              layout,
-              null,
-              2
-            )}
-            onChange={(value) => {
-              try {
-                setLayout(JSON.parse(value));
-                setLayoutMessage("");
-              } catch {
-                setLayoutMessage(
-                  "JSON is not valid yet. Finish editing before saving."
-                );
-              }
-            }}
-          />
-        </div>
-
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <span className="text-[10.5px] text-[#7b8190]">
-            Edit navbar, footer and consultant
-            banner together while preserving
-            their existing rendering.
-          </span>
-
-          <button
-            type="button"
-            onClick={saveLayout}
-            disabled={layoutSaving}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#481d96] px-3.5 py-2 text-[11px] font-semibold text-white disabled:opacity-60"
-          >
-            <Save size={12} />
-
-            {layoutSaving
-              ? "Saving..."
-              : "Save Global Chrome"}
-          </button>
-        </div>
-
-        {layoutMessage && (
-          <p className="mt-3 text-[10.5px] font-medium text-[#481d96]">
-            {layoutMessage}
-          </p>
-        )}
       </div>
 
       {/* GO TOP */}
@@ -778,6 +645,12 @@ export default function BrandSettingsPage() {
             }
           />
         </div>
+
+        {layoutMessage && (
+          <p className="mt-3 text-[10.5px] font-medium text-[#481d96]">
+            {layoutMessage}
+          </p>
+        )}
       </div>
 
       {/* GLOBAL LAYOUT */}
@@ -787,6 +660,7 @@ export default function BrandSettingsPage() {
           Global Layout & Buttons
         </h2>
 
+        {/* Sizing fields */}
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <NumberField
             label="Container width (px)"
@@ -853,6 +727,31 @@ export default function BrandSettingsPage() {
               })
             }
           />
+        </div>
+
+        {/* Button colors — kept together in their own row/column group */}
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Color
+            label="Secondary button background"
+            value={theme.buttonSecondaryBg}
+            onChange={(value) =>
+              setTheme({
+                ...theme,
+                buttonSecondaryBg: value,
+              })
+            }
+          />
+
+          <Color
+            label="Secondary button text"
+            value={theme.buttonSecondaryText}
+            onChange={(value) =>
+              setTheme({
+                ...theme,
+                buttonSecondaryText: value,
+              })
+            }
+          />
 
           <Color
             label="Primary button background"
@@ -875,28 +774,15 @@ export default function BrandSettingsPage() {
               })
             }
           />
+        </div>
 
-          <Color
-            label="Secondary button background"
-            value={theme.buttonSecondaryBg}
-            onChange={(value) =>
-              setTheme({
-                ...theme,
-                buttonSecondaryBg: value,
-              })
-            }
-          />
+        {/* Live button preview — reflects the settings above */}
+        <div className="mt-5 border-t border-[#ece6f7] pt-4">
+          <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7b8190]">
+            Button Preview
+          </span>
 
-          <Color
-            label="Secondary button text"
-            value={theme.buttonSecondaryText}
-            onChange={(value) =>
-              setTheme({
-                ...theme,
-                buttonSecondaryText: value,
-              })
-            }
-          />
+          <ButtonPreview theme={theme} />
         </div>
       </div>
 
@@ -939,9 +825,7 @@ export default function BrandSettingsPage() {
         <div className="flex items-center gap-2">
           <button
             type="button"
-            onClick={() =>
-              resetGlobalSetting("THEME")
-            }
+            onClick={resetTheme}
             className="rounded-lg border border-[#d9cceb] bg-white px-4 py-2 text-[11.5px] font-semibold text-[#481d96]"
           >
             Reset Theme
@@ -1056,6 +940,47 @@ function Select({
   );
 }
 
+function FontSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: readonly string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label>
+      <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+        {label}
+      </span>
+
+      <select
+        value={value}
+        onChange={(event) =>
+          onChange(event.target.value)
+        }
+        style={{ fontFamily: getFontStack(value) }}
+        className="w-full rounded-lg border border-[#ddd5ed] bg-white px-3 py-2 text-[13px]"
+      >
+        {options.map((option) => (
+          <option
+            key={option}
+            value={option}
+            style={{
+              fontFamily: getFontStack(option),
+            }}
+          >
+            {option}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function Color({
   label,
   value,
@@ -1127,5 +1052,92 @@ function NumberField({
         className="w-full rounded-lg border border-[#ddd5ed] px-3 py-2 text-[12px]"
       />
     </label>
+  );
+}
+// Darkens (or lightens, with a negative amount) a "#rrggbb" color by a
+// percentage. Used to derive a hover state for the button preview
+// without needing a dedicated "hover color" theme field.
+function shadeColor(hex: string, percent: number): string {
+  const safe = /^#[0-9A-Fa-f]{6}$/.test(hex) ? hex : "#000000";
+
+  const num = parseInt(safe.slice(1), 16);
+  const amt = Math.round(2.55 * percent);
+
+  let r = (num >> 16) + amt;
+  let g = ((num >> 8) & 0x00ff) + amt;
+  let b = (num & 0x0000ff) + amt;
+
+  r = Math.max(0, Math.min(255, r));
+  g = Math.max(0, Math.min(255, g));
+  b = Math.max(0, Math.min(255, b));
+
+  return `#${(1 << 24 | (r << 16) | (g << 8) | b)
+    .toString(16)
+    .slice(1)}`;
+}
+
+function ButtonPreview({ theme }: { theme: Theme }) {
+  const [primaryHover, setPrimaryHover] = useState(false);
+  const [secondaryHover, setSecondaryHover] = useState(false);
+
+  const sharedStyle: React.CSSProperties = {
+    borderRadius: `${theme.buttonRadius}px`,
+    paddingLeft: `${theme.buttonPaddingX}px`,
+    paddingRight: `${theme.buttonPaddingX}px`,
+    paddingTop: `${theme.buttonPaddingY}px`,
+    paddingBottom: `${theme.buttonPaddingY}px`,
+    fontFamily: getFontStack(theme.bodyFont),
+    fontWeight: Number(theme.bodyWeight) || 400,
+    fontSize: `${theme.baseFontSize}px`,
+    borderWidth: "1px",
+    borderStyle: "solid",
+    transition: "background-color 0.15s ease, transform 0.15s ease",
+    cursor: "pointer",
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-3 rounded-lg bg-[#faf8fd] p-4">
+      <button
+        type="button"
+        style={{
+          ...sharedStyle,
+          backgroundColor: primaryHover
+            ? shadeColor(theme.buttonPrimaryBg, -12)
+            : theme.buttonPrimaryBg,
+          color: theme.buttonPrimaryText,
+          borderColor: theme.lineColor,
+          transform: primaryHover
+            ? "translateY(-1px)"
+            : "translateY(0)",
+        }}
+        onMouseEnter={() => setPrimaryHover(true)}
+        onMouseLeave={() => setPrimaryHover(false)}
+      >
+        Primary Button
+      </button>
+
+      <button
+        type="button"
+        style={{
+          ...sharedStyle,
+          backgroundColor: secondaryHover
+            ? shadeColor(theme.buttonSecondaryBg, -12)
+            : theme.buttonSecondaryBg,
+          color: theme.buttonSecondaryText,
+          borderColor: theme.lineColor,
+          transform: secondaryHover
+            ? "translateY(-1px)"
+            : "translateY(0)",
+        }}
+        onMouseEnter={() => setSecondaryHover(true)}
+        onMouseLeave={() => setSecondaryHover(false)}
+      >
+        Secondary Button
+      </button>
+
+      <span className="text-[10px] text-[#9a9fae]">
+        Hover a button to preview its hover state.
+      </span>
+    </div>
   );
 }
