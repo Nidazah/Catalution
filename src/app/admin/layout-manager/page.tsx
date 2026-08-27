@@ -203,7 +203,7 @@ function toNumber(
 
 export default function LayoutManagerPage() {
   const [activeSection, setActiveSection] =
-    useState<AnySectionKey>("SERVICES");
+    useState<AnySectionKey>("navbar");
 
   /*
    * ONLY SAVED DATABASE OVERRIDES.
