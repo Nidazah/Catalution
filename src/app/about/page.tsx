@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
-import { Play, LayoutGrid, Layers, Circle, Hexagon } from "lucide-react";
+import { Play } from "lucide-react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { usePageHero } from "@/lib/use-page-hero";
+import { getServiceIcon } from "@/lib/service-icons";
 
 // --- Team Data (fallback; live data comes from /api/team) ---
 const fallbackTeamMembers = [
@@ -31,8 +33,70 @@ const fallbackTeamMembers = [
   },
 ];
 
-// --- Logos Data ---
-const logos = [
+// --- Fallback content for the CMS-editable sections below ---
+const fallbackIntro = {
+  eyebrow: "ABOUT OUR COMPANY",
+  title: "Crafting success tailored solution for each & every challenges",
+  paragraph1:
+    "Our mission is to empower businesses of all size to thrive in an businesses ever changing marketplace. We are committed to the delivering exceptional in the value through our strategic inset, innovative approaches.",
+  paragraph2:
+    "Committed to the delivering exceptional in the value through our strategic inset, innovative approaches empower.",
+  buttonLabel: "Learn more",
+  buttonUrl: "/contact",
+};
+
+const fallbackFeatures = [
+  {
+    icon: "boxes",
+    title: "Quick solutions",
+    description:
+      "Our consultancy excels in providing quick solutions tailored to your business challenges",
+  },
+  {
+    icon: "layers",
+    title: "Expert advice",
+    description:
+      "Our consultancy excels in providing quick solutions tailored to your business challenges",
+  },
+  {
+    icon: "circledot",
+    title: "Strategic planning",
+    description:
+      "Our consultancy excels in providing quick solutions tailored to your business challenges",
+  },
+  {
+    icon: "shield",
+    title: "Efficient operations",
+    description:
+      "Our consultancy excels in providing quick solutions tailored to your business challenges",
+  },
+];
+
+const fallbackEvolution = {
+  eyebrow: "Our evolution",
+  quote:
+    "\u201cFounded in 2002 by Burdee Ncolase en our firm started with our great vision to bring innovative solutions of businesses facing unprecedented challenges. That began as a small consultings firm quickly evolved into a trusted partner for companies around the globe. Our journey into began with a simple idea that offer unparalleled consulting services empower. Our core values of integrity, innovation, and excellence guide everything we do leading the wave in consulting.\u201d",
+  videoImage:
+    "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop",
+  videoUrl: "https://www.youtube.com/watch?v=GGf1JjSAKP4",
+  stats: [
+    { value: "93%", label: "Complete projects" },
+    { value: "20M", label: "Reach worldwide" },
+    { value: "8.5x", label: "Faster growth" },
+  ],
+};
+
+const fallbackSkills = {
+  title: "Skill and experience",
+  description:
+    "In today's dynamic business environment, the key to success lies in strategic planning and operational excellence.",
+  bars: [
+    { label: "Business consultants", percent: "90%" },
+    { label: "Client communication", percent: "82%" },
+  ],
+};
+
+const fallbackLogos = [
   { name: "flomodia", img: "/images/about/brand-thumb-6.png" },
   { name: "Influence 4You", img: "/images/about/brand-thumb-1.png" },
   { name: "monceau", img: "/images/about/brand-thumb-2.png" },
@@ -84,6 +148,26 @@ type Testimonial = {
   rating: number;
 };
 
+type ContentSectionRow = {
+  sectionKey: string;
+  eyebrow: string | null;
+  title: string;
+  description: string | null;
+  image: string | null;
+  primaryButtonLabel: string | null;
+  primaryButtonUrl: string | null;
+  items: Array<{
+    title?: string;
+    description?: string;
+    image?: string;
+    meta?: string;
+    link?: string;
+    icon?: string;
+    settings?: Record<string, unknown>;
+  }> | null;
+  settings: Record<string, unknown> | null;
+};
+
 export default function AboutPage() {
   // --- Team + Testimonial State (live data from APIs, fallback to static) ---
   const [teamMembers, setTeamMembers] =
@@ -95,6 +179,28 @@ export default function AboutPage() {
   // --- Testimonial State ---
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+
+  // --- CMS-editable page sections ---
+  const hero = usePageHero("PAGE_HERO_ABOUT", { title: "About Us" });
+  const [sections, setSections] = useState<Record<string, ContentSectionRow>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/content", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to load content"))))
+      .then((data: ContentSectionRow[]) => {
+        if (cancelled || !Array.isArray(data)) return;
+        const map: Record<string, ContentSectionRow> = {};
+        for (const row of data) map[row.sectionKey] = row;
+        setSections(map);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // --- Live data fetch ---
   useEffect(() => {
@@ -185,9 +291,68 @@ export default function AboutPage() {
     setTimeout(() => setIsAutoPlaying(true), 10000);
   };
 
+  // --- Merge CMS sections over fallbacks ---
+  const introRow = sections.ABOUT_INTRO;
+  const intro = {
+    eyebrow: introRow?.eyebrow || fallbackIntro.eyebrow,
+    title: introRow?.title || fallbackIntro.title,
+    paragraph1: introRow?.description || fallbackIntro.paragraph1,
+    paragraph2:
+      (introRow?.settings?.paragraph2 as string) || fallbackIntro.paragraph2,
+    buttonLabel: introRow?.primaryButtonLabel || fallbackIntro.buttonLabel,
+    buttonUrl: introRow?.primaryButtonUrl || fallbackIntro.buttonUrl,
+  };
+
+  const featuresRow = sections.ABOUT_FEATURES;
+  const features =
+    featuresRow?.items && featuresRow.items.length > 0
+      ? featuresRow.items.map((item) => ({
+          icon: item.icon || "sparkles",
+          title: item.title || "",
+          description: item.description || "",
+        }))
+      : fallbackFeatures;
+
+  const evolutionRow = sections.ABOUT_EVOLUTION;
+  const evolution = {
+    eyebrow: evolutionRow?.eyebrow || fallbackEvolution.eyebrow,
+    quote: evolutionRow?.description || fallbackEvolution.quote,
+    videoImage: evolutionRow?.image || fallbackEvolution.videoImage,
+    videoUrl: evolutionRow?.primaryButtonUrl || fallbackEvolution.videoUrl,
+    stats:
+      evolutionRow?.items && evolutionRow.items.length > 0
+        ? evolutionRow.items.map((item) => ({
+            value: item.title || "",
+            label: item.meta || "",
+          }))
+        : fallbackEvolution.stats,
+  };
+
+  const skillsRow = sections.ABOUT_SKILLS;
+  const skills = {
+    title: skillsRow?.title || fallbackSkills.title,
+    description: skillsRow?.description || fallbackSkills.description,
+    bars:
+      skillsRow?.items && skillsRow.items.length > 0
+        ? skillsRow.items.map((item) => ({
+            label: item.title || "",
+            percent: item.meta || "0%",
+          }))
+        : fallbackSkills.bars,
+  };
+
+  const logosRow = sections.ABOUT_LOGOS;
+  const logos =
+    logosRow?.items && logosRow.items.length > 0
+      ? logosRow.items.map((item) => ({
+          name: item.title || "",
+          img: item.image || "",
+        }))
+      : fallbackLogos;
+
   return (
     <main className="min-h-screen bg-white">
-      <PageHero title="About Us" />
+      <PageHero title={hero.title} subtitle={hero.subtitle} imageSrc={hero.image} />
 
       {/* --- 1. TOP HEADER SECTION --- */}
       <section className="container mx-auto px-6 py-20 max-w-7xl">
@@ -195,30 +360,21 @@ export default function AboutPage() {
           {/* Left Column */}
           <div>
             <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-accent before:mr-2 before:h-1 before:w-1 before:rounded-full before:bg-accent after:ml-2 after:h-1 after:w-1 after:rounded-full after:bg-accent">
-              ABOUT OUR COMPANY
+              {intro.eyebrow}
             </span>
             <h1 className="mt-4 text-4xl md:text-5xl lg:text-[3.25rem] font-bold text-navy leading-[1.1]">
-              Crafting success tailored solution for each & every challenges
+              {intro.title}
             </h1>
-            
-            {/* ✅ FIXED: Uses the global primary variant, no manual overrides */}
-            <Link href="/contact" className="btn btn-primary mt-8">
-              Learn more
+
+            <Link href={intro.buttonUrl} className="btn btn-primary mt-8">
+              {intro.buttonLabel}
             </Link>
           </div>
 
           {/* Right Column */}
           <div className="space-y-4 text-gray-600 leading-relaxed text-[15px] pt-2 lg:pt-6">
-            <p>
-              Our mission is to empower businesses of all size to thrive in an
-              businesses ever changing marketplace. We are committed to the
-              delivering exceptional in the value through our strategic inset,
-              innovative approaches.
-            </p>
-            <p>
-              Committed to the delivering exceptional in the value through our
-              strategic inset, innovative approaches empower.
-            </p>
+            <p>{intro.paragraph1}</p>
+            <p>{intro.paragraph2}</p>
           </div>
         </div>
       </section>
@@ -226,49 +382,23 @@ export default function AboutPage() {
       {/* --- 2. FEATURES CARDS SECTION --- */}
       <section className="container mx-auto px-6 pb-20 max-w-7xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card 1 */}
-          <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
-            <div className="mb-6 text-navy">
-              <LayoutGrid className="w-12 h-12 stroke-1" />
-            </div>
-            <h3 className="text-lg font-bold text-navy mb-2">Quick solutions</h3>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Our consultancy excels in providing quick solutions tailored to your business challenges
-            </p>
-          </div>
-
-          {/* Card 2 */}
-          <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
-            <div className="mb-6 text-navy">
-              <Layers className="w-12 h-12 stroke-1" />
-            </div>
-            <h3 className="text-lg font-bold text-navy mb-2">Expert advice</h3>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Our consultancy excels in providing quick solutions tailored to your business challenges
-            </p>
-          </div>
-
-          {/* Card 3 */}
-          <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
-            <div className="mb-6 text-navy">
-              <Circle className="w-12 h-12 stroke-1" />
-            </div>
-            <h3 className="text-lg font-bold text-navy mb-2">Strategic planning</h3>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Our consultancy excels in providing quick solutions tailored to your business challenges
-            </p>
-          </div>
-
-          {/* Card 4 */}
-          <div className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow">
-            <div className="mb-6 text-navy">
-              <Hexagon className="w-12 h-12 stroke-1" />
-            </div>
-            <h3 className="text-lg font-bold text-navy mb-2">Efficient operations</h3>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Our consultancy excels in providing quick solutions tailored to your business challenges
-            </p>
-          </div>
+          {features.map((feature, index) => {
+            const Icon = getServiceIcon(feature.icon);
+            return (
+              <div
+                key={index}
+                className="border border-[#D1D9E6] bg-gray-50/50 rounded p-8 hover:shadow-md transition-shadow"
+              >
+                <div className="mb-6 text-navy">
+                  <Icon className="w-12 h-12 stroke-1" />
+                </div>
+                <h3 className="text-lg font-bold text-navy mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -279,27 +409,23 @@ export default function AboutPage() {
             {/* Left Column: Text & Stats */}
             <div className="space-y-6">
               <span className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-white">
-                <span className="text-lg">✦</span> Our evolution
+                <span className="text-lg">✦</span> {evolution.eyebrow}
               </span>
 
               <p className="text-gray-600 leading-relaxed text-[15px] italic">
-                &ldquo;Founded in 2002 by Burdee Ncolase en our firm started with our great vision to bring innovative solutions of businesses facing unprecedented challenges. That began as a small consultings firm quickly evolved into a trusted partner for companies around the globe. Our journey into began with a simple idea that offer unparalleled consulting services empower. Our core values of integrity, innovation, and excellence guide everything we do leading the wave in consulting.&rdquo;
+                {evolution.quote}
               </p>
 
               {/* Stats Cards */}
               <div className="grid grid-cols-3 gap-6 pt-4">
-                <div>
-                  <div className="text-4xl md:text-5xl font-bold text-navy">93%</div>
-                  <p className="text-xs text-gray-500 mt-1">Complete projects</p>
-                </div>
-                <div>
-                  <div className="text-4xl md:text-5xl font-bold text-navy">20M</div>
-                  <p className="text-xs text-gray-500 mt-1">Reach worldwide</p>
-                </div>
-                <div>
-                  <div className="text-4xl md:text-5xl font-bold text-navy">8.5x</div>
-                  <p className="text-xs text-gray-500 mt-1">Faster growth</p>
-                </div>
+                {evolution.stats.map((stat, index) => (
+                  <div key={index}>
+                    <div className="text-4xl md:text-5xl font-bold text-navy">
+                      {stat.value}
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -307,7 +433,7 @@ export default function AboutPage() {
             <div className="relative rounded-2xl overflow-hidden shadow-lg">
               <div className="relative aspect-video w-full bg-navy">
                 <Image
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2070&auto=format&fit=crop"
+                  src={evolution.videoImage}
                   alt="Team working together"
                   fill
                   className="object-cover object-center opacity-80"
@@ -315,7 +441,7 @@ export default function AboutPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
                 <a
-                  href="https://www.youtube.com/watch?v=GGf1JjSAKP4"
+                  href={evolution.videoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="absolute inset-0 flex flex-col items-center justify-center transition-transform hover:scale-105"
@@ -372,35 +498,35 @@ export default function AboutPage() {
 
         <div className="relative z-10 container mx-auto px-6 flex justify-end">
           <div className="bg-black/50 backdrop-blur-md rounded-2xl p-10 md:p-12 max-w-lg text-white shadow-2xl border border-white/10">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Skill and experience</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{skills.title}</h2>
             <p className="text-white/80 text-sm md:text-base leading-relaxed mb-8">
-              In today's dynamic business environment, the key to success lies in strategic planning and operational excellence.
+              {skills.description}
             </p>
 
             <div className="space-y-6">
-              {/* Bar 1 */}
-              <div>
-                <div className="flex justify-between text-sm font-semibold mb-2">
-                  <span>Business consultants</span>
-                  <span className="bg-accent text-white text-[10px] px-2 py-0.5 rounded">90%</span>
-                </div>
-                <div className="relative h-2 w-full bg-white/20 rounded-full">
-                  <div className="absolute top-0 left-0 h-full bg-accent rounded-full" style={{ width: "90%" }} />
-                  <div className="absolute top-1/2 -translate-y-1/2 right-[10%] h-4 w-4 bg-accent rounded-full border-2 border-white shadow-md" />
-                </div>
-              </div>
-
-              {/* Bar 2 */}
-              <div>
-                <div className="flex justify-between text-sm font-semibold mb-2">
-                  <span>Client communication</span>
-                  <span className="bg-accent text-white text-[10px] px-2 py-0.5 rounded">82%</span>
-                </div>
-                <div className="relative h-2 w-full bg-white/20 rounded-full">
-                  <div className="absolute top-0 left-0 h-full bg-accent rounded-full" style={{ width: "82%" }} />
-                  <div className="absolute top-1/2 -translate-y-1/2 right-[18%] h-4 w-4 bg-accent rounded-full border-2 border-white shadow-md" />
-                </div>
-              </div>
+              {skills.bars.map((bar, index) => {
+                const width = parseInt(bar.percent, 10) || 0;
+                return (
+                  <div key={index}>
+                    <div className="flex justify-between text-sm font-semibold mb-2">
+                      <span>{bar.label}</span>
+                      <span className="bg-accent text-white text-[10px] px-2 py-0.5 rounded">
+                        {bar.percent}
+                      </span>
+                    </div>
+                    <div className="relative h-2 w-full bg-white/20 rounded-full">
+                      <div
+                        className="absolute top-0 left-0 h-full bg-accent rounded-full"
+                        style={{ width: `${width}%` }}
+                      />
+                      <div
+                        className="absolute top-1/2 -translate-y-1/2 h-4 w-4 bg-accent rounded-full border-2 border-white shadow-md"
+                        style={{ right: `${100 - width}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -542,9 +668,9 @@ export default function AboutPage() {
               }}
               className="relative z-10 bg-white px-6 py-3 rounded-full border border-gray-100 shadow-sm flex items-center gap-1"
             >
-              <span className="text-sm text-gray-500">Join the</span>
-              <span className="text-sm text-accent font-semibold">1000+</span>
-              <span className="text-sm text-gray-500">companies benefiting from Catalution</span>
+              <span className="text-sm text-gray-500">
+                {sections.ABOUT_LOGOS?.title || "Join the 1000+ companies benefiting from Catalution"}
+              </span>
             </motion.div>
           </div>
 

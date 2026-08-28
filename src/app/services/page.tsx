@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import PageHero from "@/components/PageHero"
+import { usePageHero } from "@/lib/use-page-hero"
 import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight } from "lucide-react"
@@ -45,6 +46,7 @@ const ServiceIcon = ({
 }
 
 export default function ServicesPage() {
+  const hero = usePageHero("PAGE_HERO_SERVICES", { title: "Services" });
   const [services, setServices] = useState<Service[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(true)
@@ -98,7 +100,7 @@ export default function ServicesPage() {
 
   return (
     <main className="min-h-screen bg-white pb-16">
-      <PageHero title="Services" />
+      <PageHero title={hero.title} subtitle={hero.subtitle} imageSrc={hero.image} />
 
       <div className="w-full max-w-6xl mx-auto px-6 py-12">
 

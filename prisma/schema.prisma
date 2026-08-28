@@ -340,6 +340,386 @@ enum ContentSectionKey {
   CAREERS
   SERVICES
   MARQUE
+
+  // --- added: inner-page hero banners ---
+  PAGE_HERO_ABOUT
+  PAGE_HERO_SERVICES
+  PAGE_HERO_PORTFOLIOS
+  PAGE_HERO_BLOG
+  PAGE_HERO_TEAM
+  PAGE_HERO_CAREERS
+  PAGE_HERO_CONTACT
+  PAGE_HERO_PRICING
+  PAGE_HERO_FAQ
+  PAGE_HERO_HISTORY
+
+  // --- added: previously-hardcogenerator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model SiteSettings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  data      Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Blog {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  excerpt      String
+  content      String?
+  image        String
+  author       String
+  authorAvatar String?
+  date         String
+  category     String
+  tags         Json?
+  comments     Int      @default(0)
+  sortOrder    Int      @default(0)
+  active       Boolean  @default(true)
+  published    Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active])
+  @@index([category])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  service   String?
+  message   String
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([email])
+  @@index([status])
+}
+
+model ContactInfo {
+  id             String   @id @default(cuid())
+  emailPrimary   String
+  emailSecondary String?
+  phone          String
+  addressLine1   String
+  addressLine2   String
+  mapEmbedUrl    String?
+  rating         Float?
+  reviewCount    Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ContentSection {
+  id                   String            @id @default(cuid())
+  sectionKey           ContentSectionKey @unique
+  label                String
+  eyebrow              String?
+  title                String
+  description          String?
+  image                String?
+  primaryButtonLabel   String?
+  primaryButtonUrl     String?
+  secondaryButtonLabel String?
+  secondaryButtonUrl   String?
+  items                Json?
+  published            Boolean           @default(true)
+  sortOrder            Int               @default(0)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  settings             Json?
+
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Portfolio {
+  id             String   @id @default(cuid())
+  title          String
+  slug           String   @unique
+  category       String
+  tags           Json?
+  image          String
+  heroImage      String?
+  intro          String?
+  description    Json?
+  overviewText   String?
+  overviewPoints Json?
+  mediaImage     String?
+  videoUrl       String?
+  finalResult    Json?
+  client         String?
+  portfolio      String?
+  service        String?
+  date           String?
+  sortOrder      Int      @default(0)
+  active         Boolean  @default(true)
+  published      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  award          String?
+  challenge      String?
+  highlightStats Json?
+  solution       String?
+  testimonial    String?
+
+  @@index([active])
+  @@index([category])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model Service {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  description      String
+  icon             String   @default("waves")
+  image            String
+  ctaLabel         String   @default("Get optimization")
+  sortOrder        Int      @default(0)
+  published        Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  shortDescription String?
+  fullDescription  String?
+  heroImage2       String?
+  features         Json?
+  overviewItems    Json?
+  ctaUrl           String   @default("/contact")
+  active           Boolean  @default(true)
+
+  @@index([active])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  slug        String   @unique
+  bio         String?
+  image       String
+  email       String?
+  linkedin    String?
+  twitter     String?
+  instagram   String?
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  coreBeliefs Json?
+  experience  Json?
+  facebook    String?
+  phone       String?
+  skills      Json?
+
+  @@index([active])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String
+  role      String
+  slug      String   @unique
+  avatar    String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active])
+  @@index([published])
+  @@index([sortOrder])
+}
+
+model User {
+  id                 String               @id @default(cuid())
+  email              String               @unique
+  password           String
+  name               String
+  role               Role                 @default(STAFF)
+  createdAt          DateTime             @default(now())
+  PasswordResetToken PasswordResetToken[]
+}
+
+model PricingPlan {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  price       Float
+  currency    String   @default("USD")
+  interval    String
+  features    Json?
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("pricing_plans")
+}
+
+model Career {
+  id                   String              @id @default(cuid())
+  title                String
+  slug                 String              @unique
+  department           String
+  location             String
+  type                 String
+  urgency              String?
+  icon                 String              @default("swirl")
+  description          String
+  requirements         String
+  requirementsGrid     Json?
+  responsibilities     String
+  responsibilitiesList Json?
+  category             String
+  number               String
+  company              String              @default("Catalution")
+  website              String?
+  salary               String
+  vacancy              String
+  applyOn              String
+  tags                 Json?
+  sortOrder            Int                 @default(0)
+  active               Boolean             @default(true)
+  published            Boolean             @default(true)
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  applications         CareerApplication[]
+
+  @@index([sortOrder])
+  @@index([published])
+  @@index([active])
+}
+
+model CareerApplication {
+  id          String   @id @default(cuid())
+  careerId    String
+  name        String
+  email       String
+  phone       String
+  coverLetter String
+  cvUrl       String
+  cvFileName  String
+  cvFileType  String
+  cvFileSize  Int
+  status      String   @default("NEW")
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  career      Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
+
+  @@index([careerId])
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model CmsPage {
+  id             String           @id
+  slug           String           @unique
+  name           String
+  description    String?
+  status         CmsPageStatus    @default(DRAFT)
+  draftData      Json
+  liveData       Json?
+  seo            Json?
+  publishedAt    DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime
+  CmsPageVersion CmsPageVersion[]
+}
+
+model CmsPageVersion {
+  id        String   @id
+  pageId    String
+  version   Int
+  label     String?
+  data      Json
+  seo       Json?
+  createdAt DateTime @default(now())
+  CmsPage   CmsPage  @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, version])
+}
+
+enum ContentSectionKey {
+  HERO
+  ABOUT
+  PROCESS
+  WORK
+  TEAM
+  CASE_STUDIES
+  PRICING
+  TESTIMONIALS
+  CTA
+  BLOG
+  FAQ
+  CAREERS
+  SERVICES
+  MARQUE
+
+  // --- /about and /history page editing ---
+  PAGE_HERO_ABOUT
+  PAGE_HERO_HISTORY
+  ABOUT_INTRO
+  ABOUT_FEATURES
+  ABOUT_EVOLUTION
+  ABOUT_SKILLS
+  ABOUT_LOGOS
+  HISTORY_INTRO
+  HISTORY
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum CmsPageStatus {
+  DRAFT
+  PUBLISHED
+}
+ded sections ---
+  HISTORY       // /history timeline milestones
+  ABOUT_LOGOS   // /about client/partner logo strip
 }
 
 enum Role {

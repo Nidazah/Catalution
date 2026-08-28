@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import PageHero from "@/components/PageHero";
+import { usePageHero } from "@/lib/use-page-hero";
 import { Mail, Phone, MapPin, ArrowRight, Check } from "lucide-react";
 import Image from "next/image";
 
@@ -74,6 +75,7 @@ const emptyForm: FormState = {
 };
 
 export default function ContactPage() {
+  const hero = usePageHero("PAGE_HERO_CONTACT", { title: "Contact" });
   const [info, setInfo] = useState<ContactInfo>(fallbackInfo);
 
   const [serviceOptions, setServiceOptions] = useState(fallbackServiceOptions);
@@ -172,7 +174,7 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <PageHero title="Contact" />
+      <PageHero title={hero.title} subtitle={hero.subtitle} imageSrc={hero.image} />
 
       {/* Main Content */}
       <section className="container mx-auto px-6 py-12 lg:py-16">

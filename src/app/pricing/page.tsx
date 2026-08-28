@@ -7,8 +7,13 @@ import { motion } from "framer-motion";
 import { CheckCircle, ArrowRight, Check } from "lucide-react";
 
 import PageHero from "@/components/PageHero";
+import { usePageHero } from "@/lib/use-page-hero";
 
 export default function PricingPage() {
+  const hero = usePageHero("PAGE_HERO_PRICING", {
+    title: "Pricing plan",
+    image: "/images/portfolios/porofolio.webp",
+  });
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
     "monthly"
   );
@@ -123,9 +128,10 @@ export default function PricingPage() {
     <main className="min-h-screen bg-white">
       
       {/* --- TOP HERO SECTION --- */}
-      <PageHero 
-        title="Pricing plan" 
-        imageSrc="/images/portfolios/porofolio.webp" 
+      <PageHero
+        title={hero.title}
+        subtitle={hero.subtitle}
+        imageSrc={hero.image}
       />
 
       {/* --- LOWER SECTION: PRICING TIERS --- */}

@@ -3,70 +3,132 @@
 import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePageHero } from "@/lib/use-page-hero";
 
-const timelineData = [
+const fallbackIntro = {
+  eyebrow: "Our Background",
+  title: "Discover how we have evolved our company's on legacy.",
+  paragraph1:
+    "Our mission is to empower businesses of all sizes to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights, innovative approaches.",
+  paragraph2:
+    "Committed to delivering exceptional value through strategic insights, innovative approaches empower.",
+  buttonLabel: "Learn More",
+  buttonUrl: "/contact",
+};
+
+const fallbackTimeline = [
   {
     year: "2008",
     align: "left",
-    step: "01",
     title: "Founding and early years",
     text: "Our mission is to empower businesses of all sizes to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights and innovative approaches.",
-    images: [
-      "/images/history/history-1.webp",
-      "/images/history/history-2.webp",
-    ],
+    image: "/images/history/history-1.webp",
+    image2: "/images/history/history-2.webp",
   },
   {
     year: "2012",
     align: "right",
-    step: "02",
     title: "Expansion and growth",
     text: "Our mission is to empower businesses of all sizes to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights and innovative approaches.",
-    images: [
-      "/images/history/history-3.webp",
-      "/images/history/history-4.webp",
-    ],
+    image: "/images/history/history-3.webp",
+    image2: "/images/history/history-4.webp",
   },
   {
     year: "2016",
     align: "left",
-    step: "03",
     title: "Innovation and industry leadership",
     text: "Our mission is to empower businesses of all sizes to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights and innovative approaches.",
-    images: [
-      "/images/history/history-5.webp",
-      "/images/history/history-6.webp",
-    ],
+    image: "/images/history/history-5.webp",
+    image2: "/images/history/history-6.webp",
   },
   {
     year: "2020",
     align: "right",
-    step: "04",
     title: "Global expansion and diversification",
     text: "Our mission is to empower businesses of all sizes to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights and innovative approaches.",
-    images: [
-      "/images/history/history-7.webp",
-      "/images/history/history-8.webp",
-    ],
+    image: "/images/history/history-7.webp",
+    image2: "/images/history/history-8.webp",
   },
   {
     year: "2024",
     align: "left",
-    step: "05",
     title: "Looking ahead",
     text: "Our mission is to empower businesses of all sizes to thrive in an ever-changing marketplace. We are committed to delivering exceptional value through strategic insights and innovative approaches.",
-    images: [
-      "/images/history/history-9.webp",
-      "/images/history/history-1.webp",
-    ],
+    image: "/images/history/history-9.webp",
+    image2: "/images/history/history-1.webp",
   },
 ];
 
+type ContentSectionRow = {
+  sectionKey: string;
+  eyebrow: string | null;
+  title: string;
+  description: string | null;
+  image: string | null;
+  primaryButtonLabel: string | null;
+  primaryButtonUrl: string | null;
+  items: Array<{
+    title?: string;
+    description?: string;
+    image?: string;
+    meta?: string;
+    link?: string;
+    settings?: Record<string, unknown>;
+  }> | null;
+  settings: Record<string, unknown> | null;
+};
+
 export default function HistoryPage() {
+  const hero = usePageHero("PAGE_HERO_HISTORY", { title: "Our History" });
+  const [sections, setSections] = useState<Record<string, ContentSectionRow>>({});
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // Currently showing all
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/content", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : Promise.reject(new Error("Failed to load content"))))
+      .then((data: ContentSectionRow[]) => {
+        if (cancelled || !Array.isArray(data)) return;
+        const map: Record<string, ContentSectionRow> = {};
+        for (const row of data) map[row.sectionKey] = row;
+        setSections(map);
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const introRow = sections.HISTORY_INTRO;
+  const intro = {
+    eyebrow: introRow?.eyebrow || fallbackIntro.eyebrow,
+    title: introRow?.title || fallbackIntro.title,
+    paragraph1: introRow?.description || fallbackIntro.paragraph1,
+    paragraph2:
+      (introRow?.settings?.paragraph2 as string) || fallbackIntro.paragraph2,
+    buttonLabel: introRow?.primaryButtonLabel || fallbackIntro.buttonLabel,
+    buttonUrl: introRow?.primaryButtonUrl || fallbackIntro.buttonUrl,
+  };
+
+  const historyRow = sections.HISTORY;
+  const timelineData =
+    historyRow?.items && historyRow.items.length > 0
+      ? historyRow.items.map((item) => ({
+          year: item.meta || "",
+          align: (item.settings?.align as string) || "left",
+          title: item.title || "",
+          text: item.description || "",
+          image: item.image || "",
+          image2: (item.settings?.image2 as string) || "",
+        }))
+      : fallbackTimeline;
+
   const totalPages = Math.ceil(timelineData.length / itemsPerPage);
 
   const paginate = (pageNumber: number) => {
@@ -77,36 +139,26 @@ export default function HistoryPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <PageHero title="Our History" />
+      <PageHero title={hero.title} subtitle={hero.subtitle} imageSrc={hero.image} />
 
       {/* --- HERO & INTRO (BELOW PAGEHERO) --- */}
       <div className="w-full max-w-7xl mx-auto px-6 pt-8 pb-8">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-10">
           <div className="max-w-xl">
             <span className="text-xs font-semibold tracking-widest text-navy uppercase">
-              • Our Background
+              • {intro.eyebrow}
             </span>
             <h1 className="text-4xl lg:text-5xl font-bold text-navy leading-[1.1] mt-4 mb-6">
-              Discover how we have evolved our company's{" "}
-              <span className="text-accent">on legacy.</span>
+              {intro.title}
             </h1>
           </div>
           <div className="max-w-md space-y-4 text-gray-600 leading-relaxed text-[15px]">
-            <p>
-              Our mission is to empower businesses of all sizes to thrive in an
-              ever-changing marketplace. We are committed to delivering
-              exceptional value through strategic insights, innovative
-              approaches.
-            </p>
-            <p>
-              Committed to delivering exceptional value through strategic
-              insights, innovative approaches empower.
-            </p>
+            <p>{intro.paragraph1}</p>
+            <p>{intro.paragraph2}</p>
 
-            {/* ✅ REPLACED CUSTOM BUTTON WITH GLOBAL PRIMARY */}
             <div className="pt-2">
-              <Link href="/contact" className="btn btn-primary shadow-md">
-                Learn More
+              <Link href={intro.buttonUrl} className="btn btn-primary shadow-md">
+                {intro.buttonLabel}
               </Link>
             </div>
           </div>
@@ -120,6 +172,7 @@ export default function HistoryPage() {
 
         {timelineData.map((item, index) => {
           const isLeft = item.align === "left";
+          const images = [item.image, item.image2].filter(Boolean);
           return (
             <div
               key={index}
@@ -150,20 +203,20 @@ export default function HistoryPage() {
                 <div className="bg-white border border-gray-300 p-6 lg:p-8">
                   <div className="flex flex-col h-full">
                     <h3 className="text-lg font-semibold text-navy mb-3">
-                      {item.step}. {item.title}
+                      {String(index + 1).padStart(2, "0")}. {item.title}
                     </h3>
                     <p className="text-sm text-gray-600 leading-relaxed mb-6">
                       {item.text}
                     </p>
                     {/* 2-Column Image Grid inside card */}
                     <div className="grid grid-cols-2 gap-4">
-                      {item.images.map((src, i) => (
+                      {images.map((src, i) => (
                         <div
                           key={i}
                           className="relative aspect-[4/3] bg-gray-100 overflow-hidden"
                         >
                           <Image
-                            src={src}
+                            src={src as string}
                             alt={`${item.title} - image ${i + 1}`}
                             fill
                             className="object-cover"

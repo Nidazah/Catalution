@@ -41,6 +41,52 @@ const sectionOptions = [
   ["PRICING", "Pricing", "Homepage pricing section heading and intro copy"],
   ["TESTIMONIALS", "Testimonials", "Homepage testimonials heading"],
   ["CTA", "CTA", "Homepage call-to-action heading, copy and button"],
+
+  [
+    "PAGE_HERO_ABOUT",
+    "About page hero",
+    "The banner title/subtitle/background image at the top of /about",
+  ],
+  [
+    "PAGE_HERO_HISTORY",
+    "History page hero",
+    "The banner title/subtitle/background image at the top of /history",
+  ],
+  [
+    "ABOUT_INTRO",
+    "About intro",
+    "The 'About our company' header block and its two paragraphs",
+  ],
+  [
+    "ABOUT_FEATURES",
+    "About feature cards",
+    "The four icon cards under the About intro (Quick solutions, etc.)",
+  ],
+  [
+    "ABOUT_EVOLUTION",
+    "About evolution & stats",
+    "The 'Our evolution' quote, the three stat numbers, and the video block",
+  ],
+  [
+    "ABOUT_SKILLS",
+    "About skill & experience",
+    "The dark 'Skill and experience' panel and its progress bars",
+  ],
+  [
+    "ABOUT_LOGOS",
+    "About client logos",
+    "The scrolling client-logo strip near the bottom of /about",
+  ],
+  [
+    "HISTORY_INTRO",
+    "History intro",
+    "The heading block below the /history hero ('Discover how we have evolved...')",
+  ],
+  [
+    "HISTORY",
+    "History timeline",
+    "The year-by-year timeline entries on /history",
+  ],
 ] as const;
 
 type Item = {
@@ -361,6 +407,46 @@ export default function ContentManagerPage() {
           itemLink: "Service URL",
         };
 
+      case "ABOUT_FEATURES":
+        return {
+          itemTitle: "Card title",
+          itemDescription: "Card description",
+          itemMeta: "Label / meta",
+          itemLink: "Link",
+        };
+
+      case "ABOUT_EVOLUTION":
+        return {
+          itemTitle: "Stat value",
+          itemDescription: "Description",
+          itemMeta: "Stat label",
+          itemLink: "Link",
+        };
+
+      case "ABOUT_SKILLS":
+        return {
+          itemTitle: "Skill name",
+          itemDescription: "Description",
+          itemMeta: "Percentage (e.g. 90%)",
+          itemLink: "Link",
+        };
+
+      case "ABOUT_LOGOS":
+        return {
+          itemTitle: "Company name",
+          itemDescription: "Description",
+          itemMeta: "Label / meta",
+          itemLink: "Link",
+        };
+
+      case "HISTORY":
+        return {
+          itemTitle: "Milestone title",
+          itemDescription: "Milestone text",
+          itemMeta: "Year",
+          itemLink: "Link",
+        };
+
       default:
         return {
           itemTitle: "Item title",
@@ -385,6 +471,23 @@ export default function ContentManagerPage() {
           cta: true,
         };
 
+      case "ABOUT_FEATURES":
+      case "ABOUT_SKILLS":
+      case "ABOUT_LOGOS":
+      case "HISTORY":
+        return {
+          mainImage: false,
+          cta: false,
+        };
+
+      case "ABOUT_EVOLUTION":
+        // "image" doubles as the video background image, and
+        // "primaryButtonUrl" doubles as the video link — handled below.
+        return {
+          mainImage: true,
+          cta: false,
+        };
+
       default:
         return {
           mainImage: true,
@@ -407,6 +510,43 @@ export default function ContentManagerPage() {
         title: "Service tiles",
         subtitle:
           "The first 4 published items become the service tiles on the homepage, each with its own icon.",
+      };
+    }
+
+    if (key === "ABOUT_FEATURES") {
+      return {
+        title: "Feature cards",
+        subtitle: "Each item becomes one icon card under the About intro.",
+      };
+    }
+
+    if (key === "ABOUT_EVOLUTION") {
+      return {
+        title: "Stats",
+        subtitle: "Each item becomes one stat number under the quote.",
+      };
+    }
+
+    if (key === "ABOUT_SKILLS") {
+      return {
+        title: "Skill bars",
+        subtitle:
+          "Each item becomes one progress bar. Use a percentage like \"90%\" for the label.",
+      };
+    }
+
+    if (key === "ABOUT_LOGOS") {
+      return {
+        title: "Client logos",
+        subtitle: "Each item becomes one logo in the scrolling strip.",
+      };
+    }
+
+    if (key === "HISTORY") {
+      return {
+        title: "Timeline milestones",
+        subtitle:
+          "Each item becomes one year on the /history timeline, in display order.",
       };
     }
 
@@ -1159,6 +1299,33 @@ export default function ContentManagerPage() {
                         </div>
                       )}
 
+                      {/* ABOUT EVOLUTION VIDEO LINK */}
+                      {form.sectionKey === "ABOUT_EVOLUTION" && (
+                        <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
+                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                            Video block
+                          </p>
+                          <p className="mt-1 text-[10px] text-[#7b8190]">
+                            The main image above is the video background; this
+                            is the link opened when someone clicks play.
+                          </p>
+
+                          <div className="mt-3">
+                            <Field
+                              label="Video URL"
+                              value={form.primaryButtonUrl}
+                              onChange={(value) =>
+                                setForm({
+                                  ...form,
+                                  primaryButtonUrl: value,
+                                })
+                              }
+                              placeholder="https://www.youtube.com/watch?v=..."
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       {/* PRICING-SPECIFIC TOGGLE LABELS */}
                       {form.sectionKey === "PRICING" && (
                         <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
@@ -1419,7 +1586,84 @@ export default function ContentManagerPage() {
                                     }
                                   />
 
-                                  {form.sectionKey === "SERVICES" ? (
+                                  {form.sectionKey === "HISTORY" ? (
+                                    <>
+                                      <div className="grid gap-2.5 sm:grid-cols-2">
+                                        <Field
+                                          label={labels.itemMeta}
+                                          value={item.meta}
+                                          onChange={(value) =>
+                                            updateItem(index, { meta: value })
+                                          }
+                                          placeholder="2024"
+                                        />
+
+                                        <label className="grid gap-1">
+                                          <span className="text-[10.5px] font-semibold text-[#24133f]">
+                                            Side of timeline
+                                          </span>
+                                          <select
+                                            value={
+                                              (item.settings?.align as string) ||
+                                              "left"
+                                            }
+                                            onChange={(e) =>
+                                              updateItem(index, {
+                                                settings: {
+                                                  ...item.settings,
+                                                  align: e.target.value,
+                                                },
+                                              })
+                                            }
+                                            className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+                                          >
+                                            <option value="left">Left</option>
+                                            <option value="right">Right</option>
+                                          </select>
+                                        </label>
+                                      </div>
+
+                                      <label className="grid gap-1">
+                                        <span className="text-[10.5px] font-semibold text-[#24133f]">
+                                          {labels.itemDescription}
+                                        </span>
+
+                                        <textarea
+                                          rows={2}
+                                          value={item.description}
+                                          onChange={(e) =>
+                                            updateItem(index, {
+                                              description: e.target.value,
+                                            })
+                                          }
+                                          className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+                                        />
+                                      </label>
+
+                                      <div className="grid gap-2.5 sm:grid-cols-2">
+                                        <ImageUploadField
+                                          label="Image 1"
+                                          value={item.image}
+                                          onChange={(url) =>
+                                            updateItem(index, { image: url })
+                                          }
+                                        />
+
+                                        <ImageUploadField
+                                          label="Image 2"
+                                          value={(item.settings?.image2 as string) || ""}
+                                          onChange={(url) =>
+                                            updateItem(index, {
+                                              settings: {
+                                                ...item.settings,
+                                                image2: url,
+                                              },
+                                            })
+                                          }
+                                        />
+                                      </div>
+                                    </>
+                                  ) : form.sectionKey === "SERVICES" ? (
                                     <>
                                       <div className="grid gap-2.5 sm:grid-cols-2">
                                         <Field

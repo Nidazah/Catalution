@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import PageHero from "@/components/PageHero";
+import { usePageHero } from "@/lib/use-page-hero";
 import Link from "next/link";
 import { ArrowRight, MapPin } from "lucide-react";
 
@@ -37,6 +38,7 @@ function JobIcon({ type }: { type: string }) {
 }
 
 export default function CareersPage() {
+  const hero = usePageHero("PAGE_HERO_CAREERS", { title: "Careers" });
   const [careers, setCareers] = useState<Career[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,7 @@ export default function CareersPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <PageHero title="Careers" />
+      <PageHero title={hero.title} subtitle={hero.subtitle} imageSrc={hero.image} />
       <div className="mx-auto w-full max-w-7xl px-6 py-14 md:py-16">
         {loading ? <div className="py-20 text-center text-sm text-gray-500">Loading careers...</div> : error ? <div className="rounded-lg border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-700">{error}</div> : careers.length === 0 ? <div className="py-20 text-center"><h2 className="text-xl font-semibold text-navy">No open positions</h2><p className="mt-2 text-sm text-gray-500">Please check back later for new opportunities.</p></div> : (
           <>

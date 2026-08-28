@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
+import { usePageHero } from "@/lib/use-page-hero";
 
 type BlogPost = {
   id: string;
@@ -24,6 +25,7 @@ type BlogPost = {
 };
 
 export default function BlogPage() {
+  const hero = usePageHero("PAGE_HERO_BLOG", { title: "Blog" });
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -67,7 +69,7 @@ export default function BlogPage() {
 
   return (
     <main className="min-h-screen bg-[#F9FAFB] pb-24">
-      <PageHero title="Blog" />
+      <PageHero title={hero.title} subtitle={hero.subtitle} imageSrc={hero.image} />
 
       <section className="container mx-auto max-w-7xl px-6 py-20">
         {loading ? (

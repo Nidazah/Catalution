@@ -1,6 +1,7 @@
 "use client";
 
 import PageHero from "@/components/PageHero";
+import { usePageHero } from "@/lib/use-page-hero";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Search } from "lucide-react";
@@ -29,6 +30,7 @@ const fallbackFaqs = [
 ];
 
 export default function FAQPage() {
+  const hero = usePageHero("PAGE_HERO_FAQ", { title: "FAQ" });
   const [faqs, setFaqs] = useState(fallbackFaqs);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -69,7 +71,7 @@ export default function FAQPage() {
 
   return (
     <main className="min-h-screen bg-[#FAFBFC]">
-      <PageHero title="FAQ" />
+      <PageHero title={hero.title} subtitle={hero.subtitle} imageSrc={hero.image} />
 
       {/* 
         ✅ SINGLE VIEW OPTIMIZATIONS:

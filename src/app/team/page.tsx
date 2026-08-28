@@ -1,142 +1,376 @@
-"use client";
+import React from "react";
+import { prisma, withDbRetry } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 
-import { useEffect, useState } from "react";
-import PageHero from "@/components/PageHero";
-import Image from "next/image";
-import Link from "next/link";
+import Hero, { type HeroItem, type HeroSettings } from "@/components/Hero";
+import AboutSection from "@/components/About";
+import Services from "@/components/Services";
+import Process, { type ProcessItem } from "@/components/Process";
+import Marquee from "@/components/Marquee";
+import Team, { type TeamItem } from "@/components/Team";
+import CaseStudy, { type CaseStudyItem } from "@/components/Case-Study";
+import Price from "@/components/Price";
+import Testimonials from "@/components/Testimonials";
+import CTA from "@/components/CTA";
+import CmsSection from "@/components/CmsSection";
 
-type Member = { slug: string; name: string; role: string; image: string };
+import { contentSectionDefaults } from "@/lib/content-section-defaults";
 
-export default function TeamPage() {
-  const [allTeamMembers, setAllTeamMembers] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
-  const itemsPerPage = 8;
-  const [currentPage, setCurrentPage] = useState(1);
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-  useEffect(() => {
-    fetch("/api/team?limit=50", { cache: "no-store" })
-      .then((res) => res.json())
-      .then((data) =>
-        setAllTeamMembers(Array.isArray(data?.data) ? data.data : []),
-      )
-      .finally(() => setLoading(false));
-  }, []);
+function parseJsonArray<T = unknown>(
+  value: Prisma.JsonValue | null | undefined,
+): T[] {
+  return Array.isArray(value) ? (value as T[]) : [];
+}
 
-  const totalPages = Math.ceil(allTeamMembers.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTeamMembers = allTeamMembers.slice(
-    indexOfFirstItem,
-    indexOfLastItem,
+function isJsonObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export default async function Home() {
+  const allSections = await withDbRetry(
+    () =>
+      prisma.contentSection.findMany({
+        where: {
+          published: true,
+        },
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            createdAt: "asc",
+          },
+        ],
+      }),
+    3,
+    2000,
+  ).catch(() => []);
+
+  /*
+   * ---------------------------------------------------------
+   * Merge CMS content with original defaults.
+   *
+   * Important:
+   * - Missing database section => use defaults.
+   * - Existing database value => use CMS value.
+   * - Empty items array is preserved intentionally.
+   * ---------------------------------------------------------
+   */
+
+  const defaultMap = contentSectionDefaults as Record<string, any>;
+
+  const byKey = Object.fromEntries(
+    Object.entries(defaultMap).map(([key, defaults]) => {
+      const row = allSections.find((section) => section.sectionKey === key);
+
+      if (!row) {
+        return [key, structuredClone(defaults)];
+      }
+
+      const rowSettings = isJsonObject(row.settings) ? row.settings : {};
+
+      const defaultSettings = isJsonObject(defaults.settings)
+        ? defaults.settings
+        : {};
+
+      return [
+        key,
+        {
+          ...structuredClone(defaults),
+          ...row,
+
+          /*
+           * Preserve an explicitly empty CMS array.
+           * Only use defaults when the database value
+           * is actually missing/null.
+           */
+          items:
+            row.items !== null &&
+            row.items !== undefined &&
+            Array.isArray(row.items)
+              ? row.items
+              : structuredClone(defaults.items ?? []),
+
+          settings: {
+            ...defaultSettings,
+            ...rowSettings,
+          },
+        },
+      ];
+    }),
   );
 
-  const paginate = (pageNumber: number) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) setCurrentPage(pageNumber);
-  };
+  /*
+   * ---------------------------------------------------------
+   * HERO
+   * ---------------------------------------------------------
+   */
+
+  const heroItems = parseJsonArray<HeroItem>(byKey.HERO?.items);
+
+  const heroSettings: HeroSettings = isJsonObject(byKey.HERO?.settings)
+    ? (byKey.HERO.settings as HeroSettings)
+    : {};
+
+  /*
+   * ---------------------------------------------------------
+   * PROCESS
+   * ---------------------------------------------------------
+   */
+
+  const processItems = parseJsonArray<ProcessItem>(byKey.PROCESS?.items);
+
+  /*
+   * ---------------------------------------------------------
+   * TEAM
+   * ---------------------------------------------------------
+   */
+
+  const teamItemsFromSection = parseJsonArray<TeamItem>(byKey.TEAM?.items);
+
+  const hasTeamCms = allSections.some(
+    (section) => section.sectionKey === "TEAM",
+  );
+
+  const teamMembers = await withDbRetry(
+    () =>
+      prisma.teamMember.findMany({
+        where: {
+          active: true,
+          published: true,
+        },
+        orderBy: [
+          {
+            sortOrder: "asc",
+          },
+          {
+            createdAt: "asc",
+          },
+        ],
+        take: 4,
+      }),
+    3,
+    2000,
+  ).catch(() => []);
+
+  const teamItems: TeamItem[] = teamMembers.map((member) => ({
+    title: member.name,
+    meta: member.role,
+    image: member.image,
+    link: `/team/${member.slug}`,
+  }));
+
+  /*
+   * ---------------------------------------------------------
+   * CASE STUDIES
+   * ---------------------------------------------------------
+   */
+
+  const caseStudyItems = parseJsonArray<CaseStudyItem>(
+    byKey.CASE_STUDIES?.items,
+  );
+
+  /*
+   * ---------------------------------------------------------
+   * PRICING
+   * ---------------------------------------------------------
+   */
+
+  const pricingSettings = isJsonObject(byKey.PRICING?.settings)
+    ? byKey.PRICING.settings
+    : {};
+
+  /*
+   * ---------------------------------------------------------
+   * TESTIMONIALS
+   * ---------------------------------------------------------
+   */
+
+  const testimonialSettings = isJsonObject(byKey.TESTIMONIALS?.settings)
+    ? byKey.TESTIMONIALS.settings
+    : {};
+
+  /*
+   * ---------------------------------------------------------
+   * RENDER
+   *
+   * Sections are rendered in an order driven by each section's
+   * CMS `sortOrder` (editable in /admin/content), so reordering
+   * a section there reorders it on the live page. Sections keep
+   * their original relative order by default (the same order
+   * this list is written in below) until an admin changes it.
+   * Visibility (show/hide) is handled separately via the
+   * `enabled` flag in /admin/layout-manager, which injects
+   * `display:none` CSS for a section — see RootShell.tsx.
+   * ---------------------------------------------------------
+   */
+
+  const sectionNodes: { key: string; defaultOrder: number; node: React.ReactNode }[] = [
+    {
+      key: "HERO",
+      defaultOrder: 1,
+      node: (
+        <CmsSection sectionKey="HERO">
+          <Hero
+            eyebrow={byKey.HERO?.eyebrow}
+            title={byKey.HERO?.title}
+            description={byKey.HERO?.description}
+            image={byKey.HERO?.image}
+            primaryButtonLabel={byKey.HERO?.primaryButtonLabel}
+            primaryButtonUrl={byKey.HERO?.primaryButtonUrl}
+            items={heroItems}
+            settings={heroSettings}
+          />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "SERVICES",
+      defaultOrder: 2,
+      node: (
+        <CmsSection sectionKey="SERVICES">
+          <Services />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "ABOUT",
+      defaultOrder: 3,
+      node: (
+        <CmsSection sectionKey="ABOUT">
+          <AboutSection
+            eyebrow={byKey.ABOUT?.eyebrow}
+            title={byKey.ABOUT?.title}
+            description={byKey.ABOUT?.description}
+            image={byKey.ABOUT?.image}
+            primaryButtonLabel={byKey.ABOUT?.primaryButtonLabel}
+            primaryButtonUrl={byKey.ABOUT?.primaryButtonUrl}
+            settings={(byKey.ABOUT?.settings as any) || {}}
+          />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "MARQUE",
+      defaultOrder: 4,
+      node: (
+        <CmsSection sectionKey="MARQUE">
+          <Marquee />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "PROCESS",
+      defaultOrder: 5,
+      node: (
+        <CmsSection sectionKey="PROCESS">
+          <Process
+            eyebrow={byKey.PROCESS?.eyebrow}
+            title={byKey.PROCESS?.title}
+            description={byKey.PROCESS?.description}
+            image={byKey.PROCESS?.image}
+            items={processItems}
+          />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "TEAM",
+      defaultOrder: 6,
+      node: (
+        <CmsSection sectionKey="TEAM">
+          <Team
+            eyebrow={byKey.TEAM?.eyebrow}
+            title={byKey.TEAM?.title}
+            description={byKey.TEAM?.description}
+            image={byKey.TEAM?.image}
+            primaryButtonLabel={byKey.TEAM?.primaryButtonLabel}
+            primaryButtonUrl={byKey.TEAM?.primaryButtonUrl}
+            items={hasTeamCms ? teamItemsFromSection : teamItems}
+            settings={(byKey.TEAM?.settings as any) || {}}
+          />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "CASE_STUDIES",
+      defaultOrder: 7,
+      node: (
+        <CmsSection sectionKey="CASE_STUDIES">
+          <CaseStudy
+            eyebrow={byKey.CASE_STUDIES?.eyebrow}
+            title={byKey.CASE_STUDIES?.title}
+            description={byKey.CASE_STUDIES?.description}
+            items={caseStudyItems}
+          />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "PRICING",
+      defaultOrder: 8,
+      node: (
+        <CmsSection sectionKey="PRICING">
+          <Price
+            eyebrow={byKey.PRICING?.eyebrow}
+            title={byKey.PRICING?.title}
+            description={byKey.PRICING?.description}
+            cmsSettings={pricingSettings as any}
+          />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "TESTIMONIALS",
+      defaultOrder: 9,
+      node: (
+        <CmsSection sectionKey="TESTIMONIALS">
+          <Testimonials
+            eyebrow={byKey.TESTIMONIALS?.eyebrow}
+            title={byKey.TESTIMONIALS?.title}
+            cmsSettings={testimonialSettings as any}
+          />
+        </CmsSection>
+      ),
+    },
+    {
+      key: "CTA",
+      defaultOrder: 10,
+      node: (
+        <CmsSection sectionKey="CTA">
+          <CTA
+            eyebrow={byKey.CTA?.eyebrow}
+            title={byKey.CTA?.title}
+            description={byKey.CTA?.description}
+            image={byKey.CTA?.image}
+            primaryButtonLabel={byKey.CTA?.primaryButtonLabel}
+            primaryButtonUrl={byKey.CTA?.primaryButtonUrl}
+          />
+        </CmsSection>
+      ),
+    },
+  ];
+
+  const orderedSections = [...sectionNodes].sort((a, b) => {
+    const aOrder =
+      typeof byKey[a.key]?.sortOrder === "number"
+        ? byKey[a.key].sortOrder
+        : a.defaultOrder;
+    const bOrder =
+      typeof byKey[b.key]?.sortOrder === "number"
+        ? byKey[b.key].sortOrder
+        : b.defaultOrder;
+    return aOrder - bOrder;
+  });
 
   return (
-    <main className="min-h-screen bg-white">
-      <PageHero title="Our Team" />
-
-      <div className="w-full max-w-[1280px] mx-auto px-6 py-10">
-        {!loading && currentTeamMembers.length === 0 && (
-          <p className="text-center text-gray-500">No team members found.</p>
-        )}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {currentTeamMembers.map((member) => (
-            <Link
-              key={member.slug}
-              href={`/team/${member.slug}`}
-              className="media-card media-card--4-5 bg-gray-100 group rounded-xl"
-            >
-              <Image
-                src={member.image}
-                alt={member.name}
-                fill
-                className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, 25vw"
-              />
-              <div className="media-card__overlay bg-gradient-to-t from-navy/90 via-navy/40 to-transparent" />
-
-              <div className="media-card__caption">                <h3 className="text-xl font-bold text-white">{member.name}</h3>
-                <p className="text-sm text-gray-300 mt-1 font-medium">
-                  {member.role}
-                </p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-10">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                currentPage === 1
-                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent"
-              }`}
-              aria-label="Previous page"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-              (number) => (
-                <button
-                  key={number}
-                  onClick={() => paginate(number)}
-                  className={`flex h-11 w-11 items-center justify-center rounded-full text-sm font-bold transition-all duration-300 ${
-                    currentPage === number
-                      ? "bg-accent text-white shadow-md"
-                      : "border-2 border-gray-200 text-gray-600 bg-white hover:border-accent hover:text-accent"
-                  }`}
-                  aria-label={`Go to page ${number}`}
-                >
-                  {number.toString().padStart(2, "0")}
-                </button>
-              ),
-            )}
-
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-all duration-300 ${
-                currentPage === totalPages
-                  ? "border-gray-200 text-gray-300 cursor-not-allowed"
-                  : "border-gray-300 text-gray-600 hover:border-accent hover:text-accent"
-              }`}
-              aria-label="Next page"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
-          </div>
-        )}
-      </div>
+    <main>
+      {orderedSections.map((section) => (
+        <React.Fragment key={section.key}>{section.node}</React.Fragment>
+      ))}
     </main>
   );
 }

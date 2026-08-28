@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 import { z } from "zod";
 import { Prisma, ContentSectionKey } from "@prisma/client";
+import { contentSectionDefaults } from "@/lib/content-section-defaults";
 
 const sectionKeys = Object.values(ContentSectionKey);
 
@@ -42,6 +43,79 @@ async function requireAdmin() {
   return session;
 }
 
+/**
+ * Provision any missing CMS sections from the single source of truth in
+ * lib/content-section-defaults.ts. This makes the default content available
+ * in the admin editor (and on the public pages) without requiring a manual
+ * Configure step for every section after a fresh database/seed.
+ * Existing rows are never overwritten.
+ */
+async function ensureDefaultContentSections() {
+  const existing = await prisma.contentSection.findMany({
+    select: { sectionKey: true },
+  });
+
+  const existingKeys = new Set(existing.map((row) => row.sectionKey));
+  const missing = Object.entries(contentSectionDefaults).filter(
+    ([key]) =>
+      sectionKeys.includes(key as ContentSectionKey) && !existingKeys.has(key as ContentSectionKey),
+  );
+
+  if (missing.length === 0) return;
+
+  await prisma.$transaction(
+    missing.map(([key, value], index) => {
+      const defaults = value as any;
+
+      return prisma.contentSection.create({
+        data: {
+          sectionKey: key as ContentSectionKey,
+          label: defaults.label ?? key,
+          eyebrow: defaults.eyebrow ?? "",
+          title: defaults.title ?? key,
+          description: defaults.description ?? "",
+          image: defaults.image ?? "",
+          primaryButtonLabel: defaults.primaryButtonLabel ?? "",
+          primaryButtonUrl: defaults.primaryButtonUrl ?? "",
+          secondaryButtonLabel: defaults.secondaryButtonLabel ?? "",
+          secondaryButtonUrl: defaults.secondaryButtonUrl ?? "",
+          items: defaults.items ?? [],
+          settings: defaults.settings ?? {},
+          sortOrder: sectionOptionsOrder(key, index),
+          published: true,
+        },
+      });
+    }),
+  );
+}
+
+function sectionOptionsOrder(key: string, fallback: number) {
+  const order = [
+    "HERO",
+    "SERVICES",
+    "ABOUT",
+    "MARQUE",
+    "PROCESS",
+    "TEAM",
+    "CASE_STUDIES",
+    "PRICING",
+    "TESTIMONIALS",
+    "CTA",
+    "PAGE_HERO_ABOUT",
+    "PAGE_HERO_HISTORY",
+    "ABOUT_INTRO",
+    "ABOUT_FEATURES",
+    "ABOUT_EVOLUTION",
+    "ABOUT_SKILLS",
+    "ABOUT_LOGOS",
+    "HISTORY_INTRO",
+    "HISTORY",
+  ];
+
+  const index = order.indexOf(key);
+  return index >= 0 ? index : fallback;
+}
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const key = url.searchParams.get("sectionKey");
@@ -58,6 +132,13 @@ export async function GET(request: Request) {
   };
 
   try {
+    // When an admin opens Content Sections, make sure every default section
+    // exists in the database. This removes the "Not configured" state for
+    // /about and /history while preserving all existing admin edits.
+    if (isAdmin) {
+      await withDbRetry(() => ensureDefaultContentSections());
+    }
+
     const sections = await withDbRetry(() =>
       prisma.contentSection.findMany({
         where,
