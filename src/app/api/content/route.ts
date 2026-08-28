@@ -51,24 +51,21 @@ async function requireAdmin() {
  * Existing rows are never overwritten.
  */
 async function ensureDefaultContentSections() {
-  const existing = await prisma.contentSection.findMany({
-    select: { sectionKey: true },
-  });
-
-  const existingKeys = new Set(existing.map((row) => row.sectionKey));
-  const missing = Object.entries(contentSectionDefaults).filter(
+  const entries = Object.entries(contentSectionDefaults).filter(
     ([key]) =>
-      sectionKeys.includes(key as ContentSectionKey) && !existingKeys.has(key as ContentSectionKey),
+      sectionKeys.includes(key as ContentSectionKey),
   );
 
-  if (missing.length === 0) return;
-
   await prisma.$transaction(
-    missing.map(([key, value], index) => {
+    entries.map(([key, value], index) => {
       const defaults = value as any;
 
-      return prisma.contentSection.create({
-        data: {
+      return prisma.contentSection.upsert({
+        where: {
+          sectionKey: key as ContentSectionKey,
+        },
+        update: {},
+        create: {
           sectionKey: key as ContentSectionKey,
           label: defaults.label ?? key,
           eyebrow: defaults.eyebrow ?? "",
@@ -120,9 +117,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const key = url.searchParams.get("sectionKey");
   const session = await getSession();
-  const isAdmin = ["ADMIN", "STAFF"].includes(
-    session?.role ?? "",
-  );
+  const isAdmin = ["ADMIN", "STAFF"].includes(session?.role ?? "");
 
   const where: Prisma.ContentSectionWhereInput = {
     ...(key && sectionKeys.includes(key as ContentSectionKey)
@@ -147,9 +142,14 @@ export async function GET(request: Request) {
     );
     return NextResponse.json(sections);
   } catch (error) {
+    console.error("GET /api/content error:", error);
+
     return NextResponse.json(
-      { error: "Could not load content sections" },
-      { status: 503 },
+      {
+        error: "Could not load content sections",
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 },
     );
   }
 }
@@ -199,8 +199,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        error:
-          "Could not create section",
+        error: "Could not create section",
       },
       { status: 500 },
     );
@@ -212,21 +211,21 @@ export async function PATCH(request: Request) {
   if (auth instanceof NextResponse) return auth;
 
   try {
-    const body = await request.json()
+    const body = await request.json();
 
-    const id = z.string().min(1).parse(body.id)
-    const data = sectionSchema.parse(body)
+    const id = z.string().min(1).parse(body.id);
+    const data = sectionSchema.parse(body);
 
     const section = await withDbRetry(() =>
       prisma.contentSection.update({
         where: { id },
         data,
-      })
-    )
+      }),
+    );
 
-    return NextResponse.json(section)
+    return NextResponse.json(section);
   } catch (error) {
-    console.error("PATCH /api/content error:", error)
+    console.error("PATCH /api/content error:", error);
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -234,37 +233,32 @@ export async function PATCH(request: Request) {
           error: "Invalid section data",
           details: error.flatten(),
         },
-        { status: 400 }
-      )
+        { status: 400 },
+      );
     }
 
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "code" in error
-    ) {
+    if (typeof error === "object" && error !== null && "code" in error) {
       const prismaError = error as {
-        code?: string
-        message?: string
-      }
+        code?: string;
+        message?: string;
+      };
 
       if (prismaError.code === "P2025") {
         return NextResponse.json(
           {
             error: "Section not found. Refresh the page and try again.",
           },
-          { status: 404 }
-        )
+          { status: 404 },
+        );
       }
 
       if (prismaError.code === "P2002") {
         return NextResponse.json(
           {
-            error:
-              "Another section already uses this section key.",
+            error: "Another section already uses this section key.",
           },
-          { status: 409 }
-        )
+          { status: 409 },
+        );
       }
     }
 
@@ -272,8 +266,8 @@ export async function PATCH(request: Request) {
       {
         error: "Could not update section",
       },
-      { status: 500 }
-    )
+      { status: 500 },
+    );
   }
 }
 
