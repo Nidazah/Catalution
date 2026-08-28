@@ -102,8 +102,7 @@ model PasswordResetToken {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
-
-  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -290,8 +289,7 @@ model CareerApplication {
   notes       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  career Career @relation(fields: [careerId], references: [id], onDelete: Cascade)
+  career      Career   @relation(fields: [careerId], references: [id], onDelete: Cascade)
 
   @@index([careerId])
   @@index([email])
@@ -322,8 +320,7 @@ model CmsPageVersion {
   data      Json
   seo       Json?
   createdAt DateTime @default(now())
-
-  CmsPage CmsPage @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  CmsPage   CmsPage  @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
   @@unique([pageId, version])
 }
@@ -343,7 +340,6 @@ enum ContentSectionKey {
   CAREERS
   SERVICES
   MARQUE
-
   PAGE_HERO_ABOUT
   PAGE_HERO_SERVICES
   PAGE_HERO_PORTFOLIOS
@@ -354,14 +350,8 @@ enum ContentSectionKey {
   PAGE_HERO_PRICING
   PAGE_HERO_FAQ
   PAGE_HERO_HISTORY
-
-  ABOUT_INTRO
-  ABOUT_FEATURES
-  ABOUT_EVOLUTION
-  ABOUT_SKILLS
-  ABOUT_LOGOS
-
   HISTORY
+  ABOUT_LOGOS
 }
 
 enum Role {
