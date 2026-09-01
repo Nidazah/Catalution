@@ -42,17 +42,28 @@ export const defaultTheme = {
   radius: 12,
   containerWidth: 1280,
 
-  sectionGap: 0,
-
   buttonRadius: 12,
   buttonPaddingX: 24,
   buttonPaddingY: 12,
 
   buttonPrimaryBg: "#481d96",
   buttonPrimaryText: "#ffffff",
+  buttonPrimaryBorderColor: "#481d96",
+  buttonPrimaryHoverBg: "#6d28d9",
+  buttonPrimaryHoverText: "#ffffff",
+  buttonPrimaryHoverBorderColor: "#6d28d9",
 
   buttonSecondaryBg: "#ff6800",
   buttonSecondaryText: "#ffffff",
+  buttonSecondaryBorderColor: "#ff6800",
+  buttonSecondaryHoverBg: "#fb923c",
+  buttonSecondaryHoverText: "#ffffff",
+  buttonSecondaryHoverBorderColor: "#fb923c",
+
+  // Shared hover animation applied to every .btn-primary / .btn-secondary
+  // on hover. "none" preserves the site's original (color-change-only)
+  // button hover behavior. Other options: "lift", "scale", "glow".
+  buttonHoverEffect: "none",
 };
 
 
@@ -285,6 +296,22 @@ export const defaultLayout = {
       textColor: "#481d96",
 
       iconColor: "#481d96",
+
+      borderColor: "transparent",
+
+      // Hover state. Defaults intentionally match the base colors above
+      // (no color change on hover) so the original design is preserved;
+      // "lift" reproduces the original translate+shadow hover motion.
+      hoverBackgroundColor: "#ffffff",
+
+      hoverTextColor: "#481d96",
+
+      hoverIconColor: "#481d96",
+
+      hoverBorderColor: "transparent",
+
+      // "none" | "lift" | "scale" | "glow"
+      hoverEffect: "lift",
     },
   },
 
@@ -358,8 +385,17 @@ export const defaultSectionStyle = {
 
   paddingTop: 64,
   paddingBottom: 64,
+  paddingLeft: 0,
+  paddingRight: 0,
+  marginTop: 0,
+  marginBottom: 0,
+  marginLeft: 0,
+  marginRight: 0,
 
   contentAlign: "left",
+
+  // Per-section desktop arrangement for sections that have a paired content/image layout.
+  layoutDirection: "text-left",
 
   titleSize: 48,
   titleWeight: "700",
@@ -380,6 +416,9 @@ export const defaultSectionStyle = {
 
   imageOffsetX: 0,
   imageOffsetY: 0,
+
+  buttonOffsetX: 0,
+  buttonOffsetY: 0,
 
   buttonBackground: "",
   buttonText: "",
@@ -416,6 +455,21 @@ export const defaultSectionStyles = {
 
   HERO: {
     ...defaultSectionStyle,
+    // Hero starts directly beneath the navbar in the original website.
+    // Top padding defaults to 70px (the current baseline for the Hero
+    // section specifically — see the matching special-case in
+    // RootShell.tsx that always applies this value on the public
+    // frontend, even before an admin explicitly saves an override).
+    // Every other spacing field keeps the original zero default unless
+    // an admin explicitly sets it through Layout & Section Manager.
+    paddingTop: 70,
+    paddingBottom: 0,
+    paddingLeft: 0,
+    paddingRight: 0,
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
   },
 
 
@@ -446,6 +500,8 @@ export const defaultSectionStyles = {
 
   ABOUT: {
     ...defaultSectionStyle,
+    // Original About layout: image on the left, content on the right.
+    layoutDirection: "image-left",
   },
 
 
@@ -464,6 +520,8 @@ export const defaultSectionStyles = {
 
   PROCESS: {
     ...defaultSectionStyle,
+    // Original Process layout: image on the left, content on the right.
+    layoutDirection: "image-left",
   },
 
 

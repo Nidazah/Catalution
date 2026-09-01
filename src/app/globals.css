@@ -335,10 +335,9 @@ h6 {
   color: #ffffff;
   border-color: var(--color-purple-900);
 }
-.btn-primary:hover {
-  background: var(--color-purple-700);
-  border-color: var(--color-purple-700);
-}
+/* Hover state for .btn-primary is defined once, dynamically, in the
+   CMS RUNTIME DESIGN SYSTEM section below (driven by admin Theme
+   Settings → Global Buttons). Not duplicated here to avoid drift. */
 
 /* 2. SECONDARY (Orange 900 Fill - NOT USED YET, but ready) */
 .btn-secondary {
@@ -346,10 +345,9 @@ h6 {
   color: #ffffff;
   border-color: var(--color-orange-900);
 }
-.btn-secondary:hover {
-  background: var(--color-orange-700);
-  border-color: var(--color-orange-700);
-}
+/* Hover state for .btn-secondary is defined once, dynamically, in the
+   CMS RUNTIME DESIGN SYSTEM section below (driven by admin Theme
+   Settings → Global Buttons). Not duplicated here to avoid drift. */
 
 /* 3. OUTLINE (White fill, Purple border/text) */
 .btn-outline {
@@ -375,25 +373,36 @@ h6 {
   text-decoration: underline;
 }
 
-/* 5. NAVBAR CTA (Specific to your screenshot's exact look) */
+/* 5. NAVBAR CTA
+   The navbar CTA is the site's global PRIMARY button. Its colors are
+   supplied by RootShell from Theme → Global Buttons, so this component
+   contains no hardcoded CMS button colors. */
 .btn-nav-primary {
-  background: var(--color-purple-900);
-  color: #ffffff;
+  background: var(--cms-button-primary-bg, var(--color-purple-900));
+  color: var(--cms-button-primary-text, #ffffff);
+  border: 1px solid var(--cms-button-primary-border, var(--cms-button-primary-bg, var(--color-purple-900)));
   border-radius: var(--radius-btn);
   padding: 10px 20px;
   font-family: var(--font-poppins);
-  font-size: 13px;          /* unchanged */
+  font-size: 13px;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   text-decoration: none;
   transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 .btn-nav-primary:hover {
-  background: var(--color-purple-700);
+  background: var(--cms-button-primary-hover-bg, var(--cms-button-primary-bg));
+  color: var(--cms-button-primary-hover-text, var(--cms-button-primary-text));
+  border-color: var(--cms-button-primary-hover-border, var(--cms-button-primary-hover-bg, var(--cms-button-primary-border)));
+  transform: var(--cms-btn-hover-transform, none);
+  box-shadow: var(--cms-btn-hover-shadow, none);
 }
 .btn-nav-primary .arrow {
   transition: transform 0.2s ease;
@@ -919,10 +928,68 @@ h6 {
 .btn-primary {
   background: var(--cms-button-primary-bg);
   color: var(--cms-button-primary-text);
-  border-color: var(--cms-button-primary-bg);
+  border-color: var(--cms-button-primary-border, var(--cms-button-primary-bg));
+}
+.btn-primary:hover {
+  background: var(--cms-button-primary-hover-bg, var(--cms-button-primary-bg));
+  color: var(--cms-button-primary-hover-text, var(--cms-button-primary-text));
+  border-color: var(--cms-button-primary-hover-border, var(--cms-button-primary-hover-bg, var(--cms-button-primary-bg)));
+  transform: var(--cms-btn-hover-transform, none);
+  box-shadow: var(--cms-btn-hover-shadow, none);
 }
 .btn-secondary {
   background: var(--cms-button-secondary-bg);
   color: var(--cms-button-secondary-text);
-  border-color: var(--cms-button-secondary-bg);
+  border-color: var(--cms-button-secondary-border, var(--cms-button-secondary-bg));
+}
+.btn-secondary:hover {
+  background: var(--cms-button-secondary-hover-bg, var(--cms-button-secondary-bg));
+  color: var(--cms-button-secondary-hover-text, var(--cms-button-secondary-text));
+  border-color: var(--cms-button-secondary-hover-border, var(--cms-button-secondary-hover-bg, var(--cms-button-secondary-bg)));
+  transform: var(--cms-btn-hover-transform, none);
+  box-shadow: var(--cms-btn-hover-shadow, none);
+}
+
+/* ---------------------------------------------------------------
+   GO TOP BUTTON
+   CSS custom properties (--gotop-*) are set inline per-instance by
+   Footer.tsx from admin Theme Settings → Go Top Button. Empty/unset
+   values fall back through the chain below, preserving the original
+   look when nothing has been customized.
+--------------------------------------------------------------- */
+.go-top-btn {
+  background-color: var(--gotop-bg, #ffffff);
+  border: 1px solid var(--gotop-border, transparent);
+  transition: background-color .3s ease, border-color .3s ease,
+    transform .3s ease, box-shadow .3s ease;
+}
+.go-top-btn .go-top-icon,
+.go-top-btn .go-top-label {
+  transition: color .3s ease;
+}
+.go-top-btn .go-top-icon {
+  color: var(--gotop-icon, var(--color-navy));
+}
+.go-top-btn .go-top-label {
+  color: var(--gotop-text, var(--color-navy));
+}
+.go-top-btn:hover {
+  background-color: var(--gotop-hover-bg, var(--gotop-bg, #ffffff));
+  border-color: var(--gotop-hover-border, var(--gotop-border, transparent));
+}
+.go-top-btn:hover .go-top-icon {
+  color: var(--gotop-hover-icon, var(--gotop-icon, var(--color-navy)));
+}
+.go-top-btn:hover .go-top-label {
+  color: var(--gotop-hover-text, var(--gotop-text, var(--color-navy)));
+}
+.go-top-btn--lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 15px 35px -10px rgba(10, 37, 64, 0.6);
+}
+.go-top-btn--scale:hover {
+  transform: scale(1.12);
+}
+.go-top-btn--glow:hover {
+  box-shadow: 0 0 24px 4px var(--gotop-hover-bg, var(--gotop-bg, #ffffff));
 }

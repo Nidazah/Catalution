@@ -217,9 +217,9 @@ export default function Hero({
           />
         </svg>
 
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 items-center pb-0">
+        <div className="cms-layout-content-image relative mx-auto max-w-7xl px-4 sm:px-6 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-10 items-center pb-0">
           {/* Left Column: Text */}
-          <motion.div variants={container} initial="hidden" animate="show">
+          <motion.div className="cms-layout-role-content" variants={container} initial="hidden" animate="show">
             <motion.span
               variants={item}
               className="hero-tag inline-flex items-center gap-1 sm:gap-2 rounded-md border border-[var(--color-line)] bg-white px-2.5 py-1.5 sm:px-3 sm:py-2 text-[var(--color-heading)]"
@@ -274,7 +274,7 @@ export default function Hero({
           </motion.div>
 
           {/* Right Column: Image */}
-          <div className="relative flex items-center justify-center w-full h-full px-4 sm:px-0">
+          <div className="cms-layout-role-image relative flex items-center justify-center w-full h-full px-4 sm:px-0">
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}

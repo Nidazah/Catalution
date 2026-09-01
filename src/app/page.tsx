@@ -354,6 +354,12 @@ export default async function Home() {
     },
   ];
 
+  // Only the fixed homepage sections above belong on the homepage.
+  // ContentSection also stores inner-page CMS records such as BLOG, FAQ,
+  // CAREERS and PAGE_HERO_*; those records must never be auto-rendered here.
+  // Doing so makes unrelated CMS rows appear as generic sections and can
+  // completely change the homepage layout.
+
   const orderedSections = [...sectionNodes].sort((a, b) => {
     const aOrder =
       typeof byKey[a.key]?.sortOrder === "number"

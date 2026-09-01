@@ -1,127 +1,112 @@
-# Catalution — Page Heroes, History Timeline, About Logos & Homepage Reordering
+# Go Top Button + Global Button hover controls
 
-This closes the gaps found in the full-site CMS audit: inner-page hero
-banners, the History timeline, and the About page's client-logo strip
-were still hardcoded with no CMS connection, and homepage section
-*order* (unlike visibility, which already worked) wasn't wired to the
-`sortOrder` field already sitting in the `/admin/content` editor.
+## What changed
 
-## What's in this zip (new/changed files only)
+No database schema or API route changes were needed — the existing
+`THEME` / `LAYOUT` settings API (`src/app/api/site-settings/route.ts`)
+already stores arbitrary JSON and deep-merges it against the defaults
+in `src/lib/site-defaults.ts`. So adding new fields there is enough
+for them to be readable, writable, resettable, and persisted, with
+zero backend code changes.
 
-```
-prisma/content-section-key-additions.prisma   NEW — paste-in enum snippet
-prisma/seed-page-content-v2.ts                NEW — optional seed script
+5 files changed:
 
-src/lib/use-page-hero.ts                      NEW — client hook for page-hero banners
-src/lib/content-section-defaults.ts           CHANGED — added 12 new key defaults
+1. **`src/lib/site-defaults.ts`** — single source of truth for every
+   default value. Added:
+   - `defaultTheme`: `buttonPrimaryBorderColor`, `buttonPrimaryHoverBg`,
+     `buttonPrimaryHoverText`, `buttonPrimaryHoverBorderColor`, and the
+     matching `buttonSecondary*` fields, plus a shared
+     `buttonHoverEffect` (`"none" | "lift" | "scale" | "glow"`).
+   - `defaultLayout.footer.goTop`: `borderColor`, `hoverBackgroundColor`,
+     `hoverTextColor`, `hoverIconColor`, `hoverBorderColor`,
+     `hoverEffect`.
+   - All new defaults were chosen to exactly reproduce the site's
+     current look, so nothing changes visually until an admin edits
+     a value.
 
-src/app/page.tsx                              CHANGED — homepage sections now render
-                                               in the order set by each section's
-                                               "Display order" field in /admin/content
-src/app/admin/content/page.tsx                CHANGED — added the 12 new keys to the
-                                               editor, plus History's Image 2/Alignment
-                                               fields and a hint on the order field
+2. **`src/app/RootShell.tsx`** — exposes the new Global Button fields
+   as CSS custom properties on `:root` (same pattern as the existing
+   button color vars), including two computed vars,
+   `--cms-btn-hover-transform` / `--cms-btn-hover-shadow`, derived
+   from `buttonHoverEffect`.
 
-src/app/about/page.tsx                        CHANGED — hero + client logos wired to CMS
-src/app/services/page.tsx                     CHANGED — hero wired to CMS
-src/app/portfolios/page.tsx                   CHANGED — hero wired to CMS
-src/app/blog/page.tsx                         CHANGED — hero wired to CMS
-src/app/team/page.tsx                         CHANGED — hero wired to CMS
-src/app/careers/page.tsx                      CHANGED — hero wired to CMS
-src/app/contact/page.tsx                      CHANGED — hero wired to CMS
-src/app/pricing/page.tsx                      CHANGED — hero wired to CMS
-src/app/faq/page.tsx                          CHANGED — hero wired to CMS
-src/app/history/page.tsx                      CHANGED — hero + timeline wired to CMS
-```
+3. **`src/app/globals.css`**
+   - Removed the old hardcoded `.btn-primary:hover` / `.btn-secondary:hover`
+     rules (fixed purple-700 / orange-700 colors that the admin could
+     never actually change).
+   - The CMS-runtime `.btn-primary` / `.btn-secondary` rules now also
+     define real `:hover` states driven entirely by the new CSS vars,
+     with sensible fallback chains so an unset field just falls back
+     to the base color.
+   - Added a new `.go-top-btn` block (base + `:hover` + `--lift` /
+     `--scale` / `--glow` effect modifiers) consuming `--gotop-*`
+     custom properties.
 
-## 1. What changed and why
+4. **`src/components/Footer.tsx`** — the Go Top pill's hover state was
+   previously broken: an inline `style` color permanently overrode a
+   Tailwind `group-hover:text-white` class, so the "hover" text color
+   never actually applied. Replaced with `--gotop-*` CSS custom
+   properties set inline (same approach the rest of the CMS layer
+   uses), and a real CSS `:hover` rule now does the work. `goTop` type
+   in this file extended to match the new fields.
 
-### Inner-page hero banners (About, Services, Portfolios, Blog, Team,
-### Careers, Contact, Pricing, FAQ, History)
-Every one of these had `<PageHero title="..." />` with the title
-hardcoded as a JSX literal — no fetch, no admin control. Each page now
-calls `usePageHero("PAGE_HERO_X", { title: "..." })`, a small client
-hook (`src/lib/use-page-hero.ts`) that fetches
-`/api/content?sectionKey=PAGE_HERO_X` and swaps in the live title,
-subtitle (mapped from `description`), and background image if a
-published row exists — otherwise it silently keeps the hardcoded
-fallback you pass in, so a page can never render blank or break.
+5. **`src/app/admin/brand-settings/page.tsx`**
+   - Added hover-color pickers + a border-color field to the **Go Top
+     Button** card, and a "Hover animation" dropdown.
+   - Added hover-color pickers + border-color fields to **Global
+     Layout & Buttons** for both Primary and Secondary, plus one
+     shared "Hover animation" dropdown (applies sitewide, matching how
+     `buttonHoverEffect` is a single shared field).
+   - `defaultGoTop` is now derived from `site-defaults.ts` instead of
+     being hand-copied in this file, closing off the kind of
+     copy-drift bug fixed here previously (Aug 25 session).
+   - The live "Button Preview" at the bottom of the Global Buttons
+     card now reflects the actual stored hover colors/effect instead
+     of an approximated 12%-darken — what you see in the preview is
+     what ships live.
 
-No changes were needed to `/api/content` or the `ContentSection`
-model — both were already generic over `ContentSectionKey`. The only
-schema change is 12 new enum values (see step 2 below).
+## Reset behavior
 
-### History timeline (`/history`)
-This page had zero CMS connection — `timelineData` was a fully
-hardcoded array with no fetch call at all. It's now backed by a new
-`HISTORY` ContentSection: each milestone's year lives in `meta`,
-title/description are the milestone copy, the first photo is `image`,
-and the second photo + left/right alignment live in `item.settings`
-(`image2`, `align`) since the generic item schema already supports a
-free-form `settings` object per item — no API changes needed there
-either. The admin editor's repeatable-items panel gained two extra
-fields (Image 2, Alignment) specifically when editing the `HISTORY`
-section.
+- "Reset Theme" deletes the `THEME` row and reloads
+  `defaultTheme` (now including every new button field) — Global
+  Button hover settings reset correctly.
+- The Go Top card's save/reset flow deletes only
+  `LAYOUT.footer.goTop` (not the whole footer or navbar) and reloads
+  `defaultGoTop` — Go Top hover settings reset correctly without
+  touching any other footer/navbar customization.
 
-### About page client-logo strip
-Same pattern — a new `ABOUT_LOGOS` section with one repeatable item
-per logo (`title` = client name / alt text, `image` = logo file).
+## Verified
 
-### Homepage section reordering
-`/admin/content` already had a "Display order" number field per
-section, and `/admin/layout-manager` already had a working show/hide
-toggle (confirmed via `RootShell.tsx`'s CSS injection) — but
-`src/app/page.tsx` rendered the 10 homepage sections in a fixed JSX
-order regardless of that field. `page.tsx` now builds an array of
-`{ key, node }` and sorts it by each section's live `sortOrder`
-(falling back to the original visual order for any section that
-hasn't been customized yet), so changing "Display order" in
-`/admin/content` now actually reorders the live homepage. No visual
-change out of the box — the default order matches the original JSX
-order exactly.
+- Brace/paren/bracket balance checked on every changed file.
+- Ran a real `tsc --noEmit` (TypeScript 5.6.3, with `react`/`next`/
+  `@types/react` installed and `lucide-react` stubbed) scoped to the
+  4 changed `.tsx`/`.ts` files plus their direct imports — **0 errors**.
+- Traced the full flow: Admin form → `setTheme`/`setLayout` → PUT
+  `/api/site-settings` → Prisma JSON column → GET merges with
+  `site-defaults.ts` → `RootShell.tsx` sets CSS vars on `:root` /
+  `Footer.tsx` sets CSS vars inline → `globals.css` renders the
+  hover state. No hardcoded frontend values.
 
-## 2. Steps to apply
+## Not touched / not needed
 
-1. **Paste the enum snippet.** Open `prisma/content-section-key-additions.prisma`
-   in this zip and add its 12 new values into your **existing**
-   `enum ContentSectionKey { ... }` block in `schema.prisma` — do not
-   create a second enum.
-2. Copy the other files in this zip into the matching paths in your
-   repo, overwriting the originals.
-3. Run the two commands from your project root (using this project's
-   established `db push` workaround instead of `migrate dev`, per
-   your earlier shadow-DB issue):
-   ```
-   npx prisma db push
-   npx prisma generate
-   ```
-4. **Optional but recommended** — seed the new sections with their
-   current hardcoded copy so they show real content in `/admin/content`
-   immediately instead of only via in-browser fallback:
-   ```
-   npx tsx prisma/seed-page-content-v2.ts
-   ```
-   Skipping this step is safe — every new page will simply keep
-   showing its original hardcoded content until you edit it in
-   `/admin/content` yourself.
-5. `npm run build` and click through: each inner page's hero,
-   `/history`'s timeline, `/about`'s logo strip, and try reordering
-   two homepage sections via the "Display order" field to confirm the
-   live homepage reflects it.
+- No Prisma schema or migration — the settings API's JSON column
+  already covers this.
+- `.btn-outline` (a third button variant used in a few places) was
+  left as-is — it isn't part of the existing "Global Buttons" theme
+  model (only Primary/Secondary have admin-controlled colors today),
+  so it was out of scope here.
 
-## 3. Still outstanding (not in this patch)
+## What you still need to do
 
-- **About page** stats/skills/feature-card blocks further down the
-  page are still hardcoded — same `ContentSection` pattern can extend
-  to them next.
-- **Contact page** section headings (separate from the editable
-  `ContactInfo` fields) are still hardcoded.
-- The History intro heading block just below the page hero ("Discover
-  how we have evolved...") is still hardcoded — only the hero banner
-  and the timeline itself were wired this round.
-- No new Prisma schema/migration file could be generated or run from
-  this sandbox (no live network to Neon or `binaries.prisma.sh`), and
-  no `package.json`/`schema.prisma` were present in this upload, so
-  no build or typecheck could be run against your real project
-  dependencies — only manual brace/paren-balance checks were done on
-  every changed file.
+- Pull these 5 files into your working tree (paths match exactly,
+  safe to overwrite).
+- Run `npm run build` (or `next dev`) locally and click through:
+  - `/admin/brand-settings` → Go Top Button card → change hover
+    background/text/icon/border + animation → Save → check the
+    live site's Go Top pill hovers as expected.
+  - Same page → Global Layout & Buttons → change Primary/Secondary
+    hover colors + animation → Save Theme → check `.btn-primary`/
+    `.btn-secondary` buttons across the site.
+  - Click "Reset Theme" and confirm both Global Buttons and Go Top
+    hover settings return to their original look.
+- No `prisma db push` / migration needed for this patch.

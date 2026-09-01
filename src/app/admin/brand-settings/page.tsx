@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
 
-import { defaultTheme } from "@/lib/site-defaults";
+import { defaultTheme, defaultLayout } from "@/lib/site-defaults";
 
 type Theme = {
   primaryColor: string;
@@ -24,14 +24,22 @@ type Theme = {
   bodyLineHeight: number;
   radius: number;
   containerWidth: number;
-  sectionGap: number;
   buttonRadius: number;
   buttonPaddingX: number;
   buttonPaddingY: number;
   buttonPrimaryBg: string;
   buttonPrimaryText: string;
+  buttonPrimaryBorderColor: string;
+  buttonPrimaryHoverBg: string;
+  buttonPrimaryHoverText: string;
+  buttonPrimaryHoverBorderColor: string;
   buttonSecondaryBg: string;
   buttonSecondaryText: string;
+  buttonSecondaryBorderColor: string;
+  buttonSecondaryHoverBg: string;
+  buttonSecondaryHoverText: string;
+  buttonSecondaryHoverBorderColor: string;
+  buttonHoverEffect: string;
 };
 
 type GoTopSettings = {
@@ -41,7 +49,15 @@ type GoTopSettings = {
   backgroundColor: string;
   textColor: string;
   iconColor: string;
+  borderColor: string;
+  hoverBackgroundColor: string;
+  hoverTextColor: string;
+  hoverIconColor: string;
+  hoverBorderColor: string;
+  hoverEffect: string;
 };
+
+const BUTTON_HOVER_EFFECTS = ["none", "lift", "scale", "glow"] as const;
 
 type LayoutSettings = {
   [key: string]: any;
@@ -92,14 +108,10 @@ function getFontStack(fontName: string): string {
   return FONT_FAMILY_STACKS[fontName] || `'${fontName}', sans-serif`;
 }
 
-const defaultGoTop: GoTopSettings = {
-  enabled: true,
-  label: "GO TOP",
-  target: "#top",
-  backgroundColor: "#ffffff",
-  textColor: "#481d96",
-  iconColor: "#481d96",
-};
+// Derived from the single source of truth in lib/site-defaults.ts
+// (rather than hand-copied here) so the two can never drift apart.
+const defaultGoTop: GoTopSettings = (defaultLayout.footer?.goTop ??
+  {}) as GoTopSettings;
 
 export default function BrandSettingsPage() {
   const [theme, setTheme] = useState<Theme>(defaults);
@@ -184,7 +196,7 @@ export default function BrandSettingsPage() {
           },
           body: JSON.stringify({
             key: "THEME",
-            data: theme,
+
           }),
         }
       );
@@ -204,7 +216,16 @@ export default function BrandSettingsPage() {
     }
   }
 
-  async function saveGoTop() {
+  /*
+   * Saves the entire LAYOUT settings object currently held in
+   * state — this covers both the Go Top floating control and
+   * everything already loaded into `layout`, since all global
+   * layout settings are stored in the same LAYOUT record.
+   * Navbar CTA text/link/visibility are managed from the
+   * dedicated Layout Manager; button COLORS are managed by
+   * the Global Buttons controls below as part of THEME.
+   */
+  async function saveLayoutSettings(successMessage: string) {
     setLayoutSaving(true);
     setLayoutMessage("");
 
@@ -242,14 +263,14 @@ export default function BrandSettingsPage() {
 
       setLayoutMessage(
         response.ok
-          ? "Go Top settings saved."
+          ? successMessage
           : data?.error ??
-              "Could not save Go Top settings."
+              "Could not save layout settings."
       );
     } catch (error) {
-      console.error("Save Go Top error:", error);
+      console.error("Save layout error:", error);
       setLayoutMessage(
-        "Could not save Go Top settings."
+        "Could not save layout settings."
       );
     } finally {
       setLayoutSaving(false);
@@ -258,12 +279,17 @@ export default function BrandSettingsPage() {
 
   async function resetTheme() {
     const confirmed = window.confirm(
-      "Reset theme to the original defaults?"
+      "Reset theme to the original defaults? " +
+        "This will also reset the Go Top button " +
+        "back to its default configuration."
     );
 
     if (!confirmed) {
       return;
     }
+
+    let themeReset = false;
+    let goTopReset = false;
 
     try {
       const response = await fetch(
@@ -281,15 +307,63 @@ export default function BrandSettingsPage() {
         ...defaultTheme,
       } as Theme);
 
-      setMessage(
-        "Theme reset to original defaults."
-      );
+      themeReset = true;
     } catch (error) {
       console.error(
         "Reset theme error:",
         error
       );
+    }
 
+    /*
+     * Also reset the Go Top button — but ONLY the Go
+     * Top override inside LAYOUT.footer, never the
+     * whole footer or the rest of LAYOUT (navbar CTA,
+     * other footer content, etc. must be left exactly
+     * as the admin configured them).
+     */
+    try {
+      const response = await fetch(
+        "/api/site-settings?key=LAYOUT&section=footer.goTop",
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Reset failed");
+      }
+
+      setLayout((previous) => ({
+        ...previous,
+        footer: {
+          ...(previous.footer || {}),
+          goTop: {
+            ...defaultGoTop,
+          },
+        },
+      }));
+
+      goTopReset = true;
+    } catch (error) {
+      console.error(
+        "Reset Go Top error:",
+        error
+      );
+    }
+
+    if (themeReset && goTopReset) {
+      setMessage(
+        "Theme and Go Top button reset to original defaults."
+      );
+      setLayoutMessage(
+        "Go Top settings reset to original defaults."
+      );
+    } else if (themeReset) {
+      setMessage(
+        "Theme reset, but the Go Top button could not be reset."
+      );
+    } else {
       setMessage("Could not reset theme.");
     }
   }
@@ -310,14 +384,15 @@ export default function BrandSettingsPage() {
     <div className="space-y-5 text-[12.5px]">
       {/* HEADER */}
 
-      <div>
-        <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
-          Design Tokens
-        </p>
+      <div className="flex items-start gap-3">
+        <div>
+          <p className="font-[var(--font-poppins)] text-[9px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
+            Design Tokens
+          </p>
 
-        <h1 className="mt-1 text-[16px] font-bold text-[#24133f]">
-          Theme Settings
-        </h1>
+          <h1 className="mt-1 font-[var(--font-poppins)] text-2xl font-bold tracking-tight text-[#151525] sm:text-[28px]">
+            Theme Settings
+          </h1>
 
         <p className="mt-1.5 text-[11.5px] text-[#7b8190]">
           Change global colors, font family,
@@ -325,12 +400,16 @@ export default function BrandSettingsPage() {
           changing the existing Catalution
           layout.
         </p>
+        </div>
       </div>
 
       {/* COLORS */}
 
-      <div className="rounded-xl border border-[#ece6f7] bg-white p-5">
-        <h2 className="font-bold text-[#24133f]">
+      <div className="rounded-xl border border-[#e7e9ef] bg-white p-5">
+        <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
+          Palette
+        </p>
+        <h2 className="mt-1 font-[var(--font-poppins)] text-base font-[var(--font-poppins)] font-bold text-[#151525]">
           Colors
         </h2>
 
@@ -340,7 +419,7 @@ export default function BrandSettingsPage() {
               key={key}
               className="block"
             >
-              <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+              <span className="mb-1 block font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
                 {label}
               </span>
 
@@ -354,7 +433,7 @@ export default function BrandSettingsPage() {
                       [key]: event.target.value,
                     })
                   }
-                  className="h-9 w-12 rounded border"
+                  className="h-9 w-12 rounded-xl border border-[#dfe2e8]"
                 />
 
                 <input
@@ -365,7 +444,7 @@ export default function BrandSettingsPage() {
                       [key]: event.target.value,
                     })
                   }
-                  className="min-w-0 flex-1 rounded-lg border border-[#ddd5ed] px-3 text-[12px]"
+                  className="min-w-0 flex-1 rounded-xl border border-[#dfe2e8] px-3 py-2 text-[12px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
                 />
               </div>
             </label>
@@ -375,8 +454,11 @@ export default function BrandSettingsPage() {
 
       {/* TYPOGRAPHY */}
 
-      <div className="rounded-xl border border-[#ece6f7] bg-white p-5">
-        <h2 className="font-bold text-[#24133f]">
+      <div className="rounded-xl border border-[#e7e9ef] bg-white p-5">
+        <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
+          Type system
+        </p>
+        <h2 className="mt-1 font-[var(--font-poppins)] text-base font-[var(--font-poppins)] font-bold text-[#151525]">
           Typography
         </h2>
 
@@ -480,14 +562,14 @@ export default function BrandSettingsPage() {
 
       {/* GO TOP */}
 
-      <div className="rounded-xl border border-[#ece6f7] bg-white p-5">
+      <div className="rounded-xl border border-[#e7e9ef] bg-white p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
               Floating control
             </p>
 
-            <h2 className="mt-1 font-bold text-[#24133f]">
+            <h2 className="mt-1 font-[var(--font-poppins)] text-base font-[var(--font-poppins)] font-bold text-[#151525]">
               Go Top Button
             </h2>
 
@@ -500,9 +582,11 @@ export default function BrandSettingsPage() {
 
           <button
             type="button"
-            onClick={saveGoTop}
+            onClick={() =>
+              saveLayoutSettings("Go Top settings saved.")
+            }
             disabled={layoutSaving}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[#481d96] px-3.5 py-2 text-[11px] font-semibold text-white disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#4B1D96] px-3.5 py-2 text-[11px] font-semibold text-white disabled:opacity-60"
           >
             <Save size={12} />
 
@@ -513,7 +597,7 @@ export default function BrandSettingsPage() {
         </div>
 
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <label className="flex items-center gap-2 rounded-lg border border-[#ece6f7] px-3 py-2.5">
+          <label className="flex items-center gap-2 rounded-xl border border-[#e7e9ef] px-3 py-2.5">
             <input
               type="checkbox"
               checked={
@@ -535,7 +619,7 @@ export default function BrandSettingsPage() {
               }
             />
 
-            <span className="text-[11.5px] font-medium text-[#24133f]">
+            <span className="text-[11.5px] font-medium text-[#151525]">
               Show Go Top button
             </span>
           </label>
@@ -607,7 +691,7 @@ export default function BrandSettingsPage() {
             label="Text color"
             value={
               layout.footer?.goTop?.textColor ||
-              "#481d96"
+              "#4B1D96"
             }
             onChange={(value) =>
               setLayout({
@@ -628,7 +712,7 @@ export default function BrandSettingsPage() {
             label="Arrow color"
             value={
               layout.footer?.goTop?.iconColor ||
-              "#481d96"
+              "#4B1D96"
             }
             onChange={(value) =>
               setLayout({
@@ -644,10 +728,145 @@ export default function BrandSettingsPage() {
               })
             }
           />
+
+          <Color
+            label="Border color"
+            value={
+              layout.footer?.goTop?.borderColor ||
+              "transparent"
+            }
+            onChange={(value) =>
+              setLayout({
+                ...layout,
+                footer: {
+                  ...(layout.footer || {}),
+                  goTop: {
+                    ...defaultGoTop,
+                    ...(layout.footer?.goTop || {}),
+                    borderColor: value,
+                  },
+                },
+              })
+            }
+          />
+        </div>
+
+        {/* Hover state */}
+        <div className="mt-4 border-t border-[#e7e9ef] pt-4">
+          <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7b8190]">
+            Hover state
+          </span>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Color
+              label="Hover background color"
+              value={
+                layout.footer?.goTop?.hoverBackgroundColor ||
+                "#ffffff"
+              }
+              onChange={(value) =>
+                setLayout({
+                  ...layout,
+                  footer: {
+                    ...(layout.footer || {}),
+                    goTop: {
+                      ...defaultGoTop,
+                      ...(layout.footer?.goTop || {}),
+                      hoverBackgroundColor: value,
+                    },
+                  },
+                })
+              }
+            />
+
+            <Color
+              label="Hover text color"
+              value={
+                layout.footer?.goTop?.hoverTextColor ||
+                "#4B1D96"
+              }
+              onChange={(value) =>
+                setLayout({
+                  ...layout,
+                  footer: {
+                    ...(layout.footer || {}),
+                    goTop: {
+                      ...defaultGoTop,
+                      ...(layout.footer?.goTop || {}),
+                      hoverTextColor: value,
+                    },
+                  },
+                })
+              }
+            />
+
+            <Color
+              label="Hover icon color"
+              value={
+                layout.footer?.goTop?.hoverIconColor ||
+                "#4B1D96"
+              }
+              onChange={(value) =>
+                setLayout({
+                  ...layout,
+                  footer: {
+                    ...(layout.footer || {}),
+                    goTop: {
+                      ...defaultGoTop,
+                      ...(layout.footer?.goTop || {}),
+                      hoverIconColor: value,
+                    },
+                  },
+                })
+              }
+            />
+
+            <Color
+              label="Hover border color"
+              value={
+                layout.footer?.goTop?.hoverBorderColor ||
+                "transparent"
+              }
+              onChange={(value) =>
+                setLayout({
+                  ...layout,
+                  footer: {
+                    ...(layout.footer || {}),
+                    goTop: {
+                      ...defaultGoTop,
+                      ...(layout.footer?.goTop || {}),
+                      hoverBorderColor: value,
+                    },
+                  },
+                })
+              }
+            />
+
+            <Select
+              label="Hover animation"
+              value={
+                layout.footer?.goTop?.hoverEffect || "lift"
+              }
+              options={[...BUTTON_HOVER_EFFECTS]}
+              onChange={(value) =>
+                setLayout({
+                  ...layout,
+                  footer: {
+                    ...(layout.footer || {}),
+                    goTop: {
+                      ...defaultGoTop,
+                      ...(layout.footer?.goTop || {}),
+                      hoverEffect: value,
+                    },
+                  },
+                })
+              }
+            />
+          </div>
         </div>
 
         {layoutMessage && (
-          <p className="mt-3 text-[10.5px] font-medium text-[#481d96]">
+          <p className="mt-3 text-[10.5px] font-medium text-[#4B1D96]">
             {layoutMessage}
           </p>
         )}
@@ -655,8 +874,11 @@ export default function BrandSettingsPage() {
 
       {/* GLOBAL LAYOUT */}
 
-      <div className="rounded-xl border border-[#ece6f7] bg-white p-5">
-        <h2 className="font-bold text-[#24133f]">
+      <div className="rounded-xl border border-[#e7e9ef] bg-white p-5">
+        <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
+          Global controls
+        </p>
+        <h2 className="mt-1 font-[var(--font-poppins)] text-base font-[var(--font-poppins)] font-bold text-[#151525]">
           Global Layout & Buttons
         </h2>
 
@@ -673,16 +895,6 @@ export default function BrandSettingsPage() {
             }
           />
 
-          <NumberField
-            label="Default section gap (px)"
-            value={theme.sectionGap}
-            onChange={(value) =>
-              setTheme({
-                ...theme,
-                sectionGap: value,
-              })
-            }
-          />
 
           <NumberField
             label="Global radius (px)"
@@ -729,8 +941,43 @@ export default function BrandSettingsPage() {
           />
         </div>
 
-        {/* Button colors — kept together in their own row/column group */}
+        {/* Global button colors — the PRIMARY controls also drive the Navbar CTA */}
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <Color
+            label="Primary button background"
+            value={theme.buttonPrimaryBg}
+            onChange={(value) =>
+              setTheme({
+                ...theme,
+                buttonPrimaryBg: value,
+              })
+            }
+          />
+
+          <Color
+            label="Primary button text"
+            value={theme.buttonPrimaryText}
+            onChange={(value) =>
+              setTheme({
+                ...theme,
+                buttonPrimaryText: value,
+              })
+            }
+          />
+
+          <Color
+            label="Primary button border"
+            value={theme.buttonPrimaryBorderColor}
+            onChange={(value) =>
+              setTheme({
+                ...theme,
+                buttonPrimaryBorderColor: value,
+              })
+            }
+          />
+
+          <div />
+
           <Color
             label="Secondary button background"
             value={theme.buttonSecondaryBg}
@@ -754,30 +1001,120 @@ export default function BrandSettingsPage() {
           />
 
           <Color
-            label="Primary button background"
-            value={theme.buttonPrimaryBg}
+            label="Secondary button border"
+            value={theme.buttonSecondaryBorderColor}
             onChange={(value) =>
               setTheme({
                 ...theme,
-                buttonPrimaryBg: value,
+                buttonSecondaryBorderColor: value,
               })
             }
           />
 
-          <Color
-            label="Primary button text"
-            value={theme.buttonPrimaryText}
-            onChange={(value) =>
-              setTheme({
-                ...theme,
-                buttonPrimaryText: value,
-              })
-            }
-          />
+          <div />
+        </div>
+
+        <p className="mt-2 text-[10px] text-[#9a9fae]">
+          Primary button colors control all global primary buttons, including the Navbar “Get Started” button.
+          Navbar text, link, and visibility remain managed in Layout Manager → Navbar.
+        </p>
+
+        {/* Button hover state — kept together in their own row/column group */}
+        <div className="mt-4 border-t border-[#e7e9ef] pt-4">
+          <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7b8190]">
+            Hover state
+          </span>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Color
+              label="Primary hover background"
+              value={theme.buttonPrimaryHoverBg}
+              onChange={(value) =>
+                setTheme({
+                  ...theme,
+                  buttonPrimaryHoverBg: value,
+                })
+              }
+            />
+
+            <Color
+              label="Primary hover text"
+              value={theme.buttonPrimaryHoverText}
+              onChange={(value) =>
+                setTheme({
+                  ...theme,
+                  buttonPrimaryHoverText: value,
+                })
+              }
+            />
+
+            <Color
+              label="Primary hover border"
+              value={theme.buttonPrimaryHoverBorderColor}
+              onChange={(value) =>
+                setTheme({
+                  ...theme,
+                  buttonPrimaryHoverBorderColor: value,
+                })
+              }
+            />
+
+            <div />
+
+            <Color
+              label="Secondary hover background"
+              value={theme.buttonSecondaryHoverBg}
+              onChange={(value) =>
+                setTheme({
+                  ...theme,
+                  buttonSecondaryHoverBg: value,
+                })
+              }
+            />
+
+            <Color
+              label="Secondary hover text"
+              value={theme.buttonSecondaryHoverText}
+              onChange={(value) =>
+                setTheme({
+                  ...theme,
+                  buttonSecondaryHoverText: value,
+                })
+              }
+            />
+
+            <Color
+              label="Secondary hover border"
+              value={theme.buttonSecondaryHoverBorderColor}
+              onChange={(value) =>
+                setTheme({
+                  ...theme,
+                  buttonSecondaryHoverBorderColor: value,
+                })
+              }
+            />
+
+            <Select
+              label="Hover animation"
+              value={theme.buttonHoverEffect || "none"}
+              options={[...BUTTON_HOVER_EFFECTS]}
+              onChange={(value) =>
+                setTheme({
+                  ...theme,
+                  buttonHoverEffect: value,
+                })
+              }
+            />
+          </div>
+
+          <p className="mt-2 text-[10px] text-[#9a9fae]">
+            The hover animation applies to every primary and secondary
+            button across the site.
+          </p>
         </div>
 
         {/* Live button preview — reflects the settings above */}
-        <div className="mt-5 border-t border-[#ece6f7] pt-4">
+        <div className="mt-5 border-t border-[#e7e9ef] pt-4">
           <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#7b8190]">
             Button Preview
           </span>
@@ -788,14 +1125,14 @@ export default function BrandSettingsPage() {
 
       {/* CONTENT SECTIONS */}
 
-      <div className="rounded-xl border border-[#ece6f7] bg-white p-5">
+      <div className="rounded-xl border border-[#e7e9ef] bg-white p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-[9.5px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
               Website Content
             </p>
 
-            <h2 className="mt-1 font-bold text-[#24133f]">
+            <h2 className="mt-1 font-[var(--font-poppins)] text-base font-[var(--font-poppins)] font-bold text-[#151525]">
               Content Sections
             </h2>
 
@@ -808,7 +1145,7 @@ export default function BrandSettingsPage() {
 
           <a
             href="/admin/content"
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#481d96] px-4 py-2.5 text-[11.5px] font-semibold text-white hover:bg-[#3a1778]"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[#4B1D96] px-4 py-2.5 text-[11.5px] font-semibold text-white hover:bg-[#3a1778]"
           >
             Open Content Sections
           </a>
@@ -826,7 +1163,7 @@ export default function BrandSettingsPage() {
           <button
             type="button"
             onClick={resetTheme}
-            className="rounded-lg border border-[#d9cceb] bg-white px-4 py-2 text-[11.5px] font-semibold text-[#481d96]"
+            className="rounded-xl border border-[#dfe2e8] bg-white px-4 py-2 text-[11.5px] font-semibold text-[#4B1D96] transition-colors hover:bg-gray-50"
           >
             Reset Theme
           </button>
@@ -835,7 +1172,7 @@ export default function BrandSettingsPage() {
             type="button"
             onClick={saveTheme}
             disabled={saving}
-            className="rounded-lg bg-[#481d96] px-4 py-2 text-[11.5px] font-semibold text-white disabled:opacity-60"
+            className="rounded-xl bg-[#4B1D96] px-4 py-2 text-[11.5px] font-semibold text-white transition-colors hover:bg-[#3d177a] disabled:opacity-60"
           >
             {saving
               ? "Saving..."
@@ -860,7 +1197,7 @@ function TextField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+      <span className="mb-1 block font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
         {label}
       </span>
 
@@ -870,7 +1207,7 @@ function TextField({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        className="w-full rounded-lg border border-[#ddd5ed] bg-white px-3 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+        className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
       />
     </label>
   );
@@ -887,7 +1224,7 @@ function TextArea({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+      <span className="mb-1 block font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
         {label}
       </span>
 
@@ -897,7 +1234,7 @@ function TextArea({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        className="w-full resize-y rounded-lg border border-[#ddd5ed] bg-white px-3 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+        className="w-full resize-y rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
       />
     </label>
   );
@@ -916,7 +1253,7 @@ function Select({
 }) {
   return (
     <label>
-      <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+      <span className="mb-1 block font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
         {label}
       </span>
 
@@ -925,7 +1262,7 @@ function Select({
         onChange={(event) =>
           onChange(event.target.value)
         }
-        className="w-full rounded-lg border border-[#ddd5ed] bg-white px-3 py-2 text-[12px]"
+        className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[12px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
       >
         {options.map((option) => (
           <option
@@ -953,7 +1290,7 @@ function FontSelect({
 }) {
   return (
     <label>
-      <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+      <span className="mb-1 block font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
         {label}
       </span>
 
@@ -963,7 +1300,7 @@ function FontSelect({
           onChange(event.target.value)
         }
         style={{ fontFamily: getFontStack(value) }}
-        className="w-full rounded-lg border border-[#ddd5ed] bg-white px-3 py-2 text-[13px]"
+        className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[13px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
       >
         {options.map((option) => (
           <option
@@ -997,7 +1334,7 @@ function Color({
 
   return (
     <label>
-      <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+      <span className="mb-1 block font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
         {label}
       </span>
 
@@ -1008,7 +1345,7 @@ function Color({
           onChange={(event) =>
             onChange(event.target.value)
           }
-          className="h-9 w-12 rounded border"
+          className="h-9 w-12 rounded-xl border border-[#dfe2e8]"
         />
 
         <input
@@ -1016,7 +1353,7 @@ function Color({
           onChange={(event) =>
             onChange(event.target.value)
           }
-          className="min-w-0 flex-1 rounded-lg border border-[#ddd5ed] px-3 py-2 text-[12px]"
+          className="min-w-0 flex-1 rounded-xl border border-[#dfe2e8] px-3 py-2 text-[12px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
         />
       </div>
     </label>
@@ -1036,7 +1373,7 @@ function NumberField({
 }) {
   return (
     <label>
-      <span className="mb-1 block text-[10px] font-semibold text-[#24133f]">
+      <span className="mb-1 block font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
         {label}
       </span>
 
@@ -1049,31 +1386,28 @@ function NumberField({
             Number(event.target.value)
           )
         }
-        className="w-full rounded-lg border border-[#ddd5ed] px-3 py-2 text-[12px]"
+        className="w-full rounded-xl border border-[#dfe2e8] px-3 py-2 text-[12px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
       />
     </label>
   );
 }
-// Darkens (or lightens, with a negative amount) a "#rrggbb" color by a
-// percentage. Used to derive a hover state for the button preview
-// without needing a dedicated "hover color" theme field.
-function shadeColor(hex: string, percent: number): string {
-  const safe = /^#[0-9A-Fa-f]{6}$/.test(hex) ? hex : "#000000";
-
-  const num = parseInt(safe.slice(1), 16);
-  const amt = Math.round(2.55 * percent);
-
-  let r = (num >> 16) + amt;
-  let g = ((num >> 8) & 0x00ff) + amt;
-  let b = (num & 0x0000ff) + amt;
-
-  r = Math.max(0, Math.min(255, r));
-  g = Math.max(0, Math.min(255, g));
-  b = Math.max(0, Math.min(255, b));
-
-  return `#${(1 << 24 | (r << 16) | (g << 8) | b)
-    .toString(16)
-    .slice(1)}`;
+// Maps the stored hover-effect keyword to the same transform/shadow
+// values applied on the live site (see globals.css / RootShell.tsx),
+// so this preview matches production exactly.
+function hoverEffectStyle(effect: string): React.CSSProperties {
+  if (effect === "lift") {
+    return {
+      transform: "translateY(-2px)",
+      boxShadow: "0 10px 20px -6px rgba(10,37,64,0.35)",
+    };
+  }
+  if (effect === "scale") {
+    return { transform: "scale(1.05)" };
+  }
+  if (effect === "glow") {
+    return { boxShadow: "0 0 18px 3px rgba(72,29,150,0.45)" };
+  }
+  return {};
 }
 
 function ButtonPreview({ theme }: { theme: Theme }) {
@@ -1091,7 +1425,7 @@ function ButtonPreview({ theme }: { theme: Theme }) {
     fontSize: `${theme.baseFontSize}px`,
     borderWidth: "1px",
     borderStyle: "solid",
-    transition: "background-color 0.15s ease, transform 0.15s ease",
+    transition: "background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease",
     cursor: "pointer",
   };
 
@@ -1102,13 +1436,15 @@ function ButtonPreview({ theme }: { theme: Theme }) {
         style={{
           ...sharedStyle,
           backgroundColor: primaryHover
-            ? shadeColor(theme.buttonPrimaryBg, -12)
+            ? theme.buttonPrimaryHoverBg || theme.buttonPrimaryBg
             : theme.buttonPrimaryBg,
-          color: theme.buttonPrimaryText,
-          borderColor: theme.lineColor,
-          transform: primaryHover
-            ? "translateY(-1px)"
-            : "translateY(0)",
+          color: primaryHover
+            ? theme.buttonPrimaryHoverText || theme.buttonPrimaryText
+            : theme.buttonPrimaryText,
+          borderColor: primaryHover
+            ? theme.buttonPrimaryHoverBorderColor || theme.buttonPrimaryBg
+            : theme.buttonPrimaryBorderColor || theme.buttonPrimaryBg,
+          ...(primaryHover ? hoverEffectStyle(theme.buttonHoverEffect) : {}),
         }}
         onMouseEnter={() => setPrimaryHover(true)}
         onMouseLeave={() => setPrimaryHover(false)}
@@ -1121,13 +1457,15 @@ function ButtonPreview({ theme }: { theme: Theme }) {
         style={{
           ...sharedStyle,
           backgroundColor: secondaryHover
-            ? shadeColor(theme.buttonSecondaryBg, -12)
+            ? theme.buttonSecondaryHoverBg || theme.buttonSecondaryBg
             : theme.buttonSecondaryBg,
-          color: theme.buttonSecondaryText,
-          borderColor: theme.lineColor,
-          transform: secondaryHover
-            ? "translateY(-1px)"
-            : "translateY(0)",
+          color: secondaryHover
+            ? theme.buttonSecondaryHoverText || theme.buttonSecondaryText
+            : theme.buttonSecondaryText,
+          borderColor: secondaryHover
+            ? theme.buttonSecondaryHoverBorderColor || theme.buttonSecondaryBg
+            : theme.buttonSecondaryBorderColor || theme.buttonSecondaryBg,
+          ...(secondaryHover ? hoverEffectStyle(theme.buttonHoverEffect) : {}),
         }}
         onMouseEnter={() => setSecondaryHover(true)}
         onMouseLeave={() => setSecondaryHover(false)}

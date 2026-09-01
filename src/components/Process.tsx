@@ -33,11 +33,11 @@ export default function Process({
   return (
     <section className="bg-[#F1EDFF] py-12 md:py-16">
       <div className="mx-auto w-full max-w-7xl px-6">
-        <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8 lg:gap-12">
+        <div className="cms-layout-content-image grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 md:gap-8 lg:gap-12">
 
           {/* Main CMS Image */}
           {image && (
-            <ScrollReveal className="h-full">
+            <ScrollReveal className="cms-layout-role-image h-full">
               <div className="relative h-full min-h-[300px] w-full overflow-hidden rounded-2xl shadow-sm md:min-h-[450px] md:rounded-3xl">
                 <Image
                   src={image}
@@ -50,7 +50,7 @@ export default function Process({
             </ScrollReveal>
           )}
 
-          <ScrollReveal delay={0.15} className="h-full">
+          <ScrollReveal className="cms-layout-role-content h-full" delay={0.15}>
             <div className="flex h-full flex-col justify-center rounded-2xl border border-white/40 bg-white/60 p-6 shadow-sm backdrop-blur-[2px] md:rounded-3xl md:p-8">
 
               {/* Heading */}

@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma, withDbRetry } from "@/lib/prisma";
 import { z } from "zod";
-import { Prisma, ContentSectionKey } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { contentSectionDefaults } from "@/lib/content-section-defaults";
 
-const sectionKeys = Object.values(ContentSectionKey);
+const sectionKeys = Object.keys(contentSectionDefaults);
 
 const itemSchema = z.object({
   title: z.string().trim().min(1).max(160),
@@ -20,7 +20,7 @@ const itemSchema = z.object({
 });
 
 const sectionSchema = z.object({
-  sectionKey: z.enum(sectionKeys),
+  sectionKey: z.string().trim().regex(/^[A-Z][A-Z0-9_]{1,79}$/, "Use an uppercase section key"),
   label: z.string().trim().min(2).max(80),
   eyebrow: z.string().trim().max(120).optional().default(""),
   title: z.string().trim().min(2).max(240),
@@ -53,7 +53,7 @@ async function requireAdmin() {
 async function ensureDefaultContentSections() {
   const entries = Object.entries(contentSectionDefaults).filter(
     ([key]) =>
-      sectionKeys.includes(key as ContentSectionKey),
+      sectionKeys.includes(key),
   );
 
   await prisma.$transaction(
@@ -62,11 +62,11 @@ async function ensureDefaultContentSections() {
 
       return prisma.contentSection.upsert({
         where: {
-          sectionKey: key as ContentSectionKey,
+          sectionKey: key,
         },
         update: {},
         create: {
-          sectionKey: key as ContentSectionKey,
+          sectionKey: key,
           label: defaults.label ?? key,
           eyebrow: defaults.eyebrow ?? "",
           title: defaults.title ?? key,
@@ -120,8 +120,8 @@ export async function GET(request: Request) {
   const isAdmin = ["ADMIN", "STAFF"].includes(session?.role ?? "");
 
   const where: Prisma.ContentSectionWhereInput = {
-    ...(key && sectionKeys.includes(key as ContentSectionKey)
-      ? { sectionKey: key as ContentSectionKey }
+    ...(key && sectionKeys.includes(key)
+      ? { sectionKey: key }
       : {}),
     ...(isAdmin ? {} : { published: true }),
   };

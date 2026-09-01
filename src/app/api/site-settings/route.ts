@@ -214,10 +214,26 @@ async function getSavedData(
     return {};
   }
 
-  return row.data as Record<
-    string,
-    any
-  >;
+  const data = row.data as Record<string, any>;
+
+  // Migrate the old Layout Manager's generic Hero vertical padding.
+  // The original Hero has no section-level top/bottom padding; its visual
+  // height comes from its own grid/image layout. Older manager saves used
+  // 64px as a generic default and could create a gap below the navbar.
+  if (key === "SECTION_STYLES") {
+    const hero = data.HERO;
+    if (hero && typeof hero === "object" && !Array.isArray(hero)) {
+      const version = Number(hero._layoutManagerVersion || 0);
+      if ((version > 0 && version < 3) || (version === 0 && Object.keys(hero).length >= 12)) {
+        const normalizedHero = { ...hero };
+        if (Number(normalizedHero.paddingTop) === 64) delete normalizedHero.paddingTop;
+        if (Number(normalizedHero.paddingBottom) === 64) delete normalizedHero.paddingBottom;
+        data.HERO = normalizedHero;
+      }
+    }
+  }
+
+  return data;
 }
 
 async function getSetting(
@@ -386,7 +402,17 @@ export async function GET(
 
     return NextResponse.json({
       theme,
+      // Raw THEME overrides are exposed alongside the effective theme so the
+      // frontend can distinguish an explicitly configured global spacing value
+      // from a default value that should leave the original section layout intact.
+      themeOverrides:
+        themeRow?.data && isPlainObject(themeRow.data)
+          ? (themeRow.data as Record<string, any>)
+          : {},
       layout,
+      layoutOverrides: layoutRow?.data && isPlainObject(layoutRow.data)
+        ? (layoutRow.data as Record<string, any>)
+        : {},
       sectionStyles,
 
       themeCustomized:
@@ -421,6 +447,9 @@ export async function GET(
 
         layout:
           defaultLayout,
+
+        layoutOverrides:
+          {},
 
         sectionStyles:
           defaultSectionStyles,
@@ -660,9 +689,24 @@ export async function DELETE(
       typedKey === "LAYOUT" &&
       section
     ) {
+      /*
+       * `section` may be a top-level subsection
+       * ("footer", "navbar", "consultantBanner")
+       * or a dot-path into one nested field of a
+       * subsection ("footer.goTop") when only that
+       * one control — not the whole subsection —
+       * should return to its default.
+       */
+      const sectionPath = section
+        .split(".")
+        .filter(Boolean);
+
+      const topSectionKey =
+        sectionPath[0];
+
       if (
         !layoutSubsectionKeys.includes(
-          section as LayoutSubsectionKey,
+          topSectionKey as LayoutSubsectionKey,
         )
       ) {
         return NextResponse.json(
@@ -671,7 +715,7 @@ export async function DELETE(
               `Invalid layout section. ` +
               `Must be one of: ${layoutSubsectionKeys.join(
                 ", ",
-              )}`,
+              )} (optionally with a nested field, e.g. "footer.goTop")`,
           },
           {
             status: 400,
@@ -680,7 +724,7 @@ export async function DELETE(
       }
 
       const sectionKey =
-        section as LayoutSubsectionKey;
+        topSectionKey as LayoutSubsectionKey;
 
       const existingRow =
         await withDbRetry(() =>
@@ -706,15 +750,63 @@ export async function DELETE(
             }
           : {};
 
-      /*
-       * TRUE RESET:
-       *
-       * Remove only this subsection
-       * from database overrides.
-       */
-      delete currentData[
-        sectionKey
-      ];
+      if (sectionPath.length > 1) {
+        /*
+         * NESTED RESET (e.g. "footer.goTop"):
+         *
+         * Remove only the nested field's saved
+         * override, leaving every other field on
+         * the parent subsection (other footer
+         * content, navbar settings, etc.) exactly
+         * as it was.
+         */
+        const nestedKey =
+          sectionPath[1];
+
+        const parentValue =
+          currentData[sectionKey];
+
+        if (isPlainObject(parentValue)) {
+          const nextParent = {
+            ...(parentValue as Record<
+              string,
+              unknown
+            >),
+          };
+
+          delete nextParent[
+            nestedKey
+          ];
+
+          if (
+            Object.keys(nextParent)
+              .length === 0
+          ) {
+            delete currentData[
+              sectionKey
+            ];
+          } else {
+            currentData[sectionKey] =
+              nextParent;
+          }
+        }
+
+        /*
+         * If the parent subsection has no saved
+         * overrides at all, there is nothing to
+         * reset — it's already at defaults.
+         */
+      } else {
+        /*
+         * TRUE RESET:
+         *
+         * Remove only this subsection
+         * from database overrides.
+         */
+        delete currentData[
+          sectionKey
+        ];
+      }
 
       /*
        * If no other layout customizations
@@ -740,8 +832,7 @@ export async function DELETE(
         return NextResponse.json({
           ok: true,
           key: "LAYOUT",
-          section:
-            sectionKey,
+          section,
 
           data:
             defaultLayout,
@@ -777,8 +868,7 @@ export async function DELETE(
       return NextResponse.json({
         ok: true,
         key: "LAYOUT",
-        section:
-          sectionKey,
+        section,
 
         data:
           mergeDeep(

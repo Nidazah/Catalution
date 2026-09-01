@@ -23,17 +23,22 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
 
       {/* Page heading */}
-      <div>
-        <h1 className="text-xl font-bold tracking-tight text-[#24133f] sm:text-2xl">
-          Dashboard
-        </h1>
-        <p className="mt-1 text-sm text-[#7b8190]">
-          A snapshot of your website content and publish status.
-        </p>
+      <div className="flex items-start gap-3">
+        <div>
+          <p className="font-[var(--font-poppins)] font-[var(--font-poppins)] text-[9px] font-bold uppercase tracking-[0.18em] text-[#ff6800]">
+            Catalution CMS
+          </p>
+          <h1 className="mt-1 font-[var(--font-poppins)] text-2xl font-bold tracking-tight text-[#151525] sm:text-[28px]">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-[#7b8190]">
+            A snapshot of your website content and publish status.
+          </p>
+        </div>
       </div>
 
       {/* Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#481d96] via-[#6d28d9] to-[#8b5cf6] p-6 text-white shadow-lg sm:p-8">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#4B1D96] via-[#4B1D96] to-[#151525] p-6 text-white shadow-lg sm:p-8">
         <div
           className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10 blur-2xl"
           aria-hidden="true"
@@ -72,7 +77,7 @@ export default async function AdminDashboardPage() {
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6800]">
             Overview
           </p>
-          <h3 className="mt-0.5 text-base font-bold text-[#24133f]">
+          <h3 className="mt-0.5 text-base font-bold text-[#151525]">
             Content health
           </h3>
         </div>
@@ -84,7 +89,7 @@ export default async function AdminDashboardPage() {
             value={serviceCount}
             label="Services"
             detail={`${publishedServices} published`}
-            iconClass="bg-[#f0eafa] text-[#481d96]"
+            iconClass="bg-[#f0eafa] text-[#4B1D96]"
           />
           <StatCard
             href="/admin/content"
@@ -102,11 +107,11 @@ export default async function AdminDashboardPage() {
             detail={`${publishedPortfolios} published`}
             iconClass="bg-[#fff1e8] text-[#ff6800]"
           />
-          <div className="rounded-xl border border-[#ece6f7] bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-[#e7e9ef] bg-white p-5 shadow-sm">
             <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-[#f0faef] text-[#2f8f46]">
               <CheckCircle2 size={17} />
             </div>
-            <div className="text-lg font-bold text-[#24133f]">
+            <div className="text-lg font-bold text-[#151525]">
               Brand system
             </div>
             <p className="mt-1 text-xs leading-5 text-[#7b8190]">
@@ -119,10 +124,10 @@ export default async function AdminDashboardPage() {
 
       {/* Publish coverage visuals */}
       <div className="grid gap-4 lg:grid-cols-[240px_1fr]">
-        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[#ece6f7] bg-white p-5 shadow-sm">
+        <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-[#e7e9ef] bg-white p-5 shadow-sm">
           <PublishRing percent={overallPct} />
           <div className="text-center">
-            <div className="text-lg font-bold text-[#24133f]">
+            <div className="text-lg font-bold text-[#151525]">
               {overallPct}% published
             </div>
             <p className="mt-0.5 text-xs text-[#7b8190]">
@@ -131,12 +136,12 @@ export default async function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#ece6f7] bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-[#e7e9ef] bg-white p-5 shadow-sm">
           <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-[#8a8399]">
             Publish coverage by type
           </p>
           <div className="space-y-4">
-            <PublishBar label="Services" published={publishedServices} total={serviceCount} color="#481d96" />
+            <PublishBar label="Services" published={publishedServices} total={serviceCount} color="#4B1D96" />
             <PublishBar label="Website sections" published={publishedContent} total={contentCount} color="#ff6800" />
             <PublishBar label="Portfolio" published={publishedPortfolios} total={portfolioCount} color="#2f8f46" />
           </div>
@@ -160,7 +165,7 @@ function PublishBar({
   const pct = total > 0 ? Math.round((published / total) * 100) : 0
   return (
     <div>
-      <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-[#24133f]">
+      <div className="mb-1.5 flex items-center justify-between text-xs font-semibold text-[#151525]">
         <span>{label}</span>
         <span className="text-[#7b8190]">{published}/{total} &middot; {pct}%</span>
       </div>
@@ -224,18 +229,18 @@ function StatCard({
   return (
     <Link
       href={href}
-      className="rounded-xl border border-[#ece6f7] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="rounded-xl border border-[#e7e9ef] bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
     >
       <div className={`mb-3 flex h-9 w-9 items-center justify-center rounded-lg ${iconClass}`}>
         {icon}
       </div>
-      <div className="text-2xl font-bold leading-none text-[#24133f]">
+      <div className="text-2xl font-bold leading-none text-[#151525]">
         {value}
       </div>
       <div className="mt-1.5 text-sm font-medium text-[#4b5563]">
         {label}
       </div>
-      <div className="mt-2.5 flex items-center gap-1 text-xs font-semibold text-[#481d96]">
+      <div className="mt-2.5 flex items-center gap-1 text-xs font-semibold text-[#4B1D96]">
         {detail} <ArrowUpRight size={12} />
       </div>
     </Link>

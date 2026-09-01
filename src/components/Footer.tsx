@@ -139,6 +139,12 @@ export default function FooterV2() {
       backgroundColor?: string;
       textColor?: string;
       iconColor?: string;
+      borderColor?: string;
+      hoverBackgroundColor?: string;
+      hoverTextColor?: string;
+      hoverIconColor?: string;
+      hoverBorderColor?: string;
+      hoverEffect?: string;
     };
   }>({});
 
@@ -208,8 +214,8 @@ export default function FooterV2() {
                 rel="noopener noreferrer"
                 aria-label={s.label}
                 /* ✅ UPDATED HOVER COLOR TO LIGHT PURPLE */
-                className="flex h-9 w-9 items-center justify-center bg-[var(--color-purple-300)] text-white transition-colors hover:bg-[var(--color-purple-300)] hover:text-white"
-                style={{ borderRadius: socialRadius }}
+                className="flex h-9 w-9 items-center justify-center text-white transition-colors hover:text-white"
+                style={{ borderRadius: socialRadius, backgroundColor: "color-mix(in srgb, var(--color-purple-900) 35%, white 65%)" }}
               >
                 {(() => {
                   const Icon = getSocialIcon(s);
@@ -323,13 +329,26 @@ export default function FooterV2() {
         <a
           href={layout.goTop?.target || "#top"}
           aria-label={layout.goTop?.label || "Go to top"}
-          className="group fixed bottom-8 right-6 z-40 flex flex-col items-center gap-1 rounded-full px-2 py-4 shadow-[0_10px_30px_-10px_rgba(10,37,64,0.35)] transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-[0_15px_35px_-10px_rgba(10,37,64,0.6)]"
-          style={{ backgroundColor: layout.goTop?.backgroundColor || "#ffffff" }}
+          className={`go-top-btn go-top-btn--${layout.goTop?.hoverEffect || "lift"} fixed bottom-8 right-6 z-40 flex flex-col items-center gap-1 rounded-full px-2 py-4 shadow-[0_10px_30px_-10px_rgba(10,37,64,0.35)]`}
+          style={{
+            "--gotop-bg": layout.goTop?.backgroundColor || "#ffffff",
+            "--gotop-text": layout.goTop?.textColor || "var(--color-navy)",
+            "--gotop-icon": layout.goTop?.iconColor || layout.goTop?.textColor || "var(--color-navy)",
+            "--gotop-border": layout.goTop?.borderColor || "transparent",
+            "--gotop-hover-bg": layout.goTop?.hoverBackgroundColor || layout.goTop?.backgroundColor || "#ffffff",
+            "--gotop-hover-text": layout.goTop?.hoverTextColor || layout.goTop?.textColor || "var(--color-navy)",
+            "--gotop-hover-icon":
+              layout.goTop?.hoverIconColor ||
+              layout.goTop?.hoverTextColor ||
+              layout.goTop?.iconColor ||
+              "var(--color-navy)",
+            "--gotop-hover-border": layout.goTop?.hoverBorderColor || layout.goTop?.borderColor || "transparent",
+          } as React.CSSProperties}
         >
-          <ArrowUp className="h-4 w-4 transition-colors duration-300 group-hover:text-white" style={{ color: layout.goTop?.iconColor || layout.goTop?.textColor || "var(--color-navy)" }} />
+          <ArrowUp className="go-top-icon h-4 w-4" />
           <span
-            className="font-display text-[10px] font-bold tracking-widest transition-colors duration-300 group-hover:text-white"
-            style={{ writingMode: "vertical-rl", color: layout.goTop?.textColor || "var(--color-navy)" }}
+            className="go-top-label font-display text-[10px] font-bold tracking-widest"
+            style={{ writingMode: "vertical-rl" }}
           >
             {layout.goTop?.label || "GO TOP"}
           </span>

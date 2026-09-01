@@ -115,7 +115,7 @@ type HeroSettings = {
 
 type Section = {
   id: string;
-  sectionKey: (typeof sectionOptions)[number][0];
+  sectionKey: string;
   label: string;
   eyebrow: string | null;
   title: string;
@@ -172,7 +172,7 @@ const emptyForm = {
 
 export default function ContentManagerPage() {
   const [sections, setSections] = useState<Section[]>([]);
-  const [selectedKey, setSelectedKey] = useState<Section["sectionKey"]>("HERO");
+  const [selectedKey, setSelectedKey] = useState<string>("HERO");
 
   const [form, setForm] = useState({
     ...emptyForm,
@@ -223,7 +223,37 @@ export default function ContentManagerPage() {
     load();
   }, []);
 
-  function selectSection(key: Section["sectionKey"]) {
+  function createNewSection() {
+    const base = "NEW_SECTION";
+    let key = base;
+    let index = 1;
+    const existingKeys = new Set(sections.map((section) => section.sectionKey));
+    while (existingKeys.has(key)) {
+      index += 1;
+      key = `${base}_${index}`;
+    }
+
+    const nextOrder = sections.length
+      ? Math.max(...sections.map((section) => section.sortOrder)) + 1
+      : 1;
+
+    setSelectedKey(key);
+    setEditingId(null);
+    setForm({
+      ...emptyForm,
+      sectionKey: key,
+      label: "New Section",
+      title: "New Section",
+      description: "",
+      items: [],
+      sortOrder: nextOrder,
+      published: true,
+    });
+    setError("");
+    setOpen(true);
+  }
+
+  function selectSection(key: string) {
     setSelectedKey(key);
 
     const existing = sections.find((section) => section.sectionKey === key);
@@ -259,7 +289,7 @@ export default function ContentManagerPage() {
             }))
           : [],
         settings: {
-          ...((contentSectionDefaults[key] as any)?.settings ?? {}),
+          ...(((contentSectionDefaults as Record<string, any>)[key] as any)?.settings ?? {}),
           ...(existing.settings &&
           typeof existing.settings === "object" &&
           !Array.isArray(existing.settings)
@@ -279,7 +309,7 @@ export default function ContentManagerPage() {
         sectionKey: key,
         label: meta?.[1] ?? key,
         settings: {
-          ...((contentSectionDefaults[key] as any)?.settings ?? {}),
+          ...(((contentSectionDefaults as Record<string, any>)[key] as any)?.settings ?? {}),
         } as HeroSettings,
         sortOrder: sectionOptions.findIndex(([item]) => item === key) + 1,
       });
@@ -373,7 +403,7 @@ export default function ContentManagerPage() {
     }
   }
 
-  function fieldLabels(key: Section["sectionKey"]) {
+  function fieldLabels(key: string) {
     switch (key) {
       case "MARQUE":
         return {
@@ -457,7 +487,7 @@ export default function ContentManagerPage() {
     }
   }
 
-  function sectionCapabilities(key: Section["sectionKey"]) {
+  function sectionCapabilities(key: string) {
     switch (key) {
       case "CASE_STUDIES":
         return {
@@ -496,7 +526,7 @@ export default function ContentManagerPage() {
     }
   }
 
-  function itemsIntro(key: Section["sectionKey"]) {
+  function itemsIntro(key: string) {
     if (key === "CASE_STUDIES") {
       return {
         title: "Case study projects",
@@ -595,7 +625,7 @@ export default function ContentManagerPage() {
    * - Admin must click Save Section to persist the reset.
    */
   function resetToDefault() {
-    const defaults = contentSectionDefaults[form.sectionKey];
+    const defaults = (contentSectionDefaults as Record<string, any>)[form.sectionKey];
 
     if (!defaults) {
       return;
@@ -658,35 +688,46 @@ export default function ContentManagerPage() {
     <div className="space-y-6 text-[12.5px]">
       {/* PAGE HEADER */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <span className="mb-2 inline-flex items-center gap-2 rounded bg-orange-100 px-2.5 py-1 text-[10px] font-bold tracking-wider text-accent">
-            <span className="h-1 w-1 rounded-full bg-accent" />
-            Website CMS
-          </span>
+        <div className="flex items-start gap-3">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#fff1e8] px-2.5 py-1 font-[var(--font-poppins)] text-[9px] font-bold uppercase tracking-[0.16em] text-[#ff6800]">
+              Website CMS
+            </span>
 
-          <h1 className="mt-1.5 !text-[16px] font-semibold tracking-tight text-[#24133f]">
-            Content Sections
-          </h1>
+            <h1 className="mt-1 font-[var(--font-poppins)] text-2xl font-bold tracking-tight text-[#151525] sm:text-[28px]">
+              Content Sections
+            </h1>
 
           <p className="mt-1.5 max-w-2xl text-[11.5px] leading-5 text-[#6b7280]">
             Manage website content using the approved purple and orange brand
             system.
           </p>
+          </div>
         </div>
 
-        <button
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={createNewSection}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#d8cfee] bg-white px-3.5 py-2 text-[11.5px] font-semibold text-[#4B1D96] shadow-sm transition hover:border-[#8b5cf6] hover:bg-[#f0eafa]"
+          >
+            <Plus size={13} />
+            Add New Section
+          </button>
+          <button
           type="button"
           onClick={() => selectSection(selectedKey)}
-          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-[#481d96] px-3.5 py-2 text-[11.5px] font-semibold text-white shadow-sm transition hover:bg-[#3d1980]"
+          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#4B1D96] px-3.5 py-2 text-[11.5px] font-semibold text-white shadow-sm transition hover:bg-[#3d177a]"
         >
           <Plus size={13} />
           Edit {selectedMeta?.[1] ?? "Section"}
-        </button>
+          </button>
+        </div>
       </div>
 
       {/* LOAD ERROR */}
       {loadError && (
-        <div className="flex items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[11.5px] text-red-700">
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-[11.5px] text-red-700">
           <span>{loadError}</span>
 
           <button
@@ -713,8 +754,8 @@ export default function ContentManagerPage() {
               onClick={() => setSelectedKey(key)}
               className={`rounded-xl border p-3.5 text-left transition-all ${
                 active
-                  ? "border-[#8b5cf6] bg-[#f0e9fc] shadow-sm"
-                  : "border-[#ece6f7] bg-white hover:border-[#b94ef3] hover:bg-[#f0e9fc]"
+                  ? "border-[#8b5cf6] bg-[#f0eafa] shadow-sm"
+                  : "border-[#e7e9ef] bg-white hover:border-[#c4a8ef] hover:bg-[#f0eafa]"
               }`}
             >
               <div className="flex items-start justify-between gap-2.5">
@@ -723,7 +764,7 @@ export default function ContentManagerPage() {
                     {label}
                   </p>
 
-                  <h2 className="mt-0.5 !text-[12px] font-semibold text-[#24133f]">
+                  <h2 className="mt-0.5 !text-[12px] font-semibold text-[#151525]">
                     {section?.title || "Not configured"}
                   </h2>
                 </div>
@@ -751,15 +792,40 @@ export default function ContentManagerPage() {
         })}
       </div>
 
+      {sections.filter((section) => !sectionOptions.some(([key]) => key === section.sectionKey)).length > 0 && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#ff6800]">Custom sections</p>
+              <h2 className="mt-0.5 !text-[12px] font-semibold text-[#151525]">Sections you created</h2>
+            </div>
+          </div>
+          <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
+            {sections.filter((section) => !sectionOptions.some(([key]) => key === section.sectionKey)).map((section) => (
+              <button type="button" key={section.id} onClick={() => setSelectedKey(section.sectionKey)} className={`rounded-xl border p-3.5 text-left transition-all ${selectedKey === section.sectionKey ? "border-[#8b5cf6] bg-[#f0eafa] shadow-sm" : "border-[#e7e9ef] bg-white hover:border-[#c4a8ef] hover:bg-[#f0eafa]"}`}>
+                <div className="flex items-start justify-between gap-2.5">
+                  <div>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#ff6800]">Custom</p>
+                    <h2 className="mt-0.5 !text-[12px] font-semibold text-[#151525]">{section.title || section.label}</h2>
+                  </div>
+                  <span className="rounded-full bg-[#f0eafa] px-2 py-1 text-[9px] font-bold text-[#4B1D96]">{section.items?.length || 0} items</span>
+                </div>
+                <p className="mt-1.5 text-[10px] text-[#7b8190]">{section.label} · {section.sectionKey}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* SELECTED SECTION PREVIEW */}
-      <div className="overflow-hidden rounded-xl border border-[#ece6f7] bg-white">
-        <div className="flex items-center justify-between border-b border-[#eeeaf5] px-4 py-3">
+      <div className="overflow-hidden rounded-xl border border-[#e7e9ef] bg-white">
+        <div className="flex items-center justify-between border-b border-[#e7e9ef] px-4 py-3">
           <div>
             <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#ff6800]">
               {selectedMeta?.[1]}
             </p>
 
-            <h2 className="mt-0.5 !text-[12px] font-semibold text-[#24133f]">
+            <h2 className="mt-0.5 !text-[12px] font-semibold text-[#151525]">
               {sections.find((section) => section.sectionKey === selectedKey)
                 ?.title || "Section not configured"}
             </h2>
@@ -768,7 +834,7 @@ export default function ContentManagerPage() {
           <button
             type="button"
             onClick={() => selectSection(selectedKey)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[#d8c9f4] px-2.5 py-1.5 text-[10.5px] font-semibold text-[#481d96] hover:border-[#8b5cf6] hover:bg-[#f0eafa]"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#d8cfee] px-2.5 py-1.5 text-[10.5px] font-semibold text-[#4B1D96] hover:border-[#8b5cf6] hover:bg-[#f0eafa]"
           >
             <Pencil size={11} />
 
@@ -791,7 +857,7 @@ export default function ContentManagerPage() {
 
               if (!current) {
                 return (
-                  <div className="rounded-lg bg-[#faf7ff] p-6 text-center text-[11.5px] text-[#6b7280]">
+                  <div className="rounded-xl bg-[#faf7ff] p-6 text-center text-[11.5px] text-[#6b7280]">
                     This section has not been configured yet.
                   </div>
                 );
@@ -799,7 +865,7 @@ export default function ContentManagerPage() {
 
               return (
                 <div className="grid gap-4 lg:grid-cols-[150px_1fr]">
-                  <div className="h-28 overflow-hidden rounded-lg bg-[#f5f1fb]">
+                  <div className="h-28 overflow-hidden rounded-xl bg-[#f5f1fb]">
                     {current.image ? (
                       <img
                         src={current.image}
@@ -813,7 +879,7 @@ export default function ContentManagerPage() {
 
                   <div>
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <span className="rounded-full bg-[#f0eafa] px-2 py-0.5 text-[9px] font-bold text-[#481d96]">
+                      <span className="rounded-full bg-[#f0eafa] px-2 py-0.5 text-[9px] font-bold text-[#4B1D96]">
                         {current.label}
                       </span>
 
@@ -828,7 +894,7 @@ export default function ContentManagerPage() {
                       </span>
                     </div>
 
-                    <h3 className="mt-2 !text-[12px] font-semibold text-[#24133f]">
+                    <h3 className="mt-2 !text-[12px] font-semibold text-[#151525]">
                       {current.title}
                     </h3>
 
@@ -858,13 +924,13 @@ export default function ContentManagerPage() {
             className="flex max-h-[94vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
           >
             {/* MODAL HEADER */}
-            <div className="flex items-center justify-between border-b border-[#eeeaf5] px-5 py-4">
+            <div className="flex items-center justify-between border-b border-[#e7e9ef] px-5 py-4">
               <div>
                 <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-[#ff6800]">
                   {selectedMeta?.[1]}
                 </p>
 
-                <h2 className="mt-0.5 !text-[12px] font-semibold text-[#24133f]">
+                <h2 className="mt-0.5 !text-[12px] font-semibold text-[#151525]">
                   {editingId ? "Edit Section" : "Configure Section"}
                 </h2>
               </div>
@@ -872,7 +938,7 @@ export default function ContentManagerPage() {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-lg p-1.5 text-[#7b8190] hover:bg-[#ece6f7] hover:text-[#481d96]"
+                className="rounded-lg p-1.5 text-[#7b8190] hover:bg-[#e7e9ef] hover:text-[#4B1D96]"
               >
                 <X size={14} />
               </button>
@@ -932,8 +998,8 @@ export default function ContentManagerPage() {
                             />
 
                             {/* DESCRIPTION */}
-                            <label className="grid gap-1">
-                              <span className="text-[10.5px] font-semibold text-[#24133f]">
+                            <label className="grid gap-1.5">
+                              <span className="font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
                                 Description
                               </span>
 
@@ -946,7 +1012,7 @@ export default function ContentManagerPage() {
                                     description: e.target.value,
                                   })
                                 }
-                                className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+                                className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
                               />
                             </label>
 
@@ -971,8 +1037,8 @@ export default function ContentManagerPage() {
 
                       {/* HERO-SPECIFIC FLOATING ELEMENTS */}
                       {form.sectionKey === "HERO" && (
-                        <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
-                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                        <div className="rounded-xl border border-[#e7e9ef] bg-[#faf7ff] p-3.5">
+                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#4B1D96]">
                             Hero floating elements
                           </p>
                           <p className="mt-1 text-[10px] text-[#7b8190]">
@@ -982,7 +1048,7 @@ export default function ContentManagerPage() {
                           </p>
 
                           <div className="mt-3 space-y-4">
-                            <div className="rounded-lg border border-[#e7def7] bg-white p-3">
+                            <div className="rounded-xl border border-[#e7def7] bg-white p-3">
                               <label className="flex items-center gap-2">
                                 <input
                                   type="checkbox"
@@ -997,7 +1063,7 @@ export default function ContentManagerPage() {
                                     })
                                   }
                                 />
-                                <span className="text-[11px] font-semibold text-[#24133f]">
+                                <span className="text-[11px] font-semibold text-[#151525]">
                                   Show Play Reels button
                                 </span>
                               </label>
@@ -1031,7 +1097,7 @@ export default function ContentManagerPage() {
                               </div>
                             </div>
 
-                            <div className="rounded-lg border border-[#e7def7] bg-white p-3">
+                            <div className="rounded-xl border border-[#e7def7] bg-white p-3">
                               <label className="flex items-center gap-2">
                                 <input
                                   type="checkbox"
@@ -1046,7 +1112,7 @@ export default function ContentManagerPage() {
                                     })
                                   }
                                 />
-                                <span className="text-[11px] font-semibold text-[#24133f]">
+                                <span className="text-[11px] font-semibold text-[#151525]">
                                   Show Happy Clients card
                                 </span>
                               </label>
@@ -1121,8 +1187,8 @@ export default function ContentManagerPage() {
                               </div>
                             </div>
 
-                            <div className="rounded-lg border border-[#e7def7] bg-white p-3">
-                              <span className="text-[11px] font-semibold text-[#24133f]">
+                            <div className="rounded-xl border border-[#e7def7] bg-white p-3">
+                              <span className="text-[11px] font-semibold text-[#151525]">
                                 Number badge
                               </span>
                               <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -1166,8 +1232,8 @@ export default function ContentManagerPage() {
 
                       {/* ABOUT-SPECIFIC STATS */}
                       {form.sectionKey === "ABOUT" && (
-                        <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
-                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                        <div className="rounded-xl border border-[#e7e9ef] bg-[#faf7ff] p-3.5">
+                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#4B1D96]">
                             About stats
                           </p>
                           <p className="mt-1 text-[10px] text-[#7b8190]">
@@ -1176,8 +1242,8 @@ export default function ContentManagerPage() {
                           </p>
 
                           <div className="mt-3 space-y-3">
-                            <div className="rounded-lg border border-[#e7def7] bg-white p-3">
-                              <span className="text-[11px] font-semibold text-[#24133f]">
+                            <div className="rounded-xl border border-[#e7def7] bg-white p-3">
+                              <span className="text-[11px] font-semibold text-[#151525]">
                                 Image badge
                               </span>
                               <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -1216,8 +1282,8 @@ export default function ContentManagerPage() {
                               </div>
                             </div>
 
-                            <div className="rounded-lg border border-[#e7def7] bg-white p-3">
-                              <span className="text-[11px] font-semibold text-[#24133f]">
+                            <div className="rounded-xl border border-[#e7def7] bg-white p-3">
+                              <span className="text-[11px] font-semibold text-[#151525]">
                                 Stat 1
                               </span>
                               <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -1256,8 +1322,8 @@ export default function ContentManagerPage() {
                               </div>
                             </div>
 
-                            <div className="rounded-lg border border-[#e7def7] bg-white p-3">
-                              <span className="text-[11px] font-semibold text-[#24133f]">
+                            <div className="rounded-xl border border-[#e7def7] bg-white p-3">
+                              <span className="text-[11px] font-semibold text-[#151525]">
                                 Stat 2
                               </span>
                               <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -1301,8 +1367,8 @@ export default function ContentManagerPage() {
 
                       {/* ABOUT EVOLUTION VIDEO LINK */}
                       {form.sectionKey === "ABOUT_EVOLUTION" && (
-                        <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
-                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                        <div className="rounded-xl border border-[#e7e9ef] bg-[#faf7ff] p-3.5">
+                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#4B1D96]">
                             Video block
                           </p>
                           <p className="mt-1 text-[10px] text-[#7b8190]">
@@ -1328,8 +1394,8 @@ export default function ContentManagerPage() {
 
                       {/* PRICING-SPECIFIC TOGGLE LABELS */}
                       {form.sectionKey === "PRICING" && (
-                        <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
-                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                        <div className="rounded-xl border border-[#e7e9ef] bg-[#faf7ff] p-3.5">
+                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#4B1D96]">
                             Billing toggle
                           </p>
                           <p className="mt-1 text-[10px] text-[#7b8190]">
@@ -1388,8 +1454,8 @@ export default function ContentManagerPage() {
 
                       {/* TEAM-SPECIFIC SOCIAL LINKS */}
                       {form.sectionKey === "TEAM" && (
-                        <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
-                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                        <div className="rounded-xl border border-[#e7e9ef] bg-[#faf7ff] p-3.5">
+                          <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#4B1D96]">
                             Social icon links
                           </p>
                           <p className="mt-1 text-[10px] text-[#7b8190]">
@@ -1446,8 +1512,8 @@ export default function ContentManagerPage() {
                         form.sectionKey !== "MARQUE" &&
                         form.sectionKey !== "PRICING" &&
                         form.sectionKey !== "TESTIMONIALS" && (
-                          <div className="rounded-xl border border-[#ece6f7] bg-[#faf7ff] p-3.5">
-                            <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                          <div className="rounded-xl border border-[#e7e9ef] bg-[#faf7ff] p-3.5">
+                            <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#4B1D96]">
                               Calls to action
                             </p>
 
@@ -1502,10 +1568,10 @@ export default function ContentManagerPage() {
                         )}
 
                       {/* REPEATABLE ITEMS */}
-                      <div className="rounded-xl border border-[#ece6f7] p-3.5">
+                      <div className="rounded-xl border border-[#e7e9ef] p-3.5">
                         <div className="flex items-center justify-between gap-3">
                           <div>
-                            <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#481d96]">
+                            <p className="text-[9.5px] font-bold uppercase tracking-[0.12em] text-[#4B1D96]">
                               {intro.title}
                             </p>
 
@@ -1517,7 +1583,7 @@ export default function ContentManagerPage() {
                           <button
                             type="button"
                             onClick={addItem}
-                            className="inline-flex items-center gap-1 rounded-lg bg-[#ff6800] px-2.5 py-1.5 text-[10px] font-semibold text-white hover:bg-[#e85f00]"
+                            className="inline-flex items-center gap-1 rounded-xl bg-[#ff6800] px-2.5 py-1.5 text-[10px] font-semibold text-white hover:bg-[#e85f00]"
                           >
                             <Plus size={11} />
                             Add item
@@ -1526,7 +1592,7 @@ export default function ContentManagerPage() {
 
                         <div className="mt-3 space-y-2.5">
                           {form.items.length === 0 ? (
-                            <div className="rounded-lg border border-dashed border-[#d8c9f4] p-5 text-center text-[10.5px] text-[#7b8190]">
+                            <div className="rounded-xl border border-dashed border-[#d8cfee] p-5 text-center text-[10.5px] text-[#7b8190]">
                               No repeatable items added.
                             </div>
                           ) : (
@@ -1548,7 +1614,7 @@ export default function ContentManagerPage() {
                                       type="button"
                                       onClick={() => moveItem(index, -1)}
                                       disabled={index === 0}
-                                      className="rounded-md border border-[#ddd5ed] bg-white p-1 text-[#481d96] disabled:opacity-30"
+                                      className="rounded-md border border-[#ddd5ed] bg-white p-1 text-[#4B1D96] disabled:opacity-30"
                                       aria-label="Move up"
                                     >
                                       <ChevronUp size={12} />
@@ -1558,7 +1624,7 @@ export default function ContentManagerPage() {
                                       type="button"
                                       onClick={() => moveItem(index, 1)}
                                       disabled={index === form.items.length - 1}
-                                      className="rounded-md border border-[#ddd5ed] bg-white p-1 text-[#481d96] disabled:opacity-30"
+                                      className="rounded-md border border-[#ddd5ed] bg-white p-1 text-[#4B1D96] disabled:opacity-30"
                                       aria-label="Move down"
                                     >
                                       <ChevronDown size={12} />
@@ -1598,8 +1664,8 @@ export default function ContentManagerPage() {
                                           placeholder="2024"
                                         />
 
-                                        <label className="grid gap-1">
-                                          <span className="text-[10.5px] font-semibold text-[#24133f]">
+                                        <label className="grid gap-1.5">
+                                          <span className="font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
                                             Side of timeline
                                           </span>
                                           <select
@@ -1615,7 +1681,7 @@ export default function ContentManagerPage() {
                                                 },
                                               })
                                             }
-                                            className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+                                            className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
                                           >
                                             <option value="left">Left</option>
                                             <option value="right">Right</option>
@@ -1623,8 +1689,8 @@ export default function ContentManagerPage() {
                                         </label>
                                       </div>
 
-                                      <label className="grid gap-1">
-                                        <span className="text-[10.5px] font-semibold text-[#24133f]">
+                                      <label className="grid gap-1.5">
+                                        <span className="font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
                                           {labels.itemDescription}
                                         </span>
 
@@ -1636,7 +1702,7 @@ export default function ContentManagerPage() {
                                               description: e.target.value,
                                             })
                                           }
-                                          className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+                                          className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
                                         />
                                       </label>
 
@@ -1688,8 +1754,8 @@ export default function ContentManagerPage() {
                                         to match the site's purple/orange brand.
                                       </p>
 
-                                      <label className="grid gap-1">
-                                        <span className="text-[10.5px] font-semibold text-[#24133f]">
+                                      <label className="grid gap-1.5">
+                                        <span className="font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
                                           {labels.itemDescription}
                                         </span>
 
@@ -1701,7 +1767,7 @@ export default function ContentManagerPage() {
                                               description: e.target.value,
                                             })
                                           }
-                                          className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+                                          className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
                                         />
                                       </label>
                                     </>
@@ -1731,8 +1797,8 @@ export default function ContentManagerPage() {
                                           />
                                         )}
 
-                                      <label className="grid gap-1">
-                                        <span className="text-[10.5px] font-semibold text-[#24133f]">
+                                      <label className="grid gap-1.5">
+                                        <span className="font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
                                           {labels.itemDescription}
                                         </span>
 
@@ -1744,7 +1810,7 @@ export default function ContentManagerPage() {
                                               description: e.target.value,
                                             })
                                           }
-                                          className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+                                          className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
                                         />
                                       </label>
 
@@ -1822,7 +1888,7 @@ export default function ContentManagerPage() {
                     }
                   />
 
-                  <label className="flex items-center gap-2.5 rounded-lg border border-[#ece6f7] px-2.5 py-2">
+                  <label className="flex items-center gap-2.5 rounded-xl border border-[#e7e9ef] px-2.5 py-2">
                     <input
                       type="checkbox"
                       checked={form.published}
@@ -1834,14 +1900,14 @@ export default function ContentManagerPage() {
                       }
                     />
 
-                    <span className="text-[11.5px] font-medium text-[#24133f]">
+                    <span className="text-[11.5px] font-medium text-[#151525]">
                       Publish this section
                     </span>
                   </label>
                 </div>
 
                 {error && (
-                  <div className="rounded-lg border border-red-200 bg-red-50 px-2.5 py-2 text-[11.5px] text-red-700">
+                  <div className="rounded-xl border border-red-200 bg-red-50 px-2.5 py-2 text-[11.5px] text-red-700">
                     {error}
                   </div>
                 )}
@@ -1849,7 +1915,7 @@ export default function ContentManagerPage() {
             </div>
 
             {/* MODAL FOOTER */}
-            <div className="flex items-center justify-between gap-3 border-t border-[#eeeaf5] px-5 py-3.5">
+            <div className="flex items-center justify-between gap-3 border-t border-[#e7e9ef] px-5 py-3.5">
               <div className="flex items-center gap-1.5">
                 {editingId && (
                   <button
@@ -1863,11 +1929,11 @@ export default function ContentManagerPage() {
                 )}
 
                 {/* RESET BUTTON */}
-                {contentSectionDefaults[form.sectionKey] && (
+                {(contentSectionDefaults as Record<string, any>)[form.sectionKey] && (
                   <button
                     type="button"
                     onClick={resetToDefault}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-[#481D96] px-2.5 py-1.5 text-[10.5px] font-semibold text-white shadow-sm transition-colors hover:bg-[#6D28D9]"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#4B1D96] px-2.5 py-1.5 text-[10.5px] font-semibold text-white shadow-sm transition-colors hover:bg-[#6D28D9]"
                   >
                     <RotateCcw size={11} />
                     Reset to Default
@@ -1879,7 +1945,7 @@ export default function ContentManagerPage() {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="rounded-lg border border-[#ddd6eb] px-3.5 py-2 text-[11.5px] font-medium text-[#4b5563] hover:border-[#c7cbd3] hover:bg-[#f3f4f6]"
+                  className="rounded-xl border border-[#ddd6eb] px-3.5 py-2 text-[11.5px] font-medium text-[#4b5563] hover:border-[#c7cbd3] hover:bg-[#f3f4f6]"
                 >
                   Cancel
                 </button>
@@ -1887,7 +1953,7 @@ export default function ContentManagerPage() {
                 <button
                   disabled={saving}
                   type="submit"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#481d96] px-4 py-2 text-[11.5px] font-semibold text-white hover:bg-[#3d1980] disabled:opacity-60"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#4B1D96] px-4 py-2 text-[11.5px] font-semibold text-white hover:bg-[#3d177a] disabled:opacity-60"
                 >
                   <Save size={12} />
 
@@ -1918,8 +1984,8 @@ function Field({
   required?: boolean;
 }) {
   return (
-    <label className="grid gap-1">
-      <span className="text-[10.5px] font-semibold text-[#24133f]">
+    <label className="grid gap-1.5">
+      <span className="font-[var(--font-poppins)] text-[10px] font-semibold text-[#151525]">
         {label}
       </span>
 
@@ -1929,7 +1995,7 @@ function Field({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-lg border border-[#ddd6eb] px-2.5 py-2 text-[11.5px] outline-none focus:border-[#8b5cf6] focus:ring-2 focus:ring-[#f0eafa]"
+        className="w-full rounded-xl border border-[#dfe2e8] bg-white px-3 py-2 text-[11.5px] outline-none transition-shadow focus:border-[#4B1D96] focus:ring-2 focus:ring-[#4B1D96]/10"
       />
     </label>
   );

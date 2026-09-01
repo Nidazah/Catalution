@@ -705,7 +705,7 @@ export default function Navbar({
 
         {/* --- CTA BUTTON & SEARCH (Far Right) --- */}
         <div className="hidden md:flex items-center gap-6">
-          {layout.ctaVisible !== false && <Link href={layout.ctaUrl || "/contact"} className="btn-nav-primary" style={{backgroundColor:"var(--cms-navbar-cta-bg, var(--color-purple-900))", color:"var(--cms-navbar-cta-text, #fff)"}}>
+          {layout.ctaVisible !== false && <Link href={layout.ctaUrl || "/contact"} className="btn-nav-primary">
             {layout.ctaLabel || "Get Started"}
             <span className="arrow">
               <ArrowUpRight className="h-4 w-4" />

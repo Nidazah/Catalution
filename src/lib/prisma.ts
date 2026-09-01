@@ -19,8 +19,8 @@ if (process.env.NODE_ENV !== "production") {
 
 export async function withDbRetry<T>(
   operation: () => Promise<T>,
-  retries = 2,
-  delay = 1000
+  retries = 3,
+  delay = 1500
 ): Promise<T> {
   let lastError: unknown;
 
@@ -35,12 +35,20 @@ export async function withDbRetry<T>(
         message?: string;
       };
 
-      const retryableCodes = ["P1001", "P1002", "P1017", "P2024"];
+      const message = prismaError.message?.toLowerCase() ?? "";
+
+      const retryableCodes = [
+        "P1001",
+        "P1002",
+        "P1017",
+        "P2024",
+      ];
 
       const shouldRetry =
         retryableCodes.includes(prismaError.code ?? "") ||
-        prismaError.message?.toLowerCase().includes("connection") ||
-        prismaError.message?.toLowerCase().includes("timeout");
+        message.includes("connection") ||
+        message.includes("timeout") ||
+        message.includes("can't reach database");
 
       if (!shouldRetry || attempt === retries) {
         throw error;
@@ -51,6 +59,8 @@ export async function withDbRetry<T>(
       );
 
       await new Promise((resolve) => setTimeout(resolve, delay));
+
+      delay *= 2;
     }
   }
 

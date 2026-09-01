@@ -23,6 +23,25 @@ p {
   max-width: 75ch;
 }
 
+/* A paragraph inside a centered section (Tailwind's `.text-center`, used
+   for section header blocks — Hero, About, Case Studies, CTA, Process,
+   Testimonials, Pricing, inner-page heroes, etc.) needs to be centered as
+   a BOX too, not just have its own text centered. Without this, the
+   `max-width: 75ch` above makes the paragraph narrower than its parent,
+   and with no margin of its own it renders pinned to the parent's left
+   edge — so only the wrapped lines look centered (relative to each
+   other), while the whole block sits visibly left of the heading/eyebrow
+   above it. Scoped to `.text-center` descendants only, so paragraphs in
+   left-aligned layouts (About/Process body copy, blog articles, etc.)
+   are unaffected — most of those already carry an explicit `mx-auto` or
+   aren't inside a `.text-center` ancestor at all.
+*/
+.text-center p,
+p.text-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 button, input, textarea, select {
   font: inherit;
 }
