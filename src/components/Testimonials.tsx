@@ -7,6 +7,9 @@ import ScrollReveal from "./ScrollReveal";
 interface TestimonialsProps {
   eyebrow?: string;
   title?: string;
+  // Kept for compatibility with the existing Home page contract.
+  // Testimonial cards are intentionally sourced from /api/testimonials below.
+  cmsSettings?: unknown;
 }
 
 type Testimonial = {
@@ -30,9 +33,7 @@ export default function Testimonials({ eyebrow, title }: TestimonialsProps) {
       const res = await fetch("/api/testimonials", { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to load testimonials");
       const data = await res.json();
-      if (Array.isArray(data)) {
-        setQuotes(data);
-      }
+      if (Array.isArray(data)) setQuotes(data);
     } catch (error) {
       console.error("Failed to load homepage testimonials", error);
       setQuotes([]);
