@@ -12,10 +12,22 @@ import ScrollReveal from "./ScrollReveal";
 import "swiper/css";
 import "swiper/css/pagination";
 
+export type CaseStudyItem = {
+  title?: string;
+  description?: string;
+  image?: string;
+  meta?: string;
+  link?: string;
+  tags?: string[];
+};
+
 interface CaseStudyProps {
   eyebrow?: string;
   title?: string;
   description?: string;
+  // Kept for compatibility with the existing Home page contract.
+  // Homepage cards are intentionally sourced from /api/portfolio below.
+  items?: CaseStudyItem[];
 }
 
 type ApiPortfolio = {
